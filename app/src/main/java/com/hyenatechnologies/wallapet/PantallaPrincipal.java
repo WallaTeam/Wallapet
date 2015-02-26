@@ -5,16 +5,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-jihugyvf
 public class PantallaPrincipal extends ActionBarActivity {
 
-<<<<<<< HEAD
-=======
-
-    /**FORK DE ISMA 2**/
->>>>>>> pr/9
     /**
-     * Metodo onCreate()
+     * Rama principal por fin
      * @param savedInstanceState
      */
     @Override
