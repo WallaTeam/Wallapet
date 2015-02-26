@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-/**
- * hola mundo de isma
- */
+jihugyvf
 public class PantallaPrincipal extends ActionBarActivity {
 
     /**
