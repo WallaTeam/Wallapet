@@ -8,6 +8,11 @@ import android.view.MenuItem;
 jihugyvf
 public class PantallaPrincipal extends ActionBarActivity {
 
+<<<<<<< HEAD
+=======
+
+    /**FORK DE ISMA 2**/
+>>>>>>> pr/9
     /**
      * Metodo onCreate()
      * @param savedInstanceState
@@ -39,5 +44,14 @@ public class PantallaPrincipal extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void isma(){
+
+    }
+
+    public void isma2(){
+        
     }
 }
