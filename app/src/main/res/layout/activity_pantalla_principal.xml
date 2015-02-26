@@ -21,9 +21,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="jajaja de jaja"
+        android:text="PLOMO PALOMO PLO PLOOOMO PALOMO"
         android:id="@+id/button2"
+        android:layout_marginBottom="166dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 
 </RelativeLayout>
