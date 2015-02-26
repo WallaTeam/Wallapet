@@ -23,7 +23,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Raul homosexualillo"
+        android:text="jajaja de jaja"
         android:id="@+id/button2"
         android:layout_below="@+id/button"
         android:layout_toRightOf="@+id/textView"
