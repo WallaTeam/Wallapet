@@ -9,7 +9,7 @@ import android.view.MenuItem;
 public class PantallaPrincipal extends ActionBarActivity {
 
 
-    /**FORK DE ISMA**/
+    /**FORK DE ISMA 2**/
     /**
      * Metodo onCreate()
      * @param savedInstanceState
