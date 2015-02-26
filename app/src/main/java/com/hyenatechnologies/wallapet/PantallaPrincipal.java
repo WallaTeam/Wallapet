@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /**
- * hola parguelas
+ * hola parguelas Raul
  */
 public class PantallaPrincipal extends ActionBarActivity {
 
