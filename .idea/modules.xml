@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WallaPet.iml" filepath="$PROJECT_DIR$/WallaPet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/WallapetForkIsma.iml" filepath="$PROJECT_DIR$/WallapetForkIsma.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

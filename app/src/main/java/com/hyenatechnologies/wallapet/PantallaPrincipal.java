@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+jihugyvf
 public class PantallaPrincipal extends ActionBarActivity {
 
-
-    /**FORK DE ISMA**/
     /**
      * Metodo onCreate()
      * @param savedInstanceState
