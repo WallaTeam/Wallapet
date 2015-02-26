@@ -12,6 +12,9 @@ public class PantallaPrincipal extends ActionBarActivity {
      * Metodo onCreate()
      * @param savedInstanceState
      */
+    public void luis(Menu menu){
+        String jajaja;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
