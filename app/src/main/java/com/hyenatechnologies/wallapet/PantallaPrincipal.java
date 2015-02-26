@@ -11,7 +11,7 @@ import android.view.MenuItem;
 public class PantallaPrincipal extends ActionBarActivity {
 
     /**
-     *
+     * Metodo onCreate()
      * @param savedInstanceState
      */
     @Override
