@@ -8,6 +8,10 @@ import android.view.MenuItem;
 
 public class PantallaPrincipal extends ActionBarActivity {
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
