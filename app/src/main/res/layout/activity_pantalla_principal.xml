@@ -25,8 +25,7 @@
         android:layout_height="wrap_content"
         android:text="jajaja de jaja"
         android:id="@+id/button2"
-        android:layout_below="@+id/button"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
