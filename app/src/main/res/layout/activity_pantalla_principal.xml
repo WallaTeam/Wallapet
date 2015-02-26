@@ -25,8 +25,8 @@
         android:layout_height="wrap_content"
         android:text="Hola Isma"
         android:id="@+id/button2"
-        android:layout_marginTop="72dp"
         android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true" />
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 
 </RelativeLayout>
