@@ -45,6 +45,10 @@ public class PantallaPrincipal extends ActionBarActivity {
 
 
     public void isma(){
+
+    }
+
+    public void isma2(){
         
     }
 }
