@@ -14,8 +14,10 @@
         android:layout_height="wrap_content"
         android:text="Hola David"
         android:id="@+id/button"
-        android:layout_marginTop="143dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/textView" />
 
 </RelativeLayout>
