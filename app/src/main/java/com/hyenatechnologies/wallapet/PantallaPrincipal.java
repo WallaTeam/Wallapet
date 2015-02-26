@@ -42,4 +42,9 @@ public class PantallaPrincipal extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    public void isma(){
+        
+    }
 }
