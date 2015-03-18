@@ -1,2 +1,3 @@
 # Wallapet
-WallaPet es una aplicación Android para la compra/venta y adopción de animales. david gayyy
+WallaPet es una aplicación Android para poner de acuerdo a compradores/vendedores de animales
+y gente que pone en venta su mascota. Hyena Technologies.

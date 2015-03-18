@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * WallaPet Android App
+ * Hyena Technologies ¢ 2015
+ */
+
+/**
+ * Actividad principal. Todo: Hacer todo
+ */
 public class PantallaPrincipal extends ActionBarActivity {
 
-    /**
-     * Rama principal por fin
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +45,4 @@ public class PantallaPrincipal extends ActionBarActivity {
     }
 
 
-    public void isma(){
-
-    }
-
-    public void isma2(){
-        
-    }
 }
