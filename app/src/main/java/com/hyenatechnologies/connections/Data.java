@@ -1,6 +1,6 @@
 package com.hyenatechnologies.connections;
 
-
+// Data class
 public class Data {
     public void getAnuncio(final String id) {
     }
