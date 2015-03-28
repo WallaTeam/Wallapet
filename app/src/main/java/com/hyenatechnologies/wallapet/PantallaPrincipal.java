@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-jihugyvf
+/**
+ * pruebas
+ */
 public class PantallaPrincipal extends ActionBarActivity {
 
     /**
