@@ -1,88 +1,85 @@
 package com.hyenatechnologies.wallapet;
 
-import java.util.ArrayList;
-import java.util.List;
-import android.app.ListActivity;
-import com.hyenatechnologies.connections.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 
 public class Cuenta {
 
-    public String apellidos;
+    private String DNI;
+    private String nombre;
+    private String apellido;
+    private String direccion;
+    private String email;
+    private int telefono;
+    private String contrasegna;
 
-    public int edad;
-
-    public String nombre;
-
-    public int dni;
-
-    public String direccion;
-
-    public String correoElectronico;
-
-    public int telefono;
-
-    public List<ListadoAnuncios> listadoAnuncios = new ArrayList<ListadoAnuncios> ();
-
-
-    public void modificarAnuncio() {
+    // Pasa a JSON
+    public static String toJson(Cuenta c) {
+        Gson gson = new Gson();
+        return gson.toJson(c);
     }
 
-    public Order solicitarInfo(final Anuncio anuncio) {
-        // TODO Auto-generated return
-        return null;
+    // Obtiene objeto de JSON
+    public static Cuenta fromJson(String json)throws JsonParseException {
+        Gson gson = new Gson();
+        return gson.fromJson(json, Cuenta.class);
     }
 
-    public void filtrarAnuncios() {
+    public String getContrasegna() {
+        return contrasegna;
     }
 
-    public void borrarAnuncio() {
+    public void setContrasegna(String contrasegna) {
+        this.contrasegna = contrasegna;
     }
 
-    public void iniciarSesion() {
+    public String getDNI() {
+        return DNI;
     }
 
-    public void crearAnuncio(final Imagen foto) {
+    public void setDNI(String dNI) {
+        DNI = dNI;
     }
 
-    public Order solicitarDatos(final Anuncio anuncio) {
-        // TODO Auto-generated return
-        return null;
+    public String getNombre() {
+        return nombre;
     }
 
-    public ListadoAnuncios filtrarPorTipoAnuncio(final String tipoAnuncio) {
-        // TODO Auto-generated return
-        return null;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public ListadoAnuncios filtrarPorPalabraClave(final String palabra) {
-        // TODO Auto-generated return
-        return null;
+    public String getApellido() {
+        return apellido;
     }
 
-    public ListadoAnuncios filtrarPorEspecie(final String especie) {
-        // TODO Auto-generated return
-        return null;
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
-    public void cerrarSesion() {
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void registro(final int edad, final String nombre, final String apellidos, final int dni, final int telefono, final String direccion, final String correoElectronico) {
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
-    public void borrarCuenta() {
+    public String getEmail() {
+        return email;
     }
 
-    public void listarOtrosAnuncios() {
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void cerrarAnuncio(final Anuncio anuncio) {
+    public int getTelefono() {
+        return telefono;
     }
 
-    public void fillFormulario(ListActivity ListActivity) {
-    }
-
-    public void modificarDatos(final String data) {
+    public void setTelefono(int telefono) {
+        this.telefono = telefono;
     }
 
 }
+
