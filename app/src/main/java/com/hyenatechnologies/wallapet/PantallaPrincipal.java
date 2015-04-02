@@ -1,10 +1,28 @@
 package com.hyenatechnologies.wallapet;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
+/**
+ * WallaPet Android App
+ * Hyena Technologies ¢ 2015
+ */
+/**
+ <<<<<<< Updated upstream
+ * Actividad principal. De momento permite ejecutar cosas de prueba
+ * como ver anuncio por id o crear anuncil.
+ */
+=======
+        *hola david gay*/
+        >>>>>>>Stashed changes
+
+<<<<<<< HEAD
 /**
  * WallaPet Android App
  * Hyena Technologies ¢ 2015
@@ -15,10 +33,81 @@ import android.view.MenuItem;
  */
 public class PantallaPrincipal extends ActionBarActivity {
 
+=======
+public class PantallaPrincipal extends ActionBarActivity {
+
+
+    //Variables
+    EditText texto;
+    Button botonVer;
+    Button botonCrear;
+    Button botonLogin;
+    Button botonRegistro;
+
+>>>>>>> pr/15
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantalla_principal);
+
+        //Cargamos cuadro de texto de id de anuncio
+        texto = (EditText) findViewById(R.id.verAnuncio);
+        //Cargamos botones
+        botonVer = (Button) findViewById(R.id.verAnuncioBoton);
+        botonCrear = (Button) findViewById(R.id.crearAnuncioBoton);
+        botonLogin = (Button) findViewById(R.id.botonLogin);
+        botonRegistro = (Button) findViewById(R.id.botonRegistro);
+
+        //Establecemos comportamiento de boton de ver anuncio
+        botonVer.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Lanzamos la actividad de ver
+                Intent i = new Intent(getApplicationContext(), VistaAnuncio.class);
+                int idAnuncio = 1;
+                if (!texto.getText().toString().equals("")) {
+                    i.putExtra("idAnuncio", Integer.parseInt(texto.getText().toString()));
+                    startActivity(i);
+                }
+            }
+        });
+        //establecemos comportamiento de boton de crear anuncio
+        botonCrear.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Lanzamos la actividad de crear
+                Intent i = new Intent(getApplicationContext(), CrearAnuncio.class);
+
+                startActivity(i);
+
+            }
+        });
+
+        botonLogin.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Lanzamos la actividad de Login
+                Intent i = new Intent(getApplicationContext(), Login.class);
+
+                startActivity(i);
+
+            }
+        });
+
+        botonRegistro.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Lanzamos la actividad de registro
+                Intent i = new Intent(getApplicationContext(), Registro.class);
+
+                startActivity(i);
+
+            }
+        });
     }
 
 

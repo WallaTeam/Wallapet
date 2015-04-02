@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="20dip" android:orientation="vertical">
+
+    <EditText android:id="@+id/txtUserName" android:layout_height="wrap_content" android:layout_width="fill_parent"
+        android:hint="UserName" android:inputType="text" />
+
+    <EditText android:id="@+id/txtEmail" android:layout_marginTop="15dip" android:layout_height="wrap_content"
+        android:layout_width="fill_parent" android:hint="Email" android:inputType="textEmailAddress" />
+
+    <EditText android:id="@+id/txtPass" android:layout_height="wrap_content"
+        android:layout_width="fill_parent" android:hint="Password" android:inputType="textPassword"
+        android:layout_marginTop="15dip" />
+
+    <EditText android:id="@+id/txtDNI" android:layout_height="wrap_content"
+        android:layout_width="fill_parent" android:hint="Dni" android:inputType="textPassword"
+        android:layout_marginTop="15dip"  />
+
+    <EditText android:id="@+id/txtNombre" android:layout_height="wrap_content"
+        android:layout_width="fill_parent" android:hint="Nombre" android:inputType="textPassword"
+        android:layout_marginTop="15dip"  />
+
+    <EditText android:id="@+id/txtApellidos" android:layout_height="wrap_content"
+        android:layout_width="fill_parent" android:hint="Apellidos" android:inputType="textPassword"
+        android:layout_marginTop="15dip"  />
+
+    <EditText android:id="@+id/txtTelefono" android:layout_height="wrap_content"
+        android:layout_width="fill_parent" android:hint="Teléfono" android:inputType="textPassword"
+        android:layout_marginTop="15dip" />
+
+    <Button android:id="@+id/btnRegister" android:layout_height="wrap_content"
+        android:layout_width="wrap_content" android:text="enviar"
+        android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip" />
+
+    <TextView android:id="@+id/link_to_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dip"
+        android:layout_marginBottom="40dip"
+        android:text="Ya tienes cuenta! Accede!"
+        android:gravity="center"
+        android:textSize="20dip"
+        android:textColor="#0b84aa"/>
+
+    <TextView android:id="@+id/register_error"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dip"
+        android:layout_marginBottom="40dip"
+
+        android:gravity="center"
+        android:textSize="20dip"
+        android:textColor="#0b84aa"/>
+
+
+</LinearLayout>

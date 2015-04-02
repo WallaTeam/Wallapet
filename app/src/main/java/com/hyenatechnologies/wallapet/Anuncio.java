@@ -1,9 +1,17 @@
 package com.hyenatechnologies.wallapet;
 
+<<<<<<< HEAD
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+=======
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+
+import java.util.List;
+
+>>>>>>> pr/15
 public class Anuncio {
 
     private int idAnuncio;

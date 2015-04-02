@@ -1,4 +1,4 @@
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
