@@ -1,10 +1,6 @@
 package com.hyenatechnologies.wallapet;
 
 import android.content.Intent;
-<<<<<<< HEAD
-=======
-import android.support.v7.app.ActionBarActivity;
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -12,54 +8,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-<<<<<<< HEAD
 
 /**
  * WallaPet Android App
  * Hyena Technologies ¢ 2015
  */
-/**
- <<<<<<< Updated upstream
- * Actividad principal. De momento permite ejecutar cosas de prueba
- * como ver anuncio por id o crear anuncil.
- */
-=======
-        *hola david gay*/
-        >>>>>>>Stashed changes
-=======
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
 
-<<<<<<< HEAD
-/**
- * WallaPet Android App
- * Hyena Technologies ¢ 2015
- */
 
 /**
  * Actividad principal. De momento permite ejecutar cosas de prueba
  * como ver anuncio por id o crear anuncil.
  */
 public class PantallaPrincipal extends ActionBarActivity {
-
-<<<<<<< HEAD
-=======
-public class PantallaPrincipal extends ActionBarActivity {
-
-=======
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
-
     //Variables
     EditText texto;
     Button botonVer;
     Button botonCrear;
-<<<<<<< HEAD
     Button botonLogin;
     Button botonRegistro;
 
->>>>>>> pr/15
-=======
-
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,12 +37,9 @@ public class PantallaPrincipal extends ActionBarActivity {
         //Cargamos botones
         botonVer = (Button) findViewById(R.id.verAnuncioBoton);
         botonCrear = (Button) findViewById(R.id.crearAnuncioBoton);
-<<<<<<< HEAD
         botonLogin = (Button) findViewById(R.id.botonLogin);
         botonRegistro = (Button) findViewById(R.id.botonRegistro);
 
-=======
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
         //Establecemos comportamiento de boton de ver anuncio
         botonVer.setOnClickListener(new View.OnClickListener() {
 
@@ -102,7 +66,6 @@ public class PantallaPrincipal extends ActionBarActivity {
 
             }
         });
-<<<<<<< HEAD
 
         botonLogin.setOnClickListener(new View.OnClickListener() {
 
@@ -127,8 +90,6 @@ public class PantallaPrincipal extends ActionBarActivity {
 
             }
         });
-=======
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
     }
 
 

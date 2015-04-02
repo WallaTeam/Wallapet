@@ -132,11 +132,7 @@ public class Conexiones {
      * @param is
      * @return
      */
-<<<<<<< HEAD
     static String convertStreamToString(InputStream is) {
-=======
-    static String convertStreamToString(java.io.InputStream is) {
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
     }

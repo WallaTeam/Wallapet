@@ -23,11 +23,10 @@
         </activity>
         <activity
             android:name=".PantallaPrincipal"
-<<<<<<< HEAD
+
             android:label="Pantalla principal">
-=======
             android:label="Pantalla principal" >
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +35,6 @@
         </activity>
         <activity
             android:name=".CrearAnuncio"
-<<<<<<< HEAD
             android:label="@string/title_activity_crear_anuncio"></activity>
         <activity
             android:name=".Login"
@@ -46,11 +44,8 @@
             android:label="@string/title_activity_registro"></activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main"></activity>
-=======
-            android:label="@string/title_activity_crear_anuncio" >
-        </activity>
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
+            android:label="@string/title_activity_crear_anuncio"></activity>
+
     </application>
 
 </manifest>

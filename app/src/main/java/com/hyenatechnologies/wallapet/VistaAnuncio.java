@@ -1,37 +1,10 @@
 package com.hyenatechnologies.wallapet;
 
 import android.content.Intent;
-<<<<<<< HEAD
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.TextView;
-=======
-import android.os.StrictMode;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.app.Activity;
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
 import android.widget.Toast;
 
 /**
@@ -99,6 +72,4 @@ public class VistaAnuncio extends ActionBarActivity {
         anuncioPrecio.setText("" + a.getPrecio() + "€");
         anuncioTitulo.setText(a.getTitulo());
     }
-
-
 }

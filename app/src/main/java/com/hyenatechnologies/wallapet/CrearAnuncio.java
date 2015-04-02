@@ -1,15 +1,8 @@
 package com.hyenatechnologies.wallapet;
 
-<<<<<<< HEAD
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
-=======
-import android.content.Intent;
-import android.os.StrictMode;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
->>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
