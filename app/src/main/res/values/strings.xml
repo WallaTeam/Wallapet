@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Wallapet</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_crear_anuncio">Crear Anuncio</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_registro">Registrarse</string>
     <string name="title_activity_main">MainActivity</string>
 </resources>
