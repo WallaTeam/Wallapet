@@ -1,31 +1,13 @@
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.hyenatechnologies.wallapet;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.app.Activity;
 import android.widget.Toast;
+
+import com.hyenatechnologies.wallapet.R;
 
 /**
  * Muestra un anuncio. Recibe por "intent" el id del anuncio a mostrar.

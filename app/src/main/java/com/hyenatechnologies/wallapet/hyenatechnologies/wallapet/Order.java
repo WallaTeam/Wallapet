@@ -1,8 +1,8 @@
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.hyenatechnologies.wallapet;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 
 public class Order {
     public List<File> archivo = new ArrayList<File> ();

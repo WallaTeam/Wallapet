@@ -1,9 +1,10 @@
-package com.hyenatechnologies.wallapet;
-
-import java.util.List;
+package com.hyenatechnologies.wallapet.hyenatechnologies.wallapet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+
+import java.util.List;
+
 public class Anuncio {
 
     private int idAnuncio;

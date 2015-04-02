@@ -1,30 +1,29 @@
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.hyenatechnologies.wallapet;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hyenatechnologies.connections.Logger;
-import com.hyenatechnologies.connections.Register;
+import com.hyenatechnologies.wallapet.R;
 
 /**
  * WallaPet Android App
  * Hyena Technologies ¢ 2015
  */
-
 /**
-<<<<<<< Updated upstream
+ <<<<<<< Updated upstream
  * Actividad principal. De momento permite ejecutar cosas de prueba
  * como ver anuncio por id o crear anuncil.
  */
 =======
- * hola david gay*/
->>>>>>> Stashed changes
+        *hola david gay*/
+        >>>>>>>Stashed changes
+
 public class PantallaPrincipal extends ActionBarActivity {
 
 

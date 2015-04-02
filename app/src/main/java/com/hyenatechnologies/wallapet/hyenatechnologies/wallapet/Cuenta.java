@@ -1,4 +1,4 @@
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.hyenatechnologies.wallapet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;

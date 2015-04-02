@@ -1,8 +1,9 @@
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.hyenatechnologies.wallapet;
+
+import android.app.ListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.app.ListActivity;
 
 public class ListadoAnuncios extends ListActivity {
     public List<Anuncio> anuncios = new ArrayList<Anuncio> ();

@@ -1,4 +1,4 @@
-package com.hyenatechnologies.connections;
+package com.hyenatechnologies.wallapet.hyenatechnologies.connections;
 
 // Data class
 public class Data {
