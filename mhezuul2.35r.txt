@@ -1,0 +1,55 @@
+﻿Merge branch 'pr/15'
+
+Conflicts:
+	.idea/modules.xml
+	app/app.iml
+	app/src/main/java/com/hyenatechnologies/wallapet/Anuncio.java
+	app/src/main/java/com/hyenatechnologies/wallapet/ListadoAnuncios.java
+	app/src/main/java/com/hyenatechnologies/wallapet/Order.java
+	app/src/main/java/com/hyenatechnologies/wallapet/PantallaPrincipal.java
+#
+# It looks like you may be committing a merge.
+# If this is not correct, please remove the file
+#	.git/MERGE_HEAD
+# and try again.
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is behind 'origin/master' by 2 commits, and can be fast-forwarded.
+#   (use "git pull" to update your local branch)
+#
+# All conflicts fixed but you are still merging.
+#
+# Changes to be committed:
+#	modified:   .idea/modules.xml
+#	modified:   .idea/vcs.xml
+#	new file:   Wallapet1.iml
+#	modified:   app/app.iml
+#	renamed:    app/src/androidTest/java/com/hyenatechnologies/wallapet/ApplicationTest.java -> app/src/androidTest/java/com/hyenatechnologies/ApplicationTest.java
+#	modified:   app/src/main/AndroidManifest.xml
+#	modified:   app/src/main/java/com/hyenatechnologies/wallapet/Anuncio.java
+#	new file:   app/src/main/java/com/hyenatechnologies/wallapet/Conexiones.java
+#	new file:   app/src/main/java/com/hyenatechnologies/wallapet/Cons.java
+#	new file:   app/src/main/java/com/hyenatechnologies/wallapet/CrearAnuncio.java
+#	modified:   app/src/main/java/com/hyenatechnologies/wallapet/ListadoAnuncios.java
+#	new file:   app/src/main/java/com/hyenatechnologies/wallapet/Login.java
+#	new file:   app/src/main/java/com/hyenatechnologies/wallapet/MainActivity.java
+#	modified:   app/src/main/java/com/hyenatechnologies/wallapet/Order.java
+#	modified:   app/src/main/java/com/hyenatechnologies/wallapet/PantallaPrincipal.java
+#	new file:   app/src/main/java/com/hyenatechnologies/wallapet/Registro.java
+#	new file:   app/src/main/java/com/hyenatechnologies/wallapet/VistaAnuncio.java
+#	new file:   app/src/main/res/layout/activity_crear_anuncio.xml
+#	new file:   app/src/main/res/layout/activity_login.xml
+#	modified:   app/src/main/res/layout/activity_pantalla_principal.xml
+#	new file:   app/src/main/res/layout/activity_registro.xml
+#	new file:   app/src/main/res/layout/activity_vista_anuncio.xml
+#	new file:   app/src/main/res/menu/menu_crear_anuncio.xml
+#	new file:   app/src/main/res/menu/menu_login.xml
+#	new file:   app/src/main/res/menu/menu_main.xml
+#	new file:   app/src/main/res/menu/menu_registro.xml
+#	new file:   app/src/main/res/menu/menu_vista_anuncio.xml
+#	modified:   app/src/main/res/values/strings.xml
+#
+

@@ -40,6 +40,7 @@
         android:layout_width="match_parent"
         android:text="Ir a pantalla de crear anuncio"
         android:layout_height="wrap_content" />
+<<<<<<< HEAD
 
     <Button
         android:id="@+id/botonLogin"
@@ -52,4 +53,6 @@
         android:layout_width="match_parent"
         android:text="Ir a pantalla de Registro"
         android:layout_height="wrap_content" />
+=======
+>>>>>>> d5911b22822462a1e7377b48bcb3f3eb1e51c4ee
 </LinearLayout>
