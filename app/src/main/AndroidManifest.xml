@@ -41,6 +41,11 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_crear_anuncio"/>
 
+
+
+
+
+
     </application>
 
 </manifest>
