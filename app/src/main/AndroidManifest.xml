@@ -15,10 +15,10 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".VistaAnuncio"
+            android:name=".pantallas.VistaAnuncio"
             android:label="Vista Anuncio"/>
         <activity
-            android:name=".PantallaPrincipal"
+            android:name=".pantallas.PantallaPrincipal"
 
             android:label="Pantalla principal">
 
@@ -29,17 +29,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CrearAnuncio"
+            android:name=".pantallas.CrearModificarAnuncio"
             android:label="@string/title_activity_crear_anuncio"/>
         <activity
-            android:name=".Login"
+            android:name=".pantallas.Login"
             android:label="@string/title_activity_login"/>
         <activity
-            android:name=".Registro"
+            android:name=".pantallas.Registro"
             android:label="@string/title_activity_registro"/>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_crear_anuncio"/>
+       
 
     </application>
 
