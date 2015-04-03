@@ -1,4 +1,4 @@
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.pantallas;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
