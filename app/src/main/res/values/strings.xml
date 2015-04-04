@@ -7,4 +7,29 @@
     <string name="title_activity_registro">Registrarse</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_vista_anuncio">VistaAnuncio</string>
+    <string-array name="spinnerCrearAnuncioEstado_string">
+        <item>Abierto</item>
+        <item>Cerrado</item>
+    </string-array>
+    <string name="title_activity_navigation__drawer">Navigation_Drawer</string>
+    <!-- Lista de titulos de navegacion-->
+    <string-array name="nav_options">
+        <item>Perfil</item>
+        <item>Favoritos</item>
+        <item>Eventos</item>
+        <item>Lugares</item>
+        <item>Etiquetas</item>
+        <item>Configuración</item>
+        <item>Compartir</item>
+    </string-array>
+    <!-- Lista de iconos de navegacion-->
+    <array name="navigation_iconos">
+        <item>@drawable/ic_action_user</item>
+        <item>@drawable/ic_action_star</item>
+        <item>@drawable/ic_action_event</item>
+        <item>@drawable/ic_action_place</item>
+        <item>@drawable/ic_action_labels</item>
+        <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_share</item>
+    </array>
 </resources>

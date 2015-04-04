@@ -7,9 +7,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.Spinner;
 
 import com.hyenatechnologies.wallapet.Anuncio;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
@@ -30,7 +32,7 @@ public class CrearModificarAnuncio extends ActionBarActivity {
     EditText titulo;
     EditText email;
     EditText descripcion;
-    EditText estado;
+    Spinner estado;
     EditText tipo;
     EditText especie;
     EditText precio;
@@ -46,7 +48,14 @@ public class CrearModificarAnuncio extends ActionBarActivity {
         titulo = (EditText) findViewById(R.id.crearAnuncioTitulo);
         email = (EditText) findViewById(R.id.crearAnuncioEmail);
         descripcion = (EditText) findViewById(R.id.crearAnuncioDescripcion);
-        estado = (EditText) findViewById(R.id.crearAnuncioEstado);
+        estado = (Spinner) findViewById(R.id.spinnerCrearAnuncioEstado);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinnerCrearAnuncioEstado_string, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        estado.setAdapter(adapter);
         tipo = (EditText) findViewById(R.id.crearAnuncioTipo);
         precio = (EditText) findViewById(R.id.crearAnuncioPrecio);
         especie = (EditText) findViewById(R.id.crearAnuncioEspecie);
@@ -93,7 +102,7 @@ public class CrearModificarAnuncio extends ActionBarActivity {
                 a.setTitulo(titulo.getText().toString());
                 a.setEmail(email.getText().toString());
                 a.setDescripcion(descripcion.getText().toString());
-                a.setEstado(estado.getText().toString());
+                a.setEstado(estado.getSelectedItem().toString());
                 a.setEspecie(especie.getText().toString());
                 a.setTipoIntercambio(tipo.getText().toString());
                 a.setPrecio(Double.parseDouble(precio.getText().toString()));
@@ -170,7 +179,11 @@ public class CrearModificarAnuncio extends ActionBarActivity {
     public void mostrarAnuncio(Anuncio a) {
 
         email.setText(a.getEmail());
-       estado.setText(a.getEstado());
+        if (a.getEstado().compareTo("Abierto")== 0){
+            estado.setGravity(0);
+        }else{
+            estado.setGravity(1);
+        }
         descripcion.setText(a.getDescripcion());
         especie.setText(a.getEspecie());
         tipo.setText(a.getTipoIntercambio());
