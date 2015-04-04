@@ -119,6 +119,19 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/verAnuncio"
+        android:inputType="number"
+        android:text="1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <Button
+        android:id="@+id/verAnuncioBoton"
+        android:layout_width="match_parent"
+        android:text="Cargar anuncio desde server"
+        android:layout_height="wrap_content" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,15 +1,19 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Spinner;
 
@@ -18,50 +22,61 @@ import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.R;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.layout.*;
+
 
 /**
  * Pantalla de crear un nuevo anuncio o modificar uno existente
  */
-public class CrearModificarAnuncio extends ActionBarActivity {
+public class CrearModificarAnuncio extends Fragment {
 
     private static final int MODO_CREAR = 1;
     private static final int MODO_ACTUALIZAR = 2;
 
 
     //Variables
-    EditText titulo;
-    EditText email;
-    EditText descripcion;
-    Spinner estado;
-    EditText tipo;
-    EditText especie;
-    EditText precio;
-    Button botonCrear;
+    private EditText titulo;
+    private EditText email;
+    private EditText descripcion;
+    private Spinner estado;
+    private Spinner tipo;
+    private EditText especie;
+    private EditText precio;
+    private Button botonCrear;
     int modo = MODO_CREAR;
     Anuncio modificando;
+    private List<String> ListaEstados = new ArrayList<String>();
+    private List<String> ListaTipos = new ArrayList<String>();
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crear_anuncio);
+        View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container, false);
 
         //Cargamos campos de texto
-        titulo = (EditText) findViewById(R.id.crearAnuncioTitulo);
-        email = (EditText) findViewById(R.id.crearAnuncioEmail);
-        descripcion = (EditText) findViewById(R.id.crearAnuncioDescripcion);
-        estado = (Spinner) findViewById(R.id.spinnerCrearAnuncioEstado);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.spinnerCrearAnuncioEstado_string, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
+        titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
+        email = (EditText) rootView.findViewById(R.id.crearAnuncioEmail);
+        descripcion = (EditText) rootView.findViewById(R.id.crearAnuncioDescripcion);
+        //spinner
+        estado = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioEstado);
+        ListaEstados.add("Abierto");
+        ListaEstados.add("Cerrado");
+        ArrayAdapter<String> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1, ListaEstados);
         estado.setAdapter(adapter);
-        tipo = (EditText) findViewById(R.id.crearAnuncioTipo);
-        precio = (EditText) findViewById(R.id.crearAnuncioPrecio);
-        especie = (EditText) findViewById(R.id.crearAnuncioEspecie);
+        //spinner
+        tipo = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioTipo);
+        ListaTipos.add("Adopcion");
+        ListaTipos.add("Venta");
+        ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1, ListaTipos);
+        tipo.setAdapter(adapter2);
+        precio = (EditText) rootView.findViewById(R.id.crearAnuncioPrecio);
+        especie = (EditText) rootView.findViewById(R.id.crearAnuncioEspecie);
 
         //Cargamos boton
-        botonCrear = (Button) findViewById(R.id.crearAnuncioOK);
+        botonCrear = (Button) rootView.findViewById(R.id.crearAnuncioOK);
 
         //Estas dos lineas siguientes son para permitir el uso de la red
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -70,7 +85,7 @@ public class CrearModificarAnuncio extends ActionBarActivity {
 
         //Si en el intent hay un anuncio JSON con nombre "anuncio",
         //es que estamos en modo actualizar. Si no, modo crear.
-        Intent mIntent = getIntent();
+        Intent mIntent = getActivity().getIntent();
         String jsonAnuncio = mIntent.getStringExtra("anuncio");
 
 
@@ -104,7 +119,7 @@ public class CrearModificarAnuncio extends ActionBarActivity {
                 a.setDescripcion(descripcion.getText().toString());
                 a.setEstado(estado.getSelectedItem().toString());
                 a.setEspecie(especie.getText().toString());
-                a.setTipoIntercambio(tipo.getText().toString());
+                a.setTipoIntercambio(tipo.getSelectedItem().toString());
                 a.setPrecio(Double.parseDouble(precio.getText().toString()));
 
                 //Guardamos el anuncio
@@ -112,17 +127,15 @@ public class CrearModificarAnuncio extends ActionBarActivity {
                     if(modo == MODO_CREAR){
                             //Modo crear
                         Conexiones.createAnuncio(a);
-                        Toast.makeText(getApplicationContext(), "Anuncio creado correctamente",
+                        Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
                                 Toast.LENGTH_LONG).show();
-                        finish();
                     }
                     else if(modo == MODO_ACTUALIZAR){
                         //Modo actualizar, tenemos q poner el id del anuncio a modificar
                         a.setIdAnuncio(modificando.getIdAnuncio());
                         Conexiones.updateAnuncio(a);
-                        Toast.makeText(getApplicationContext(), "Anuncio actualizado correctamente",
+                        Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
                                 Toast.LENGTH_LONG).show();
-                        finish();
                     }
 
                 }
@@ -130,33 +143,35 @@ public class CrearModificarAnuncio extends ActionBarActivity {
                     switch (ex.getCode()){
 
                         case  500:
-                            Toast.makeText(getApplicationContext(), "Error al contactar con el servidor",
+                            Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
                                     Toast.LENGTH_LONG).show();
                             break;
                         case 403:
-                            Toast.makeText(getApplicationContext(), "Error de permisos",
+                            Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
                                     Toast.LENGTH_LONG).show();
                             break;
                         case 404:
-                            Toast.makeText(getApplicationContext(), "No existe el anuncio indicado.",
+                            Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
                                     Toast.LENGTH_LONG).show();
                             break;
 
                     }
-                    finish();
+
                 }
 
             }
         });
+        return rootView;
     }
 
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_crear_anuncio, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_crear_anuncio, menu);
         return true;
     }
+    */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -186,7 +201,11 @@ public class CrearModificarAnuncio extends ActionBarActivity {
         }
         descripcion.setText(a.getDescripcion());
         especie.setText(a.getEspecie());
-        tipo.setText(a.getTipoIntercambio());
+        if (a.getTipoIntercambio().compareTo("Adopcion")== 0){
+            tipo.setGravity(0);
+        }else{
+            tipo.setGravity(1);
+        }
         precio.setText("" + a.getPrecio());
         titulo.setText(a.getTitulo());
     }

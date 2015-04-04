@@ -53,7 +53,7 @@ public class PantallaPrincipal extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private DrawerLayout NavDrawerLayout;
+    private static DrawerLayout NavDrawerLayout;
 
 
 
@@ -204,7 +204,7 @@ public class PantallaPrincipal extends ActionBarActivity {
     }
 
     /*Pasando la posicion de la opcion en el menu nos mostrara el Fragment correspondiente*/
-    private void MostrarFragment(int position) {
+    public void MostrarFragment(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
         switch (position) {
@@ -213,6 +213,15 @@ public class PantallaPrincipal extends ActionBarActivity {
                 break;
             case 2:
                 fragment = new Login();
+                break;
+            case 3:
+                fragment = new Registro();
+                break;
+            case 4:
+                fragment = new CrearModificarAnuncio();
+                break;
+            case 5:
+                fragment = new VistaAnuncio();
                 break;
 
 
