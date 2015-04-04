@@ -1,34 +1,25 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
 
-
-
-
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.support.v7.app.ActionBarActivity;
-
-import android.view.Menu;
-
-import android.widget.Button;
-import android.widget.EditText;
-
-
 
 import com.hyenatechnologies.wallapet.Item_objct;
 import com.hyenatechnologies.wallapet.NavigationAdapter;
+import com.hyenatechnologies.wallapet.ProfileFragment;
 import com.hyenatechnologies.wallapet.R;
 
 import java.util.ArrayList;
@@ -43,14 +34,15 @@ import java.util.ArrayList;
  * Actividad principal. De momento permite ejecutar cosas de prueba
  * como ver anuncio por id o crear anuncil.
  */
-public class PantallaPrincipal extends Activity {
+public class PantallaPrincipal extends ActionBarActivity {
+    /*
     //Variables
     EditText texto;
     Button botonVer;
     Button botonCrear;
     Button botonLogin;
     Button botonRegistro;
-
+*/
     //pruebas menu
 
     private String[] titulos;
@@ -63,11 +55,13 @@ public class PantallaPrincipal extends Activity {
     private CharSequence mTitle;
     private DrawerLayout NavDrawerLayout;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+/*
         //Cargamos cuadro de texto de id de anuncio
         texto = (EditText) findViewById(R.id.verAnuncio);
         //Cargamos botones
@@ -75,6 +69,8 @@ public class PantallaPrincipal extends Activity {
         botonCrear = (Button) findViewById(R.id.crearAnuncioBoton);
         botonLogin = (Button) findViewById(R.id.botonLogin);
         botonRegistro = (Button) findViewById(R.id.botonRegistro);
+
+        */
         // Set the adapter for the list view
         NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavList = (ListView) findViewById(R.id.lista);
@@ -137,7 +133,9 @@ public class PantallaPrincipal extends Activity {
         // Establecemos que mDrawerToggle declarado anteriormente sea el DrawerListener
         NavDrawerLayout.setDrawerListener(mDrawerToggle);
         //Establecemos que el ActionBar muestre el Boton Home
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
 
         //Establecemos la accion al clickear sobre cualquier item del menu.
@@ -211,7 +209,7 @@ public class PantallaPrincipal extends Activity {
         Fragment fragment = null;
         switch (position) {
             case 1:
-                fragment = new Login();
+                fragment = new ProfileFragment();
                 break;
             case 2:
                 fragment = new Login();
@@ -221,7 +219,7 @@ public class PantallaPrincipal extends Activity {
             default:
                 //si no esta la opcion mostrara un toast y nos mandara a Home
                 Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + "no disponible!", Toast.LENGTH_SHORT).show();
-                fragment = new Login();
+                fragment = new ProfileFragment();
                 position=1;
                 break;
         }
@@ -243,7 +241,7 @@ public class PantallaPrincipal extends Activity {
         }
     }
 
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -263,6 +261,29 @@ public class PantallaPrincipal extends Activity {
             return true;
         }
 
+        return super.onOptionsItemSelected(item);
+    }
+*/
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            Log.e("mDrawerToggle pushed", "x");
+            return true;
+        }
+        // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
 
