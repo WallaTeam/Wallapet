@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class Conexiones {
 
-    public static final String API_URL = "http://192.168.1.72:8080/WallaPet/";
+    public static final String API_URL = "http://ismaro3.ddns.net:8080/WallaPet/";
 
     /**
      * Obtiene del servidor un anuncio según ID.
@@ -62,7 +62,7 @@ public class Conexiones {
      *  En caso de algún error, lanza una ServerException indicando el error.
      */
     public static void deleteAnuncio(int id) throws ServerException {
-            realizarGET(API_URL + "borrarAnuncio.do?id=" + id);
+        realizarGET(API_URL + "borrarAnuncio.do?id=" + id);
         //Nos da igual el texto de contenido.
 
     }
@@ -115,7 +115,6 @@ public class Conexiones {
      * con clave <claveParam> y valor <valorParam>, y devuelve el contenido
      * de la respuesta como cadena si su código es 200 OK.
      * En caso contrario, lanza una excepción indicando el código de error.
-
      */
     public static String realizarPost(String url,String claveParam, String valorParam) throws ServerException{
         HttpClient httpclient = new DefaultHttpClient();

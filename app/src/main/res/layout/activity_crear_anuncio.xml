@@ -26,17 +26,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <EditText
-        android:hint="Estado del anuncio (Abierto, cerrado)"
-        android:id="@+id/crearAnuncioEstado"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerCrearAnuncioEstado"
+        android:layout_gravity="center_horizontal" />
 
-    <EditText
-        android:hint="Tipo de intercambio (Adopcion, Venta)"
-        android:id="@+id/crearAnuncioTipo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerCrearAnuncioTipo"
+        android:layout_gravity="center_horizontal" />
+
     <EditText
         android:hint="Especie"
         android:id="@+id/crearAnuncioEspecie"
