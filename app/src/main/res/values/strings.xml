@@ -28,4 +28,7 @@
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_share</item>
     </array>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
