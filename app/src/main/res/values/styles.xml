@@ -1,8 +1,45 @@
+
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
 
+<style name="Widget" />
+
+<style name="Widget.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+<style name="Widget.Light" />
+
+<style name="Widget.Light.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+<style name="Widget.ActionBar.Transparent">
+    <item name="android:background">@android:color/transparent</item>
+</style>
+
+<style name="Widget.Light.ActionBar.Transparent">
+    <item name="android:background">@android:color/transparent</item>
+</style>
+
+
+<style name="InfoBox">
+
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginTop">5dp</item>
+    <item name="android:layout_marginLeft">10dp</item>
+    <item name="android:layout_marginRight">10dp</item>
+    <item name="android:background">@drawable/layout_propiedad</item>
+    <item name="android:orientation">horizontal</item>
+
+</style>
+<style name="CategoryBox">
+
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginTop">5dp</item>
+    <item name="android:layout_marginBottom">5dp</item>
+    <item name="android:layout_marginLeft">5dp</item>
+    <item name="android:layout_marginRight">5dp</item>
+    <item name="android:background">@drawable/layout_categoria</item>
+    <item name="android:orientation">horizontal</item>
+
+</style>
 </resources>

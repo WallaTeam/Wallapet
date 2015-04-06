@@ -1,147 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/windowBackground"
+    android:orientation="vertical"
+   >
+
+    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ficha_imagen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/cachorro" />
+    <TextView
+        android:id="@+id/anuncioTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:textSize="25dp"
+        android:gravity="center_horizontal"
+        android:text="Golden Terrier cachorro"
+        android:textAppearance="@android:style/TextAppearance.Medium" />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Id anuncio: "
-        />
-    <TextView
-        android:id="@+id/anuncioId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/InfoBox" >
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Titulo: "
-            />
-        <TextView
-            android:id="@+id/anuncioTitulo"
+            android:layout_marginLeft="10dp"
+            android:text="ID: "
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/anuncioId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:textSize="15dp"
+            
+            android:text="ID"
+
+            android:textColor="@android:color/secondary_text_light"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
     </LinearLayout>
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/InfoBox" >
+
         <TextView
+            android:layout_marginLeft="10dp"
+            android:text="Email: "
+            android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email creador: "
-            />
+            android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/anuncioEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:textSize="15dp"
 
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Estado: "
-            />
-        <TextView
-            android:id="@+id/anuncioEstado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:text="email"
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Descripcion: "
-            />
-        <TextView
-            android:id="@+id/anuncioDescripcion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@android:color/secondary_text_light"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
     </LinearLayout>
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/InfoBox" >
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tipo intercambio: "
-            />
-        <TextView
-            android:id="@+id/anuncioTipo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:text="Especie: "
-            />
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/anuncioEspecie"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Precio: "
-            />
+            android:padding="2dp"
+            android:textSize="15dp"
+            
+            android:text="Especie: perro"
+
+            android:textColor="@android:color/secondary_text_light"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
+        </LinearLayout>
+    <LinearLayout
+        style="@style/InfoBox" >
+
         <TextView
-            android:id="@+id/anuncioPrecio"
+            android:layout_marginLeft="10dp"
+            android:text="Precio: "
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/anuncioPrecio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:textSize="15dp"
+        
+        android:text="99.99€"
+
+        android:textColor="@android:color/secondary_text_light"
+        android:textAppearance="@android:style/TextAppearance.Medium" />
+</LinearLayout>
+
+    <LinearLayout
+        style="@style/InfoBox" >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:text="Tipo anuncio: "
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/anuncioTipo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:textSize="15dp"
+            
+            android:text="Venta"
+
+            android:textColor="@android:color/secondary_text_light"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/verAnuncio"
-        android:inputType="number"
-        android:text="1"
+    <LinearLayout
+        style="@style/InfoBox" >
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:text="Estado: "
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/anuncioEstado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:textSize="15dp"
+            
+            android:text="Estado abierto"
+
+            android:textColor="@android:color/secondary_text_light"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/darker_gray"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/layout_descripcion"
+        android:orientation="vertical"
+        >
+
+         <TextView
+             android:padding="7dp"
+             android:textColor="@android:color/black"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Los ocho danzantes con el bobo aparecieron en un momento muy concreto de la evolución de la fiesta y de la danza. Fue en las últimas décadas del siglo XVI cuando estos danzantes en comparsa salieron a la nueva fiesta tridentina y teatral. Es inútil intentar encontrarlos antes, aunque sea en la Edad Media. El Concilio de Trento había concluido en 1563, después de casi veinte años de sesiones, y su espíritu aportó a una buena parte de Europa un nuevo concepto de celebración, no sólo religiosa, sino también social y política.
+             Los ocho danzantes con el bobo aparecieron en un momento muy concreto de la evolución de la fiesta y de la danza. Fue en las últimas décadas del siglo XVI cuando estos danzantes en comparsa salieron a la nueva fiesta tridentina y teatral. Es inútil intentar encontrarlos antes, aunque sea en la Edad Media. El Concilio de Trento había concluido en 1563, después de casi veinte años de sesiones, y su espíritu aportó a una buena parte de Europa un nuevo concepto de celebración, no sólo religiosa, sino también social y política."
+             android:textSize="17dp"
+             android:id="@+id/anuncioDescripcion" />
+
+        </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/darker_gray"/>
+
 
     <Button
-        android:id="@+id/verAnuncioBoton"
+        android:text="Comprar"
         android:layout_width="match_parent"
-        android:text="Cargar anuncio desde server"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Borrar anuncio"
-        android:id="@+id/botonBorrar" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Actualizar anuncio"
-        android:id="@+id/botonActualizar" />
-
 </LinearLayout>
+    </ScrollView>
