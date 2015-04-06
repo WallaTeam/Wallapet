@@ -21,6 +21,7 @@ import com.hyenatechnologies.wallapet.Item_objct;
 import com.hyenatechnologies.wallapet.NavigationAdapter;
 import com.hyenatechnologies.wallapet.ProfileFragment;
 import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.VariablesComunes;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,8 @@ public class PantallaPrincipal extends ActionBarActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private static DrawerLayout NavDrawerLayout;
+    private static int idAnuncio = 0;
+    private VariablesComunes variables = new VariablesComunes();
 
 
 
@@ -69,7 +72,10 @@ public class PantallaPrincipal extends ActionBarActivity {
         botonCrear = (Button) findViewById(R.id.crearAnuncioBoton);
         botonLogin = (Button) findViewById(R.id.botonLogin);
         botonRegistro = (Button) findViewById(R.id.botonRegistro);
+
         */
+
+
         // Set the adapter for the list view
         NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavList = (ListView) findViewById(R.id.lista);
@@ -151,6 +157,7 @@ public class PantallaPrincipal extends ActionBarActivity {
         /*
         //Establecemos comportamiento de boton de ver anuncio
         botonVer.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 //Lanzamos la actividad de ver
@@ -164,27 +171,38 @@ public class PantallaPrincipal extends ActionBarActivity {
         });
         //establecemos comportamiento de boton de crear anuncio
         botonCrear.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 //Lanzamos la actividad de crear
                 Intent i = new Intent(getApplicationContext(), CrearModificarAnuncio.class);
+
                 startActivity(i);
+
             }
         });
+
         botonLogin.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 //Lanzamos la actividad de Login
                 Intent i = new Intent(getApplicationContext(), Login.class);
+
                 startActivity(i);
+
             }
         });
+
         botonRegistro.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 //Lanzamos la actividad de registro
                 Intent i = new Intent(getApplicationContext(), Registro.class);
+
                 startActivity(i);
+
             }
         });
         */
@@ -208,7 +226,7 @@ public class PantallaPrincipal extends ActionBarActivity {
                 fragment = new CrearModificarAnuncio();
                 break;
             case 5:
-                fragment = new VistaAnuncio();
+                fragment = new VistaAnuncio(variables);
                 break;
 
 
@@ -237,26 +255,29 @@ public class PantallaPrincipal extends ActionBarActivity {
         }
     }
 
-    /*
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.menu_pantalla_principal, menu);
+/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_pantalla_principal, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
             return true;
         }
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.getItemId();
-            //noinspection SimplifiableIfStatement
-            if (id == R.id.action_settings) {
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    */
+
+        return super.onOptionsItemSelected(item);
+    }
+*/
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -278,6 +299,10 @@ public class PantallaPrincipal extends ActionBarActivity {
         }
         // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setAnuncioID (int i){
+        idAnuncio = i;
     }
 
 

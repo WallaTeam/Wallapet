@@ -15,9 +15,6 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".pantallas.VistaAnuncio"
-            android:label="Vista Anuncio"/>
-        <activity
             android:name=".pantallas.PantallaPrincipal"
 
             android:label="Pantalla principal">
@@ -28,17 +25,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".pantallas.CrearModificarAnuncio"
-            android:label="@string/title_activity_crear_anuncio"/>
-        <activity
-            android:name=".pantallas.Login"
-            android:label="@string/title_activity_login"/>
-        <activity
-            android:name=".pantallas.Registro"
-            android:label="@string/title_activity_registro"/>
-       
-
     </application>
-
 </manifest>

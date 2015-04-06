@@ -120,7 +120,7 @@ public class CrearModificarAnuncio extends Fragment {
                 //Guardamos el anuncio
                 try{
                     if(modo == MODO_CREAR){
-                        //Modo crear
+                            //Modo crear
                         Conexiones.createAnuncio(a);
                         Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
                                 Toast.LENGTH_LONG).show();

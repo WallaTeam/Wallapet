@@ -1,6 +1,8 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.hyenatechnologies.wallapet.Anuncio;
 import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.VariablesComunes;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
@@ -37,8 +40,12 @@ public class VistaAnuncio extends Fragment {
     Anuncio actual;
     EditText texto;
     Button botonVer;
-    @Override
+    VariablesComunes variables;
 
+
+    public VistaAnuncio (VariablesComunes variables){
+        this.variables = variables;
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
@@ -68,38 +75,8 @@ public class VistaAnuncio extends Fragment {
         botonActualizar = (Button) rootView.findViewById(R.id.botonActualizar);
         //Obtenemos el id de anuncio que nos han pasado desde el intent.
         //Si no nos han pasado nada, ponemos 1.
-        Intent mIntent = getActivity().getIntent();
-        int idAnuncio = mIntent.getIntExtra("idAnuncio", 26);
+        actualizarAnuncio();
 
-        //El id del anuncio es real, obtenemos anuncio del servidor
-        Anuncio a;
-        try {
-            //El anuncio existe
-            a = Conexiones.getAnuncioById(idAnuncio);
-            actual = a;
-            Toast.makeText(getActivity().getApplicationContext(), "Anuncio cargado correctamente",
-                    Toast.LENGTH_LONG).show();
-            //Mostramos el anuncio
-            mostrarAnuncio(a);
-
-        } catch (ServerException ex) {
-            //El anuncio no existe
-            switch (ex.getCode()) {
-                case 404:
-                    Toast.makeText(getActivity().getApplicationContext(), "El anuncio indicado no existe",
-                            Toast.LENGTH_LONG).show();
-                    break;
-                case 500:
-                    Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
-                            Toast.LENGTH_LONG).show();
-                    break;
-                case 403:
-                    Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
-                            Toast.LENGTH_LONG).show();
-                    break;
-
-            }
-        }
 
         //Establecemos comportamiento de boton de ver anuncio
         botonVer.setOnClickListener(new View.OnClickListener() {
@@ -107,51 +84,70 @@ public class VistaAnuncio extends Fragment {
             @Override
             public void onClick(View v) {
                 //Lanzamos la actividad de ver
-                Intent i = new Intent(getActivity().getApplicationContext(), VistaAnuncio.class);
-                int idAnuncio = 26;
-                if (!texto.getText().toString().equals("")) {
-                    i.putExtra("idAnuncio", Integer.parseInt(texto.getText().toString()));
-
-                }
+                //Intent i = new Intent(getActivity().getApplicationContext(), VistaAnuncio.class);
+                actualizarAnuncio();
             }
         });
 
         //Accion al pulsar el boton de borrar
-        botonBorrar.setOnClickListener(new View.OnClickListener() {
+       botonBorrar.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                //Borramos el anuncio
+           @Override
+           public void onClick(View v) {
+               //Borramos el anuncio
 
-                try {
-                    Conexiones.deleteAnuncio(actual.getIdAnuncio());
-                    Toast.makeText(getActivity().getApplicationContext(), "El anuncio se ha borrado con éxito",
-                            Toast.LENGTH_LONG).show();
-                }
-                catch(ServerException ex){
-                    switch (ex.getCode()) {
-                        case 404:
-                            Toast.makeText(getActivity().getApplicationContext(), "El anuncio indicado no existe",
-                                    Toast.LENGTH_LONG).show();
-                            break;
-                        case 500:
-                            Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
-                                    Toast.LENGTH_LONG).show();
-                            break;
-                        case 403:
-                            Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
-                                    Toast.LENGTH_LONG).show();
-                            break;
+               try {
+                   Conexiones.deleteAnuncio(actual.getIdAnuncio());
+                   Toast.makeText(getActivity().getApplicationContext(), "El anuncio se ha borrado con éxito",
+                           Toast.LENGTH_LONG).show();
+               }
+               catch(ServerException ex){
+                   switch (ex.getCode()) {
+                       case 404:
+                           Toast.makeText(getActivity().getApplicationContext(), "El anuncio indicado no existe",
+                                   Toast.LENGTH_LONG).show();
+                           break;
+                       case 500:
+                           Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                   Toast.LENGTH_LONG).show();
+                           break;
+                       case 403:
+                           Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                   Toast.LENGTH_LONG).show();
+                           break;
 
-                    }
-                }
+                   }
+               }
 
-            }
-        });
+           }
+       });
 
         //Accion al pulsar el boton de actualizar
         botonActualizar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
+
+                //Paso 1: Obtener la instancia del administrador de fragmentos
+                FragmentManager fragmentManager = getFragmentManager();
+
+                //Paso 2: Crear una nueva transacción
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                //Paso 3: Crear un nuevo fragmento y añadirlo
+                CrearModificarAnuncio fragment = new CrearModificarAnuncio();
+                Bundle bundle = new Bundle();
+                bundle.putString("anuncio", Anuncio.toJson(actual));
+                fragment.setArguments(bundle);
+                transaction.replace(R.id.content_frame, fragment);
+
+                //Paso 4: Confirmar el cambio
+                transaction.commit();
+
+
+
+
+            }
+        /*
             @Override
             public void onClick(View v) {
                 //Actualizamos el anuncio
@@ -161,7 +157,9 @@ public class VistaAnuncio extends Fragment {
                 startActivity(i);
 
             }
+            */
         });
+
         return rootView;
     }
 
@@ -180,5 +178,39 @@ public class VistaAnuncio extends Fragment {
         anuncioPrecio.setText("" + a.getPrecio() + "€");
         anuncioTitulo.setText(a.getTitulo());
         anuncioEspecie.setText(a.getEspecie());
+    }
+
+    private void actualizarAnuncio (){
+        if (!texto.getText().toString().equals("")) {
+            int numero = Integer.parseInt(texto.getText().toString());
+            Intent mIntent = getActivity().getIntent();
+            int idAnuncio2 = mIntent.getIntExtra("idAnuncio", numero);
+            Anuncio b;
+            try {
+                b = Conexiones.getAnuncioById(idAnuncio2);
+                actual = b;
+                mostrarAnuncio(b);
+                variables.setAnuncioID(Integer.parseInt(texto.getText().toString()));
+                Toast.makeText(getActivity().getApplicationContext(), "Anuncio cargado correctamente",
+                        Toast.LENGTH_LONG).show();
+            } catch (ServerException ex) {
+                //El anuncio no existe
+                switch (ex.getCode()) {
+                    case 404:
+                        Toast.makeText(getActivity().getApplicationContext(), "El anuncio indicado no existe",
+                                Toast.LENGTH_LONG).show();
+                        break;
+                    case 500:
+                        Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                Toast.LENGTH_LONG).show();
+                        break;
+                    case 403:
+                        Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                Toast.LENGTH_LONG).show();
+                        break;
+
+                }
+            }
+        }
     }
 }
