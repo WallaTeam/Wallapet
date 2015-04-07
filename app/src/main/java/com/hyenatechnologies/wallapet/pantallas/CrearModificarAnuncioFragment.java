@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Pantalla de crear un nuevo anuncio o modificar uno existente
  */
-public class CrearModificarAnuncio extends Fragment {
+public class CrearModificarAnuncioFragment extends Fragment {
 
     private static final int MODO_CREAR = 1;
     private static final int MODO_ACTUALIZAR = 2;
@@ -45,13 +45,14 @@ public class CrearModificarAnuncio extends Fragment {
     Anuncio modificando;
     private List<String> ListaEstados = new ArrayList<String>();
     private List<String> ListaTipos = new ArrayList<String>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container, false);
 
-        //Cargamos campos de texto
+        //Cargamos campos de id_a_cargar
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
         email = (EditText) rootView.findViewById(R.id.crearAnuncioEmail);
         descripcion = (EditText) rootView.findViewById(R.id.crearAnuncioDescripcion);
@@ -59,13 +60,13 @@ public class CrearModificarAnuncio extends Fragment {
         estado = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioEstado);
         ListaEstados.add("Abierto");
         ListaEstados.add("Cerrado");
-        ArrayAdapter<String> adapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1, ListaEstados);
+        ArrayAdapter<String> adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaEstados);
         estado.setAdapter(adapter);
         //spinner
         tipo = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioTipo);
         ListaTipos.add("Adopcion");
         ListaTipos.add("Venta");
-        ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1, ListaTipos);
+        ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaTipos);
         tipo.setAdapter(adapter2);
         precio = (EditText) rootView.findViewById(R.id.crearAnuncioPrecio);
         especie = (EditText) rootView.findViewById(R.id.crearAnuncioEspecie);
@@ -80,17 +81,21 @@ public class CrearModificarAnuncio extends Fragment {
 
         //Si en el intent hay un anuncio JSON con nombre "anuncio",
         //es que estamos en modo actualizar. Si no, modo crear.
-        Intent mIntent = getActivity().getIntent();
-        String jsonAnuncio = mIntent.getStringExtra("anuncio");
+        Bundle bundle = this.getArguments();
+        String jsonAnuncio = null;
+        if (bundle != null) {
+            jsonAnuncio = bundle.getString("anuncio");
+        }
 
 
-        if(jsonAnuncio == null){
+        if (jsonAnuncio == null) {
             modo = MODO_CREAR;
+            ((PantallaPrincipal) getActivity()).setTitle("Crear anuncio");
             botonCrear.setText("Crear anuncio");
             //No nos pasan anuncio, nos piden crear
-        }
-        else{
+        } else {
             modo = MODO_ACTUALIZAR;
+            ((PantallaPrincipal) getActivity()).setTitle("Actualizar anuncio");
             botonCrear.setText("Actualizar anuncio");
             //Nos pasan anuncio, modificamos
             Anuncio a = Anuncio.fromJson(jsonAnuncio);
@@ -106,7 +111,7 @@ public class CrearModificarAnuncio extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //Recogemos datos de los campos de texto
+                //Recogemos datos de los campos de id_a_cargar
                 Anuncio a = new Anuncio();
 
                 a.setTitulo(titulo.getText().toString());
@@ -118,14 +123,13 @@ public class CrearModificarAnuncio extends Fragment {
                 a.setPrecio(Double.parseDouble(precio.getText().toString()));
 
                 //Guardamos el anuncio
-                try{
-                    if(modo == MODO_CREAR){
-                            //Modo crear
+                try {
+                    if (modo == MODO_CREAR) {
+                        //Modo crear
                         Conexiones.createAnuncio(a);
                         Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
                                 Toast.LENGTH_LONG).show();
-                    }
-                    else if(modo == MODO_ACTUALIZAR){
+                    } else if (modo == MODO_ACTUALIZAR) {
                         //Modo actualizar, tenemos q poner el id del anuncio a modificar
                         a.setIdAnuncio(modificando.getIdAnuncio());
                         Conexiones.updateAnuncio(a);
@@ -133,11 +137,10 @@ public class CrearModificarAnuncio extends Fragment {
                                 Toast.LENGTH_LONG).show();
                     }
 
-                }
-                catch(ServerException ex){
-                    switch (ex.getCode()){
+                } catch (ServerException ex) {
+                    switch (ex.getCode()) {
 
-                        case  500:
+                        case 500:
                             Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
                                     Toast.LENGTH_LONG).show();
                             break;
@@ -189,20 +192,21 @@ public class CrearModificarAnuncio extends Fragment {
     public void mostrarAnuncio(Anuncio a) {
 
         email.setText(a.getEmail());
-        if (a.getEstado().compareTo("Abierto")== 0){
+        if (a.getEstado().compareTo("Abierto") == 0) {
             estado.setGravity(0);
-        }else{
+        } else {
             estado.setGravity(1);
         }
         descripcion.setText(a.getDescripcion());
         especie.setText(a.getEspecie());
-        if (a.getTipoIntercambio().compareTo("Adopcion")== 0){
+        if (a.getTipoIntercambio().compareTo("Adopcion") == 0) {
             tipo.setGravity(0);
-        }else{
+        } else {
             tipo.setGravity(1);
         }
         precio.setText("" + a.getPrecio());
         titulo.setText(a.getTitulo());
     }
+
 
 }
