@@ -1,35 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
-android:layout_width="fill_parent" android:layout_height="fill_parent"  android:padding="20dip">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"  >
 
-            <EditText android:id="@+id/txtEmail" android:layout_height="wrap_content"
-                android:layout_width="fill_parent" android:hint="Email" android:inputType="textEmailAddress" />
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/wallafondofinal"
+        android:scaleType="centerCrop">
 
-            <EditText android:id="@+id/txtPass" android:layout_height="wrap_content"
-                android:layout_width="fill_parent" android:hint="Password" android:inputType="textPassword"
-                android:layout_marginTop="15dip" android:layout_marginBottom="30dip" />
+    </ImageView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:padding="20dip">
+
+        <EditText android:id="@+id/txtEmail" android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:hint="Email" android:inputType="textEmailAddress"
+            android:layout_marginTop="90dip"
+            android:textColorHint="#FFFFFF"
+            />
+
+        <EditText android:id="@+id/txtPass" android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:hint="Password" android:inputType="textPassword"
+            android:layout_marginTop="10dip" android:layout_marginBottom="30dip"
+            android:textColorHint="#FFFFFF"/>
 
 
-            <Button android:id="@+id/btnLogin" android:layout_height="wrap_content"
-                android:layout_width="wrap_content" android:text="enviar"
-                android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip" />
+        <Button android:id="@+id/btnLogin" android:layout_height="wrap_content"
+            android:layout_width="wrap_content" android:text="enviar"
+            android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip"
+            android:textColorHint="#FFFFFF"/>
 
-            <TextView android:id="@+id/link_to_register"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dip"
-                android:layout_marginBottom="40dip"
-                android:text="registrate!"
-                android:gravity="center"
-                android:textSize="20dip"
-                android:textColor="#0b84aa"/>
+        <TextView android:id="@+id/link_to_register"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip"
+            android:layout_marginBottom="40dip"
+            android:text="Registrate!"
+            android:gravity="center"
+            android:textSize="20dip"
+            android:textColor="#ffffff"/>
 
-            <TextView android:id="@+id/login_error"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dip"
-                android:layout_marginBottom="40dip"
-                android:gravity="center"
-                android:textSize="20dip"
-                android:textColor="#0b84aa"/>
-</LinearLayout>
+        <TextView android:id="@+id/login_error"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip"
+            android:layout_marginBottom="40dip"
+            android:gravity="center"
+            android:textSize="20dip"
+            android:textColor="#0b84aa"/>
+    </LinearLayout>
+</FrameLayout>
