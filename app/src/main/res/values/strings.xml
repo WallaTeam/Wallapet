@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Wallapet</string>
+    <string name="hello_world">Wallapet</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_crear_anuncio">Crear Anuncio</string>
     <string name="title_activity_login">Login</string>
@@ -12,7 +13,7 @@
         <item>Perfil</item>
         <item>Login</item>
         <item>Registro</item>
-        <item>Crear_anuncio</item>
+        <item>Crear anuncio</item>
         <item>Ver anuncio</item>
         <item>Configuración</item>
         <item>Compartir</item>

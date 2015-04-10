@@ -1,8 +1,6 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.hyenatechnologies.wallapet.Anuncio;
 import com.hyenatechnologies.wallapet.R;
 
 /*  Fragment para seccion perfil */
 public class ProfileFragment extends Fragment {
-
-    public ProfileFragment(){}
 
     Button boton;
     EditText texto;
@@ -24,12 +19,13 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.profile, container, false);
+        View rootView;
+        rootView = inflater.inflate(R.layout.profile, container, false);
 
         boton = (Button) rootView.findViewById(R.id.verAnuncioBoton);
         texto = (EditText) rootView.findViewById(R.id.verAnuncio);
 
-        /** al pulsar el boton se lanza el fragment de ver anuncio*/
+        /** al pulsar el boton se lanza el fragment de ver anuncio
         boton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -56,6 +52,7 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+        */
         return rootView;
     }
 }

@@ -133,7 +133,7 @@ public class PantallaPrincipal extends ActionBarActivity {
         });
 
         //Cuando la aplicacion cargue por defecto mostrar la opcion Home
-        MostrarFragment(1);
+        MostrarFragment(2);
 
     }
 
