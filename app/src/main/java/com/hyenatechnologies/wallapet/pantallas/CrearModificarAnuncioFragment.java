@@ -159,7 +159,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
                 a.setTipoIntercambio(tipo.getSelectedItem().toString());
                 a.setPrecio(Double.parseDouble(precio.getText().toString()));
                 uploadImage();
-                if(currentImageURL.length()!=0){
+                if(currentImageURL!= null && currentImageURL.length()!=0){
                     a.setRutaImagen(currentImageURL);
                 }
                 //Guardamos el anuncio

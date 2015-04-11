@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class Conexiones {
 
-    public static final String API_URL = "http://ismaro3.ddns.net:8080/WallaPet/";
+    public static final String API_URL = "http://wallapet.com:8080/WallaPet/";
 
     /**
      * Obtiene del servidor un anuncio según ID.
