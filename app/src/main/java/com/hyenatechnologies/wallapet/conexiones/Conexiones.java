@@ -12,9 +12,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -148,5 +152,32 @@ public class Conexiones {
         }
     }
 
+    /**
+     * Realiza un POST a la dirección <url> con un parámetro
+     * con clave <claveParam> y valor <valorParam>, y devuelve el contenido
+     * de la respuesta como cadena si su código es 200 OK.
+     * En caso contrario, lanza una excepción indicando el código de error.
 
+     */
+    public static String realizarPostSubida(String filePath) throws ServerException{
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost(API_URL);
+
+        try {
+            MultipartEntity mpEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+            if (filePath !=null) {
+                File file = new File(filePath);
+                Log.d("EDIT USER PROFILE", "UPLOAD: file length = " + file.length());
+                Log.d("EDIT USER PROFILE", "UPLOAD: file exist = " + file.exists());
+                mpEntity.addPart("avatar", new FileBody(file, "application/octet"));
+            }
+            httppost.setEntity(mpEntity);
+            HttpResponse response = httpclient.execute(httppost);
+            return null;
+        } catch (Throwable e) {
+            //Error
+            Log.d("wallapet", e.getMessage());
+            throw new ServerException(500);
+        }
+    }
 }

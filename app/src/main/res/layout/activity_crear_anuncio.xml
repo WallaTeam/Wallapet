@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -7,7 +8,14 @@
     android:orientation="vertical"
     tools:context="com.hyenatechnologies.wallapet.pantallas.CrearModificarAnuncioFragment">
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="10dip">
 
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <EditText
         android:hint="Titulo del anuncio"
         android:id="@+id/crearAnuncioTitulo"
@@ -56,6 +64,25 @@
         android:layout_height="wrap_content"
         android:textColor="#ff000000" />
 
+    <!-- To display picture taken -->
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/anadirImagen2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Imagen desde galeria" />
+
+    <Button
+        android:id="@+id/anadirImagen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Imagen desde cámara" />
+
     <Button
         android:id="@+id/crearAnuncioOK"
         android:layout_width="match_parent"
@@ -63,4 +90,6 @@
         android:layout_height="wrap_content" />
 
 
-</LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</FrameLayout>

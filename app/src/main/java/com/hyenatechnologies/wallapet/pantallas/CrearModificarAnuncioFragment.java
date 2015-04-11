@@ -1,9 +1,17 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -19,6 +28,7 @@ import com.hyenatechnologies.wallapet.R;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +41,22 @@ public class CrearModificarAnuncioFragment extends Fragment {
     private static final int MODO_CREAR = 1;
     private static final int MODO_ACTUALIZAR = 2;
 
+    // Variables asociadas a la cámara
+    // Activity request codes
+    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
+    private static final int GALLERY_IMAGE_REQUEST_CODE = 200;
 
-    //Variables
+    // directory name to store captured images and videos
+    private static final String IMAGE_DIRECTORY_NAME = "WallapetCamera";
+
+    private Uri fileUri;
+
+    private ImageView imgPreview;
+    private Button botonImagen, botonGaleria;
+    private String currentImagePath;
+    private String currentImageURL;
+
+    // Variables globales
     private EditText titulo;
     private EditText email;
     private EditText descripcion;
@@ -71,8 +95,11 @@ public class CrearModificarAnuncioFragment extends Fragment {
         precio = (EditText) rootView.findViewById(R.id.crearAnuncioPrecio);
         especie = (EditText) rootView.findViewById(R.id.crearAnuncioEspecie);
 
-        //Cargamos boton
+        //Cargamos botones
         botonCrear = (Button) rootView.findViewById(R.id.crearAnuncioOK);
+        botonImagen = (Button) rootView.findViewById(R.id.anadirImagen);
+        botonGaleria = (Button) rootView.findViewById(R.id.anadirImagen2);
+        imgPreview = (ImageView) rootView.findViewById(R.id.imgPreview);
 
         //Estas dos lineas siguientes son para permitir el uso de la red
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -104,7 +131,18 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
         }
 
+        botonImagen.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // capture picture
+                captureImage();
+            }
+        });
 
+        botonGaleria.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                takeFromGallery();
+            }
+        });
         //Establecemos que hace el boton al ser pulsado
         botonCrear.setOnClickListener(new View.OnClickListener() {
 
@@ -121,7 +159,10 @@ public class CrearModificarAnuncioFragment extends Fragment {
                 a.setEspecie(especie.getText().toString());
                 a.setTipoIntercambio(tipo.getSelectedItem().toString());
                 a.setPrecio(Double.parseDouble(precio.getText().toString()));
-
+                uploadImage();
+                if(currentImageURL.length()!=0){
+                    a.setRutaImagen(currentImageURL);
+                }
                 //Guardamos el anuncio
                 try {
                     if (modo == MODO_CREAR) {
@@ -208,5 +249,131 @@ public class CrearModificarAnuncioFragment extends Fragment {
         titulo.setText(a.getTitulo());
     }
 
+    /*
+     * Capturing Camera Image will lauch camera app requrest image capture
+     */
+    private void captureImage() {
+        Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File imagesFolder = new File(Environment.getExternalStorageDirectory(), IMAGE_DIRECTORY_NAME);
+        imagesFolder.mkdirs();
+        File image = new File(imagesFolder, "toUpload.jpg");
+        fileUri = Uri.fromFile(image);
+        imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(imageIntent,CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+    }
 
+    /**
+     *
+     */
+    private void takeFromGallery(){
+        Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, GALLERY_IMAGE_REQUEST_CODE);
+    }
+
+    /**
+     * Receiving activity result method will be called after closing the camera
+     * */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // if the result is capturing Image
+        if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                // successfully captured the image
+                // display it in image view
+                previewCapturedImage();
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // user cancelled Image capture
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "El usuario ha cancelado la captura de imagen.", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                // failed to capture image
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "¡Fallo al capturar la imagen! Compruebe el estado de la camara y contacte con el desarrollador", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        } else if (requestCode == GALLERY_IMAGE_REQUEST_CODE){
+            if (resultCode == Activity.RESULT_OK) {
+                // successfully captured the image
+                // display it in image view
+                previewGalleryImage(data);
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // user cancelled Image capture
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "El usuario ha cancelado la selección de imagen.", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                // failed to capture image
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "¡Fallo al obtener la imagen!", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
+    /*
+     * Display image from a path to ImageView
+     */
+    private void previewCapturedImage() {
+        try {
+
+            imgPreview.setVisibility(View.VISIBLE);
+
+            // bimatp factory
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            // downsizing image as it throws OutOfMemory Exception for larger
+            // images
+            options.inSampleSize = 8;
+
+            final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
+                    options);
+
+            imgPreview.setImageBitmap(bitmap);
+            currentImagePath = fileUri.getPath();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Display image from a gallery path to ImageView
+     */
+    private void previewGalleryImage(Intent data){
+        try {
+            imgPreview.setVisibility(View.VISIBLE);
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor =  getActivity().getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            // bimatp factory
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            // downsizing image as it throws OutOfMemory Exception for larger
+            // images
+            options.inSampleSize = 8;
+            final Bitmap bitmap = BitmapFactory.decodeFile(picturePath,
+                    options);
+
+            imgPreview.setImageBitmap(bitmap);
+            currentImagePath = picturePath;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Upload image to the server
+     */
+    private void uploadImage(){
+        try {
+            Conexiones.realizarPostSubida(currentImagePath);
+        }
+        catch(Throwable e){
+            Log.e("Upload", "Upload failure");
+        }
+    }
 }
