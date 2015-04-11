@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -369,11 +368,12 @@ public class CrearModificarAnuncioFragment extends Fragment {
      * Upload image to the server
      */
     private void uploadImage(){
-        try {
+        String queda = "queda muuuuucho";
+        /*try {
             Conexiones.realizarPostSubida(currentImagePath);
         }
         catch(Throwable e){
             Log.e("Upload", "Upload failure");
-        }
+        }*/
     }
 }
