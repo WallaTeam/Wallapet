@@ -205,5 +205,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:text="Comparte este anuncio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/shareIt" />
+
 </LinearLayout>
     </ScrollView>

@@ -3,6 +3,7 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -157,11 +158,24 @@ public class PantallaPrincipal extends ActionBarActivity {
             case 5:
                 fragment = new VistaAnuncioFragment(variables);
                 break;
-
-
+            case 6:
+                //si no esta la opcion mostrara un toast y nos mandara a Home
+                Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + " no disponible!", Toast.LENGTH_SHORT).show();
+                fragment = new ProfileFragment();
+                position=1;
+                break;
+            case 7:
+                // Compartir la aplicación
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = "Descarga ya la aplicación de adopción y venta de animales más usada. Descargala en http://www.wallapet.com";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Wallapet - Adopción y venta de animales");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Compartir mediante..."));
+                break;
             default:
                 //si no esta la opcion mostrara un toast y nos mandara a Home
-                Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + "no disponible!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + " no disponible!", Toast.LENGTH_SHORT).show();
                 fragment = new ProfileFragment();
                 position=1;
                 break;

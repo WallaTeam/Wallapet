@@ -12,19 +12,22 @@
         android:hint="Titulo del anuncio"
         android:id="@+id/crearAnuncioTitulo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ff000000" />
 
     <EditText
         android:hint="Email creador"
         android:id="@+id/crearAnuncioEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ff000000" />
 
     <EditText
         android:hint="Descripción"
         android:id="@+id/crearAnuncioDescripcion"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ff000000" />
 
     <Spinner
         android:layout_width="fill_parent"
@@ -42,14 +45,16 @@
         android:hint="Especie"
         android:id="@+id/crearAnuncioEspecie"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ff000000" />
 
     <EditText
         android:hint="Precio"
         android:id="@+id/crearAnuncioPrecio"
         android:inputType="numberDecimal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="#ff000000" />
 
     <Button
         android:id="@+id/crearAnuncioOK"

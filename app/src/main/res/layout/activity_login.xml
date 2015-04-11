@@ -20,28 +20,24 @@
             android:layout_width="fill_parent" android:hint="Email" android:inputType="textEmailAddress"
             android:layout_marginTop="90dip"
             android:textColorHint="#FFFFFF"
-            />
+            android:textColor="#FFFFFF" />
 
         <EditText android:id="@+id/txtPass" android:layout_height="wrap_content"
             android:layout_width="fill_parent" android:hint="Password" android:inputType="textPassword"
             android:layout_marginTop="10dip" android:layout_marginBottom="30dip"
-            android:textColorHint="#FFFFFF"/>
+            android:textColorHint="#FFFFFF"
+            android:textColor="#FFFFFF" />
 
 
         <Button android:id="@+id/btnLogin" android:layout_height="wrap_content"
-            android:layout_width="wrap_content" android:text="enviar"
+            android:layout_width="wrap_content" android:text="Iniciar sesión"
             android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip"
             android:textColorHint="#FFFFFF"/>
 
-        <TextView android:id="@+id/link_to_register"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dip"
-            android:layout_marginBottom="40dip"
-            android:text="Registrate!"
-            android:gravity="center"
-            android:textSize="20dip"
-            android:textColor="#ffffff"/>
+        <Button android:id="@+id/btnRegistro" android:layout_height="wrap_content"
+            android:layout_width="wrap_content" android:text="registrarse"
+            android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip"
+            android:textColorHint="#FFFFFF"/>
 
         <TextView android:id="@+id/login_error"
             android:layout_width="fill_parent"
