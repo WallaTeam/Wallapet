@@ -3,7 +3,6 @@ package com.hyenatechnologies.wallapet.pantallas;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -88,21 +87,6 @@ public class VistaAnuncioFragment extends Fragment {
             int a = bundle.getInt("anuncio", 1);
             cargarAnuncio(a);
         }
-
-        final Button button = (Button) rootView.findViewById(R.id.shareIt);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Compartir la aplicación
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                String shareBody = "\n" + anuncioDescripcion.getText() + "\n----\nContacto: " + anuncioEmail.getText() +
-                        "\n----\nDescubre mucho más en la app de Wallapet: http://www.wallapet.com";
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, anuncioTitulo.getText() +
-                        " (" + anuncioTipo.getText() + ")\n");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, "Compartir mediante..."));
-            }
-        });
         return rootView;
     }
 
