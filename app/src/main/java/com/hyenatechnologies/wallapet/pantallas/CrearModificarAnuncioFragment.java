@@ -2,6 +2,7 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -31,11 +32,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import akiniyalocts.imgur.imgurmodel.ImageResponse;
+import akiniyalocts.imgur.imgurmodel.Upload;
+import akiniyalocts.imgur.services.OnImageUploadedListener;
+import akiniyalocts.imgur.services.UploadService;
+import akiniyalocts.imgur.utils.aLog;
+
 
 /**
  * Pantalla de crear un nuevo anuncio o modificar uno existente
  */
-public class CrearModificarAnuncioFragment extends Fragment {
+public class CrearModificarAnuncioFragment extends Fragment implements OnImageUploadedListener{
 
     private static final int MODO_CREAR = 1;
     private static final int MODO_ACTUALIZAR = 2;
@@ -44,16 +51,18 @@ public class CrearModificarAnuncioFragment extends Fragment {
     // Activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int GALLERY_IMAGE_REQUEST_CODE = 200;
+    public final static String TAG = CrearModificarAnuncioFragment.class.getSimpleName();
 
     // directory name to store captured images and videos
     private static final String IMAGE_DIRECTORY_NAME = "WallapetCamera";
 
     private Uri fileUri;
-
+    private Upload upload; // Upload object containging image and meta data
+    private File chosenFile; //chosen file from intent
     private ImageView imgPreview;
     private Button botonImagen, botonGaleria;
     private String currentImagePath;
-    private String currentImageURL;
+    public static String currentImageURL;
 
     // Variables globales
     private EditText titulo;
@@ -137,6 +146,9 @@ public class CrearModificarAnuncioFragment extends Fragment {
             }
         });
 
+        final ProgressDialog progress = new ProgressDialog(this.getActivity());
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
         botonGaleria.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 takeFromGallery();
@@ -147,7 +159,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-
+                progress.show();
                 //Recogemos datos de los campos de id_a_cargar
                 Anuncio a = new Anuncio();
 
@@ -166,6 +178,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
                 try {
                     if (modo == MODO_CREAR) {
                         //Modo crear
+
                         Conexiones.createAnuncio(a);
                         Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
                                 Toast.LENGTH_LONG).show();
@@ -368,12 +381,29 @@ public class CrearModificarAnuncioFragment extends Fragment {
      * Upload image to the server
      */
     private void uploadImage(){
-        String queda = "queda muuuuucho";
-        /*try {
-            Conexiones.realizarPostSubida(currentImagePath);
-        }
-        catch(Throwable e){
-            Log.e("Upload", "Upload failure");
-        }*/
+     /*
+      Create the @Upload object
+     */
+        File chosen = new File(currentImagePath);
+        createUpload(chosenFile);
+
+    /*
+      Start upload
+     */
+        new UploadService(upload, this.getActivity()).execute();
+    }
+
+    private void createUpload(File image){
+        upload = new Upload();
+        upload.image = image;
+    }
+
+    @Override
+    public void onImageUploaded(ImageResponse response) {
+    /*
+      Logging the response from the image upload.
+     */
+        aLog.w(TAG, response.toString());
+        currentImageURL = response.data.link;
     }
 }

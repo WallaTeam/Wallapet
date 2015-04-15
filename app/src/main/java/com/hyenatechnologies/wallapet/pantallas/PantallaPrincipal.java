@@ -24,6 +24,10 @@ import com.hyenatechnologies.wallapet.VariablesComunes;
 
 import java.util.ArrayList;
 
+import akiniyalocts.imgur.imgurmodel.ImageResponse;
+import akiniyalocts.imgur.services.OnImageUploadedListener;
+import akiniyalocts.imgur.utils.aLog;
+
 /**
  * WallaPet Android App
  * Hyena Technologies ¢ 2015
@@ -34,10 +38,10 @@ import java.util.ArrayList;
  * Actividad principal. De momento permite ejecutar cosas de prueba
  * como ver anuncio por id o crear anuncil.
  */
-public class PantallaPrincipal extends ActionBarActivity {
+public class PantallaPrincipal  extends ActionBarActivity implements OnImageUploadedListener{
 
     //pruebas menu
-
+    public final static String TAG = CrearModificarAnuncioFragment.class.getSimpleName();
     private String[] titulos;
     private ListView NavList;
     private ArrayList<Item_objct> NavItms;
@@ -227,4 +231,11 @@ public class PantallaPrincipal extends ActionBarActivity {
         }
     }
 
+    public void onImageUploaded(ImageResponse response) {
+    /*
+      Logging the response from the image upload.
+     */
+        aLog.w(TAG, response.toString());
+        CrearModificarAnuncioFragment.currentImageURL = response.data.link;
+    }
 }
