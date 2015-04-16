@@ -1,7 +1,13 @@
 # Wallapet
 WallaPet es una aplicación Android para poner de acuerdo a compradores/vendedores de animales
 y gente que pone en venta su mascota. 
+Copyright (C) 2015 Hyena Technologies.
 
+# Official site
+You can check our official site in http://wallapet.com.
+Also yo can view our repository pages in http://piraces.github.io/Wallapet.
+
+# License
 Copyright (C) 2015 Hyena Technologies
 
 This program is free software: you can redistribute it and/or modify
