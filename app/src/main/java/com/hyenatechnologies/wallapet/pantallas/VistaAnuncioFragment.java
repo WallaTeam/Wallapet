@@ -112,8 +112,6 @@ public class VistaAnuncioFragment extends Fragment {
      * @param idAnuncio
      */
     private void cargarAnuncio(int idAnuncio) {
-
-
             Anuncio b;
             try {
                 b = Conexiones.getAnuncioById(idAnuncio);

@@ -2,7 +2,6 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -58,7 +57,6 @@ public class CrearModificarAnuncioFragment extends Fragment{
     private ImageView imgPreview;
     private Button botonImagen, botonGaleria;
     private String currentImagePath;
-    private ProgressDialog progress;
     private final String DRIVER = "jdbc:mysql://wallapet.com:3306/wallapet";
     private final String USERNAME = "piraces";
     private final String PASSWORD = "22wallapet22";
@@ -84,8 +82,6 @@ public class CrearModificarAnuncioFragment extends Fragment{
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container, false);
-
-        progress = new ProgressDialog(this.getActivity());
         //Cargamos campos de id_a_cargar
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
         email = (EditText) rootView.findViewById(R.id.crearAnuncioEmail);
@@ -159,54 +155,58 @@ public class CrearModificarAnuncioFragment extends Fragment{
             public void onClick(View v) {
                 //Recogemos datos de los campos de id_a_cargar
                 Anuncio a = new Anuncio();
+                try {
+                    a.setTitulo(titulo.getText().toString());
+                    a.setEmail(email.getText().toString());
+                    a.setDescripcion(descripcion.getText().toString());
+                    a.setEstado(estado.getSelectedItem().toString());
+                    a.setEspecie(especie.getText().toString());
+                    a.setTipoIntercambio(tipo.getSelectedItem().toString());
+                    a.setPrecio(Double.parseDouble(precio.getText().toString()));
+                    if (currentImagePath != null && currentImagePath.length() != 0) {
+                        uploadImage();
+                    } else {
+                        //Guardamos el anuncio
+                        try {
+                            if (modo == MODO_CREAR) {
+                                //Modo crear
 
-                a.setTitulo(titulo.getText().toString());
-                a.setEmail(email.getText().toString());
-                a.setDescripcion(descripcion.getText().toString());
-                a.setEstado(estado.getSelectedItem().toString());
-                a.setEspecie(especie.getText().toString());
-                a.setTipoIntercambio(tipo.getSelectedItem().toString());
-                a.setPrecio(Double.parseDouble(precio.getText().toString()));
-                if(currentImagePath!=null && currentImagePath.length()!=0) {
-                    uploadImage();
-                } else {
-                    //Guardamos el anuncio
-                    try {
-                        if (modo == MODO_CREAR) {
-                            //Modo crear
+                                Conexiones.createAnuncio(a);
+                                Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
+                                        Toast.LENGTH_LONG).show();
+                            } else if (modo == MODO_ACTUALIZAR) {
+                                //Modo actualizar, tenemos q poner el id del anuncio a modificar
+                                a.setIdAnuncio(modificando.getIdAnuncio());
+                                Conexiones.updateAnuncio(a);
+                                Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } catch (ServerException ex) {
+                            switch (ex.getCode()) {
 
-                            Conexiones.createAnuncio(a);
-                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
-                                    Toast.LENGTH_LONG).show();
-                        } else if (modo == MODO_ACTUALIZAR) {
-                            //Modo actualizar, tenemos q poner el id del anuncio a modificar
-                            a.setIdAnuncio(modificando.getIdAnuncio());
-                            Conexiones.updateAnuncio(a);
-                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    } catch (ServerException ex) {
-                        switch (ex.getCode()) {
+                                case 500:
+                                    Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                            Toast.LENGTH_LONG).show();
+                                    break;
+                                case 403:
+                                    Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                            Toast.LENGTH_LONG).show();
+                                    break;
+                                case 404:
+                                    Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
+                                            Toast.LENGTH_LONG).show();
+                                    break;
 
-                            case 500:
-                                Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
-                                        Toast.LENGTH_LONG).show();
-                                break;
-                            case 403:
-                                Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
-                                        Toast.LENGTH_LONG).show();
-                                break;
-                            case 404:
-                                Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
-                                        Toast.LENGTH_LONG).show();
-                                break;
+                            }
 
                         }
 
                     }
-
                 }
-
+                catch(Exception ex){
+                    Toast.makeText(getActivity().getApplicationContext(), "Debe rellenar todos los campos (excepto la imagen)",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
         return rootView;
@@ -381,9 +381,6 @@ public class CrearModificarAnuncioFragment extends Fragment{
      /*
       Create the @Upload object
      */
-        progress.setTitle("Cargando");
-        progress.setMessage("Espere mientras se crea el anuncio...");
-        progress.show();
         try {
             FileInputStream fis = null;
             PreparedStatement ps = null;
@@ -411,7 +408,6 @@ public class CrearModificarAnuncioFragment extends Fragment{
             } finally {
                 ps.close();
                 fis.close();
-                progress.dismiss();
             }
         } catch (Exception ex) {
 
