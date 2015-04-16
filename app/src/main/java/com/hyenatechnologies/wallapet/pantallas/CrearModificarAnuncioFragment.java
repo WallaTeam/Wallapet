@@ -29,20 +29,18 @@ import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
-
-import akiniyalocts.imgur.imgurmodel.ImageResponse;
-import akiniyalocts.imgur.imgurmodel.Upload;
-import akiniyalocts.imgur.services.OnImageUploadedListener;
-import akiniyalocts.imgur.services.UploadService;
-import akiniyalocts.imgur.utils.aLog;
 
 
 /**
  * Pantalla de crear un nuevo anuncio o modificar uno existente
  */
-public class CrearModificarAnuncioFragment extends Fragment implements OnImageUploadedListener{
+public class CrearModificarAnuncioFragment extends Fragment{
 
     private static final int MODO_CREAR = 1;
     private static final int MODO_ACTUALIZAR = 2;
@@ -55,14 +53,16 @@ public class CrearModificarAnuncioFragment extends Fragment implements OnImageUp
 
     // directory name to store captured images and videos
     private static final String IMAGE_DIRECTORY_NAME = "WallapetCamera";
-
     private Uri fileUri;
-    private Upload upload; // Upload object containging image and meta data
     private File chosenFile; //chosen file from intent
     private ImageView imgPreview;
     private Button botonImagen, botonGaleria;
     private String currentImagePath;
-    public static String currentImageURL;
+    private ProgressDialog progress;
+    private final String DRIVER = "jdbc:mysql://wallapet.com:3306/wallapet";
+    private final String USERNAME = "piraces";
+    private final String PASSWORD = "22wallapet22";
+
 
     // Variables globales
     private EditText titulo;
@@ -78,12 +78,14 @@ public class CrearModificarAnuncioFragment extends Fragment implements OnImageUp
     private List<String> ListaEstados = new ArrayList<String>();
     private List<String> ListaTipos = new ArrayList<String>();
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container, false);
 
+        progress = new ProgressDialog(this.getActivity());
         //Cargamos campos de id_a_cargar
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
         email = (EditText) rootView.findViewById(R.id.crearAnuncioEmail);
@@ -112,7 +114,6 @@ public class CrearModificarAnuncioFragment extends Fragment implements OnImageUp
         //Estas dos lineas siguientes son para permitir el uso de la red
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
 
         //Si en el intent hay un anuncio JSON con nombre "anuncio",
         //es que estamos en modo actualizar. Si no, modo crear.
@@ -146,9 +147,6 @@ public class CrearModificarAnuncioFragment extends Fragment implements OnImageUp
             }
         });
 
-        final ProgressDialog progress = new ProgressDialog(this.getActivity());
-        progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
         botonGaleria.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 takeFromGallery();
@@ -159,7 +157,6 @@ public class CrearModificarAnuncioFragment extends Fragment implements OnImageUp
 
             @Override
             public void onClick(View v) {
-                progress.show();
                 //Recogemos datos de los campos de id_a_cargar
                 Anuncio a = new Anuncio();
 
@@ -170,41 +167,41 @@ public class CrearModificarAnuncioFragment extends Fragment implements OnImageUp
                 a.setEspecie(especie.getText().toString());
                 a.setTipoIntercambio(tipo.getSelectedItem().toString());
                 a.setPrecio(Double.parseDouble(precio.getText().toString()));
-                uploadImage();
-                if(currentImageURL!= null && currentImageURL.length()!=0){
-                    a.setRutaImagen(currentImageURL);
-                }
-                //Guardamos el anuncio
-                try {
-                    if (modo == MODO_CREAR) {
-                        //Modo crear
+                if(currentImagePath!=null && currentImagePath.length()!=0) {
+                    uploadImage();
+                } else {
+                    //Guardamos el anuncio
+                    try {
+                        if (modo == MODO_CREAR) {
+                            //Modo crear
 
-                        Conexiones.createAnuncio(a);
-                        Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
-                                Toast.LENGTH_LONG).show();
-                    } else if (modo == MODO_ACTUALIZAR) {
-                        //Modo actualizar, tenemos q poner el id del anuncio a modificar
-                        a.setIdAnuncio(modificando.getIdAnuncio());
-                        Conexiones.updateAnuncio(a);
-                        Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
-                                Toast.LENGTH_LONG).show();
-                    }
+                            Conexiones.createAnuncio(a);
+                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (modo == MODO_ACTUALIZAR) {
+                            //Modo actualizar, tenemos q poner el id del anuncio a modificar
+                            a.setIdAnuncio(modificando.getIdAnuncio());
+                            Conexiones.updateAnuncio(a);
+                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (ServerException ex) {
+                        switch (ex.getCode()) {
 
-                } catch (ServerException ex) {
-                    switch (ex.getCode()) {
+                            case 500:
+                                Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                        Toast.LENGTH_LONG).show();
+                                break;
+                            case 403:
+                                Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                        Toast.LENGTH_LONG).show();
+                                break;
+                            case 404:
+                                Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
+                                        Toast.LENGTH_LONG).show();
+                                break;
 
-                        case 500:
-                            Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
-                                    Toast.LENGTH_LONG).show();
-                            break;
-                        case 403:
-                            Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
-                                    Toast.LENGTH_LONG).show();
-                            break;
-                        case 404:
-                            Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
-                                    Toast.LENGTH_LONG).show();
-                            break;
+                        }
 
                     }
 
@@ -380,30 +377,44 @@ public class CrearModificarAnuncioFragment extends Fragment implements OnImageUp
     /**
      * Upload image to the server
      */
-    private void uploadImage(){
+    private void uploadImage() {
      /*
       Create the @Upload object
      */
-        File chosen = new File(currentImagePath);
-        createUpload(chosenFile);
+        progress.setTitle("Cargando");
+        progress.setMessage("Espere mientras se crea el anuncio...");
+        progress.show();
+        try {
+            FileInputStream fis = null;
+            PreparedStatement ps = null;
+            try {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                Connection conn = DriverManager.getConnection("jdbc:mysql://wallapet.com:3306/wallapet", "piraces", "22wallapet22");
+                String INSERT_PICTURE = "INSERT INTO anuncio (email,estado,descripcion,tipoIntercambio,especie,precio,titulo,rutaImagen) values (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    /*
-      Start upload
-     */
-        new UploadService(upload, this.getActivity()).execute();
-    }
+                conn.setAutoCommit(false);
+                File file = new File(currentImagePath);
+                fis = new FileInputStream(file);
+                ps = conn.prepareStatement(INSERT_PICTURE);
+                ps.setString(1, email.getText().toString());
+                ps.setString(2, estado.getSelectedItem().toString());
+                ps.setString(3, descripcion.getText().toString());
+                ps.setString(4, tipo.getSelectedItem().toString());
+                ps.setString(5, especie.getText().toString());
+                ps.setString(6, precio.getText().toString());
+                ps.setString(7, titulo.getText().toString());
+                ps.setBinaryStream(8, fis, (int) file.length());
+                ps.executeUpdate();
+                conn.commit();
+            } catch (Exception ex) {
+               String msg = ex.getMessage();
+            } finally {
+                ps.close();
+                fis.close();
+                progress.dismiss();
+            }
+        } catch (Exception ex) {
 
-    private void createUpload(File image){
-        upload = new Upload();
-        upload.image = image;
-    }
-
-    @Override
-    public void onImageUploaded(ImageResponse response) {
-    /*
-      Logging the response from the image upload.
-     */
-        aLog.w(TAG, response.toString());
-        currentImageURL = response.data.link;
+        }
     }
 }

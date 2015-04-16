@@ -8,6 +8,8 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_vista_anuncio">VistaAnuncio</string>
     <string name="title_activity_navigation__drawer">Navigation_Drawer</string>
+    <string name="menu_login">Login</string>
+    <string name="menu_logout">Logout</string>
     <!-- Lista de titulos de navegacion-->
     <string-array name="nav_options">
         <item>Perfil</item>
