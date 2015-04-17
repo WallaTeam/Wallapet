@@ -13,6 +13,7 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -38,13 +39,21 @@ import com.hyenatechnologies.wallapet.R;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -68,6 +77,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
     private ImageView imgPreview;
     private Button botonImagen, botonGaleria;
     private String currentImagePath;
+    private String currentURL;
     private final String DRIVER = "jdbc:mysql://wallapet.com:3306/wallapet";
     private final String USERNAME = "piraces";
     private final String PASSWORD = "22wallapet22";
@@ -165,8 +175,14 @@ public class CrearModificarAnuncioFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 //Recogemos datos de los campos de id_a_cargar
+                ProgressDialog nDialog = new ProgressDialog(getActivity());
                 Anuncio a = new Anuncio();
                 try {
+                    nDialog = new ProgressDialog(getActivity());
+                    nDialog.setTitle("Cargando");
+                    nDialog.setMessage("Creando anuncio...");
+                    nDialog.setCancelable(false);
+                    nDialog.show();
                     a.setTitulo(titulo.getText().toString());
                     a.setEmail(email.getText().toString());
                     a.setDescripcion(descripcion.getText().toString());
@@ -176,39 +192,38 @@ public class CrearModificarAnuncioFragment extends Fragment{
                     a.setPrecio(Double.parseDouble(precio.getText().toString()));
                     if (currentImagePath != null && currentImagePath.length() != 0) {
                         uploadImage();
-                    } else {
-                        //Guardamos el anuncio
-                        try {
-                            if (modo == MODO_CREAR) {
-                                //Modo crear
+                        a.setRutaImagen(currentURL);
+                    }
+                    //Guardamos el anuncio
+                    try {
+                        if (modo == MODO_CREAR) {
+                            //Modo crear
 
-                                Conexiones.createAnuncio(a);
-                                Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
+                            Conexiones.createAnuncio(a);
+                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
+                                    Toast.LENGTH_LONG).show();
+                        } else if (modo == MODO_ACTUALIZAR) {
+                            //Modo actualizar, tenemos q poner el id del anuncio a modificar
+                            a.setIdAnuncio(modificando.getIdAnuncio());
+                            Conexiones.updateAnuncio(a);
+                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (ServerException ex) {
+                        switch (ex.getCode()) {
+
+                            case 500:
+                                Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
                                         Toast.LENGTH_LONG).show();
-                            } else if (modo == MODO_ACTUALIZAR) {
-                                //Modo actualizar, tenemos q poner el id del anuncio a modificar
-                                a.setIdAnuncio(modificando.getIdAnuncio());
-                                Conexiones.updateAnuncio(a);
-                                Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
+                                break;
+                            case 403:
+                                Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
                                         Toast.LENGTH_LONG).show();
-                            }
-                        } catch (ServerException ex) {
-                            switch (ex.getCode()) {
-
-                                case 500:
-                                    Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
-                                            Toast.LENGTH_LONG).show();
-                                    break;
-                                case 403:
-                                    Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
-                                            Toast.LENGTH_LONG).show();
-                                    break;
-                                case 404:
-                                    Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
-                                            Toast.LENGTH_LONG).show();
-                                    break;
-
-                            }
+                                break;
+                            case 404:
+                                Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
+                                        Toast.LENGTH_LONG).show();
+                                break;
 
                         }
 
@@ -217,6 +232,8 @@ public class CrearModificarAnuncioFragment extends Fragment{
                 catch(Exception ex){
                     Toast.makeText(getActivity().getApplicationContext(), "Debe rellenar todos los campos (excepto la imagen)",
                             Toast.LENGTH_LONG).show();
+                } finally {
+                    nDialog.dismiss();
                 }
             }
         });
@@ -392,36 +409,113 @@ public class CrearModificarAnuncioFragment extends Fragment{
      /*
       Create the @Upload object
      */
-        try {
-            FileInputStream fis = null;
-            PreparedStatement ps = null;
-            try {
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                Connection conn = DriverManager.getConnection("jdbc:mysql://wallapet.com:3306/wallapet", "piraces", "22wallapet22");
-                String INSERT_PICTURE = "INSERT INTO anuncio (email,estado,descripcion,tipoIntercambio,especie,precio,titulo,rutaImagen) values (?, ?, ?, ?, ?, ?, ?, ?)";
+        HttpURLConnection connection = null;
+        DataOutputStream outputStream = null;
+        DataInputStream inputStream = null;
+        String pathToOurFile = currentImagePath;
+        String urlServer = "http://wallapet.com/upload.php?submit=";
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
 
-                conn.setAutoCommit(false);
-                File file = new File(currentImagePath);
-                fis = new FileInputStream(file);
-                ps = conn.prepareStatement(INSERT_PICTURE);
-                ps.setString(1, email.getText().toString());
-                ps.setString(2, estado.getSelectedItem().toString());
-                ps.setString(3, descripcion.getText().toString());
-                ps.setString(4, tipo.getSelectedItem().toString());
-                ps.setString(5, especie.getText().toString());
-                ps.setString(6, precio.getText().toString());
-                ps.setString(7, titulo.getText().toString());
-                ps.setBinaryStream(8, fis, (int) file.length());
-                ps.executeUpdate();
-                conn.commit();
-            } catch (Exception ex) {
-               String msg = ex.getMessage();
-            } finally {
-                ps.close();
-                fis.close();
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+
+        try {
+            File file = new File(pathToOurFile);
+            String uploadedfile = getHash(file);
+            String ext = getFileExtension(file);
+            uploadedfile = uploadedfile + "." + ext;
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            URL url = new URL(urlServer);
+            connection = (HttpURLConnection) url.openConnection();
+
+            // Allow Inputs &amp; Outputs.
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+
+            // Set HTTP method to POST.
+            connection.setRequestMethod("POST");
+
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+            outputStream = new DataOutputStream(connection.getOutputStream());
+            outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + uploadedfile + "\"" + lineEnd);
+            outputStream.writeBytes(lineEnd);
+
+            bytesAvailable = fileInputStream.available();
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            buffer = new byte[bufferSize];
+
+            // Read file
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            while (bytesRead > 0) {
+                outputStream.write(buffer, 0, bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+            }
+
+            outputStream.writeBytes(lineEnd);
+            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+            // Responses from the server (code and message)
+            int serverResponseCode = connection.getResponseCode();
+            String serverResponseMessage = connection.getResponseMessage();
+
+            if (serverResponseCode!=200) {
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "¡Fallo al subir la imagen!", Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                currentURL = "http://wallapet.com/uploads/" + uploadedfile;
+            }
+            fileInputStream.close();
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception ex) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "¡Fallo al subir la imagen! La imagen no puede superar 2MB.", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    private static String getHash(final File file) throws NoSuchAlgorithmException, IOException {
+        final MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+        Random random = new Random();
+        try {
+            InputStream is = new BufferedInputStream(new FileInputStream(file));
+            final byte[] buffer = new byte[1024];
+            for (int read = 0; (read = is.read(buffer)) != -1; ) {
+                messageDigest.update(buffer, 0, read);
             }
         } catch (Exception ex) {
-
+            Long l = random.nextLong();
+            return l.toString();
         }
+        // Convert the byte to hex format
+        try {
+            Formatter formatter = new Formatter();
+            for (final byte b : messageDigest.digest()) {
+                formatter.format("%02x", b);
+            }
+            return formatter.toString();
+        } catch (Exception ex) {
+            Long l = random.nextLong();
+            return l.toString();
+        }
+    }
+
+    private static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+            return fileName.substring(fileName.lastIndexOf(".")+1);
+        else return "";
     }
 }
