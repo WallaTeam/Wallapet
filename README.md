@@ -7,6 +7,10 @@ Copyright (C) 2015 Hyena Technologies.
 You can check our official site in http://wallapet.com.
 Also yo can view our repository pages in http://piraces.github.io/Wallapet.
 
+# Dependencies
+Wallapet app needs the following libraries to work succesfully:
+
+
 # License
 Copyright (C) 2015 Hyena Technologies
 
