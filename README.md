@@ -9,7 +9,8 @@ Also yo can view our repository pages in http://piraces.github.io/Wallapet.
 
 # Dependencies
 Wallapet app needs the following libraries to work succesfully:
-
+- com.android.support:appcompat-v7:22.0.0
+- com.google.code.gson:gson:2.2.4
 
 # License
 Copyright (C) 2015 Hyena Technologies
