@@ -4,7 +4,7 @@ Copyright (C) 2015 Hyena Technologies.
 
 # Official site
 You can check our official site in http://wallapet.com.
-Also yo can view our repository pages in http://piraces.github.io/Wallapet.
+Also you can view our repository pages in http://piraces.github.io/Wallapet.
 
 # Technologies
 The following technologies are being used in the development of Wallapet:
