@@ -8,6 +8,7 @@ You can check our official site in http://wallapet.com.
 Also yo can view our repository pages in http://piraces.github.io/Wallapet.
 
 # Technologies
+The following technologies are being used in the development of Wallapet:
 - [JSON](http://json.org/)
 - [Gson](https://code.google.com/p/google-gson/)
 - [MySQL Community Edition](https://www.mysql.com/products/community/)
@@ -15,6 +16,7 @@ Also yo can view our repository pages in http://piraces.github.io/Wallapet.
 - [Apache Tomcat](https://tomcat.apache.org/)
 - [JSP](http://www.oracle.com/technetwork/java/javaee/jsp/index.html)
 - [HTML 5](http://www.w3.org/TR/html5/)
+- [JavaScript](https://en.wikipedia.org/wiki/JavaScript)
 
 # Dependencies
 Wallapet app needs the following libraries to work succesfully:
