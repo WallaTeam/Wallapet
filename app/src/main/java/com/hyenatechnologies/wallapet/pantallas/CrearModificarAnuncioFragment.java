@@ -435,7 +435,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
 
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
+        int maxBufferSize = 25 * 1024 * 1024;
 
         try {
             File file = new File(pathToOurFile);
@@ -496,7 +496,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
             outputStream.close();
         } catch (Exception ex) {
             Toast.makeText(getActivity().getApplicationContext(),
-                    "¡Fallo al subir la imagen! La imagen no puede superar 2MB.", Toast.LENGTH_SHORT)
+                    "¡Fallo al subir la imagen! La imagen no puede superar 25MB.", Toast.LENGTH_SHORT)
                     .show();
         }
     }

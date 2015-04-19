@@ -72,8 +72,8 @@ public class Conexiones {
      */
     public static void updateAnuncio(Anuncio a) throws ServerException {
         String json = Anuncio.toJson(a);
-        Log.d("Isma",json);
-        realizarPost(API_URL + "actualizarAnuncio.do", "anuncio", json);
+        Log.d("Updating anuncio",json);
+        realizarPost(API_URL + "ActualizarAnuncio", "anuncio", json);
     }
 
 
@@ -82,7 +82,7 @@ public class Conexiones {
      *  En caso de algún error, lanza una ServerException indicando el error.
      */
     public static void deleteAnuncio(int id) throws ServerException {
-            realizarGET(API_URL + "borrarAnuncio.do?id=" + id);
+            realizarPost(API_URL + "BorrarAnuncio?id=" + id, null, null);
         //Nos da igual el texto de contenido.
 
     }
@@ -142,11 +142,14 @@ public class Conexiones {
         HttpPost httppost = new HttpPost(url);
 
         try {
-            //Añadimos el parametro
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair(claveParam, valorParam));
+            // Verificación de parametros
+            if (claveParam!=null && valorParam!=null) {
+                //Añadimos el parametro
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+                nameValuePairs.add(new BasicNameValuePair(claveParam, valorParam));
 
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            }
 
             //Ejecutamos el POST
             HttpResponse response = httpclient.execute(httppost);
