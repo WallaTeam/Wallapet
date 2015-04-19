@@ -7,6 +7,15 @@ Copyright (C) 2015 Hyena Technologies.
 You can check our official site in http://wallapet.com.
 Also yo can view our repository pages in http://piraces.github.io/Wallapet.
 
+# Technologies
+- [JSON](http://json.org/)
+- [Gson](https://code.google.com/p/google-gson/)
+- [MySQL Community Edition](https://www.mysql.com/products/community/)
+- [PHP](https://php.net/)
+- [Apache Tomcat](https://tomcat.apache.org/)
+- [JSP](http://www.oracle.com/technetwork/java/javaee/jsp/index.html)
+- [HTML 5](http://www.w3.org/TR/html5/)
+
 # Dependencies
 Wallapet app needs the following libraries to work succesfully:
 - com.android.support:appcompat-v7:22.0.0
