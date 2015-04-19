@@ -31,7 +31,6 @@ import android.widget.Toast;
 import com.hyenatechnologies.wallapet.Item_objct;
 import com.hyenatechnologies.wallapet.NavigationAdapter;
 import com.hyenatechnologies.wallapet.R;
-import com.hyenatechnologies.wallapet.VariablesComunes;
 
 import java.util.ArrayList;
 
@@ -59,7 +58,6 @@ public class PantallaPrincipal  extends ActionBarActivity{
     private CharSequence mTitle;
     private static DrawerLayout NavDrawerLayout;
     private static int idAnuncio = 0;
-    private VariablesComunes variables = new VariablesComunes();
     FragmentManager fragmentManager;
 
 
@@ -95,10 +93,12 @@ public class PantallaPrincipal  extends ActionBarActivity{
         NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(3, -1)));
         //Etiquetas
         NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(4, -1)));
-        //Configuracion
+        //Busqueda
         NavItms.add(new Item_objct(titulos[5], NavIcons.getResourceId(5, -1)));
-        //Share
+        //Configuracion
         NavItms.add(new Item_objct(titulos[6], NavIcons.getResourceId(6, -1)));
+        //Share
+        NavItms.add(new Item_objct(titulos[7], NavIcons.getResourceId(7, -1)));
         //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
         NavAdapter= new NavigationAdapter(this,NavItms);
         NavList.setAdapter(NavAdapter);
@@ -166,15 +166,18 @@ public class PantallaPrincipal  extends ActionBarActivity{
                 fragment = new CrearModificarAnuncioFragment();
                 break;
             case 5:
-                fragment = new VistaAnuncioFragment(variables);
+                fragment = new VistaAnuncioFragment();
                 break;
             case 6:
+                fragment = new BusquedaAnunciosFragment();
+                break;
+            case 7:
                 //si no esta la opcion mostrara un toast y nos mandara a Home
                 Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + " no disponible!", Toast.LENGTH_SHORT).show();
                 fragment = new ProfileFragment();
                 position=1;
                 break;
-            case 7:
+            case 8:
                 break;
             default:
                 //si no esta la opcion mostrara un toast y nos mandara a Home

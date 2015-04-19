@@ -49,12 +49,10 @@
         android:id="@+id/spinnerCrearAnuncioTipo"
         android:layout_gravity="center_horizontal" />
 
-    <EditText
-        android:hint="Especie"
-        android:id="@+id/crearAnuncioEspecie"
-        android:layout_width="match_parent"
+    <Spinner
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="#ff000000" />
+        android:id="@+id/spinnerCrearAnuncioEspecie" />
 
     <EditText
         android:hint="Precio"

@@ -14,8 +14,12 @@ package com.hyenatechnologies.wallapet.pantallas;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,14 +28,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyenatechnologies.wallapet.Anuncio;
 import com.hyenatechnologies.wallapet.R;
-import com.hyenatechnologies.wallapet.VariablesComunes;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+
+import java.io.InputStream;
 
 /**
  * Muestra un anuncio. Recibe por "bundle" el id del anuncio a mostrar.
@@ -52,16 +58,9 @@ public class VistaAnuncioFragment extends Fragment {
     Anuncio actual;
     EditText id_a_cargar;
     Button botonVer;
-    VariablesComunes variables;
-
+    ImageView imagen;
 
     public VistaAnuncioFragment() {
-    }
-
-    ;
-
-    public VistaAnuncioFragment(VariablesComunes v){
-        this.variables = v;
     }
 
 
@@ -81,6 +80,7 @@ public class VistaAnuncioFragment extends Fragment {
         id_a_cargar = (EditText) rootView.findViewById(R.id.verAnuncio);
 
         //Declaramos cuadros de id_a_cargar
+        imagen = (ImageView) rootView.findViewById(R.id.ficha_imagen);
         anuncioId = (TextView) rootView.findViewById(R.id.anuncioId);
         anuncioEmail = (TextView) rootView.findViewById(R.id.anuncioEmail);
         anuncioEstado = (TextView) rootView.findViewById(R.id.anuncioEstado);
@@ -114,6 +114,37 @@ public class VistaAnuncioFragment extends Fragment {
         anuncioPrecio.setText("" + a.getPrecio() + "€");
         anuncioTitulo.setText(a.getTitulo());
         anuncioEspecie.setText(a.getEspecie());
+        if (a.getRutaImagen()!=null & a.getRutaImagen().length()>0) {
+            // show The Image
+            new DownloadImageTask((ImageView) imagen)
+                    .execute(a.getRutaImagen());
+        }
+    }
+
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 
     /**

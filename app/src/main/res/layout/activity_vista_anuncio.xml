@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/cachorro" />
+        android:src="@drawable/no_image" />
     <TextView
         android:id="@+id/anuncioTitulo"
         android:layout_width="match_parent"

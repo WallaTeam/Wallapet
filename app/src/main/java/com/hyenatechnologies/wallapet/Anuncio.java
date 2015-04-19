@@ -12,8 +12,12 @@
 package com.hyenatechnologies.wallapet;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Anuncio {
@@ -61,6 +65,18 @@ public class Anuncio {
     public static Anuncio fromJson(String json) throws JsonParseException{
         Gson gson = new Gson();
         return gson.fromJson(json, Anuncio.class);
+    }
+
+    //Obtiene lista de JSON
+    public static List<Anuncio> fromJsonList(String json) throws JsonParseException{
+        Gson gson = new Gson();
+        JsonParser jsonParser = new JsonParser();
+        JsonArray anunciosArray =  jsonParser.parse(json).getAsJsonArray();
+        List<Anuncio> anuncios = new ArrayList<>();
+        for (JsonElement anuncio : anunciosArray){
+            anuncios.add(gson.fromJson(anuncio, Anuncio.class));
+        }
+        return anuncios;
     }
 
     public int getIdAnuncio() {

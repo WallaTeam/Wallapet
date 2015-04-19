@@ -13,7 +13,6 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -78,9 +77,6 @@ public class CrearModificarAnuncioFragment extends Fragment{
     private Button botonImagen, botonGaleria;
     private String currentImagePath;
     private String currentURL;
-    private final String DRIVER = "jdbc:mysql://wallapet.com:3306/wallapet";
-    private final String USERNAME = "piraces";
-    private final String PASSWORD = "22wallapet22";
 
 
     // Variables globales
@@ -89,19 +85,21 @@ public class CrearModificarAnuncioFragment extends Fragment{
     private EditText descripcion;
     private Spinner estado;
     private Spinner tipo;
-    private EditText especie;
+    private Spinner especie;
     private EditText precio;
     private Button botonCrear;
     int modo = MODO_CREAR;
     Anuncio modificando;
     private List<String> ListaEstados = new ArrayList<String>();
     private List<String> ListaTipos = new ArrayList<String>();
+    private List<String> ListaEspecies = new ArrayList<String>();
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container, false);
         //Cargamos campos de id_a_cargar
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
@@ -120,7 +118,14 @@ public class CrearModificarAnuncioFragment extends Fragment{
         ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaTipos);
         tipo.setAdapter(adapter2);
         precio = (EditText) rootView.findViewById(R.id.crearAnuncioPrecio);
-        especie = (EditText) rootView.findViewById(R.id.crearAnuncioEspecie);
+        especie = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioEspecie);
+        ListaEspecies.add("Mamiferos");
+        ListaEspecies.add("Reptiles");
+        ListaEspecies.add("Anfibios");
+        ListaEspecies.add("Artropodos");
+        ListaEspecies.add("Otros");
+        ArrayAdapter<String> adapter3 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaEspecies);
+        especie.setAdapter(adapter3);
 
         //Cargamos botones
         botonCrear = (Button) rootView.findViewById(R.id.crearAnuncioOK);
@@ -175,21 +180,18 @@ public class CrearModificarAnuncioFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 //Recogemos datos de los campos de id_a_cargar
-                ProgressDialog nDialog = new ProgressDialog(getActivity());
                 Anuncio a = new Anuncio();
                 try {
-                    nDialog = new ProgressDialog(getActivity());
-                    nDialog.setTitle("Cargando");
-                    nDialog.setMessage("Creando anuncio...");
-                    nDialog.setCancelable(false);
-                    nDialog.show();
+
                     a.setTitulo(titulo.getText().toString());
                     a.setEmail(email.getText().toString());
                     a.setDescripcion(descripcion.getText().toString());
                     a.setEstado(estado.getSelectedItem().toString());
-                    a.setEspecie(especie.getText().toString());
+                    a.setEspecie(especie.getSelectedItem().toString());
                     a.setTipoIntercambio(tipo.getSelectedItem().toString());
                     a.setPrecio(Double.parseDouble(precio.getText().toString()));
+                    Toast.makeText(getActivity().getApplicationContext(), "Creando anuncio... Espere por favor.",
+                            Toast.LENGTH_LONG).show();
                     if (currentImagePath != null && currentImagePath.length() != 0) {
                         uploadImage();
                         a.setRutaImagen(currentURL);
@@ -233,7 +235,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
                     Toast.makeText(getActivity().getApplicationContext(), "Debe rellenar todos los campos (excepto la imagen)",
                             Toast.LENGTH_LONG).show();
                 } finally {
-                    nDialog.dismiss();
+
                 }
             }
         });
@@ -276,7 +278,20 @@ public class CrearModificarAnuncioFragment extends Fragment{
             estado.setGravity(1);
         }
         descripcion.setText(a.getDescripcion());
-        especie.setText(a.getEspecie());
+        String especieAnuncio = a.getEspecie();
+        if (especieAnuncio.compareTo("Cualquiera") == 0){
+            especie.setSelection(0);
+        } else if (especieAnuncio.compareTo("Mamíferos") == 0){
+            especie.setSelection(1);
+        } else if (especieAnuncio.compareTo("Reptiles") == 0){
+            especie.setSelection(2);
+        } else if (especieAnuncio.compareTo("Anfibios") == 0){
+            especie.setSelection(3);
+        } else if (especieAnuncio.compareTo("Artrópodos") == 0){
+            especie.setSelection(4);
+        } else if (especieAnuncio.compareTo("Otros") == 0){
+            especie.setSelection(5);
+        }
         if (a.getTipoIntercambio().compareTo("Adopcion") == 0) {
             tipo.setGravity(0);
         } else {

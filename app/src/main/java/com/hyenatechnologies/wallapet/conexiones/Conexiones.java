@@ -49,6 +49,16 @@ public class Conexiones {
     }
 
     /**
+     * Obtiene del servidor una busqueda de anuncios.
+     * En caso de error, lanza una ServerException.
+     */
+    public static List<Anuncio> getAnuncios(String tipo, String especie, String palabras) throws ServerException {
+        String json = realizarGET(API_URL + "buscarAnuncios.do?tipoAnuncio=" + tipo + "&" + "especie="
+                + especie + "&" + "palabrasClave=" + palabras);
+        return Anuncio.fromJsonList(json);
+    }
+
+    /**
      * Crea el anuncio <a> en el servidor.
      * En caso de algún error, lanza una ServerException indicando el error.
      */

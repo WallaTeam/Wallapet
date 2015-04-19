@@ -16,7 +16,8 @@
         <item>Login</item>
         <item>Registro</item>
         <item>Crear anuncio</item>
-        <item>Ver anuncio</item>
+        <item>Ver anuncios</item>
+        <item>Buscar anuncios</item>
         <item>Configuración</item>
         <item>Compartir</item>
     </string-array>
@@ -27,6 +28,7 @@
         <item>@drawable/ic_action_event</item>
         <item>@drawable/ic_action_place</item>
         <item>@drawable/ic_action_labels</item>
+        <item>@drawable/ic_search</item>
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_share</item>
     </array>
