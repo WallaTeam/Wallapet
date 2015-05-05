@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/wallafondofinal"
+        android:scaleType="centerCrop">
+
+    </ImageView>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="20dip">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText android:id="@+id/txtUserName" android:layout_height="wrap_content" android:layout_width="fill_parent"
+                android:hint="UserName" android:inputType="text"
+                android:layout_marginTop="90dip"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF" />
+
+            <EditText android:id="@+id/txtEmail" android:layout_marginTop="10dip" android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:hint="Email" android:inputType="textEmailAddress"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF" />
+
+            <EditText android:id="@+id/txtPass" android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:hint="Password" android:inputType="textPassword"
+                android:layout_marginTop="10dip"
+                android:textColorHint="#FFFFFF"
+                android:password="true"
+                android:textColor="#FFFFFF" />
+
+            <EditText android:id="@+id/txtDNI" android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:hint="Dni" android:inputType="text"
+                android:layout_marginTop="10dip"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF" />
+
+            <EditText android:id="@+id/txtNombre" android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:hint="Nombre" android:inputType="text"
+                android:layout_marginTop="10dip"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF" />
+
+            <EditText android:id="@+id/txtApellidos" android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:hint="Apellidos" android:inputType="text"
+                android:layout_marginTop="10dip"
+                android:textColorHint="#FFFFFF"
+                android:textColor="#FFFFFF" />
+
+            <EditText android:id="@+id/txtTelefono" android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:hint="Teléfono" android:inputType="phone"
+                android:layout_marginTop="10dip"
+                android:textColorHint="#FFFFFF"
+                android:phoneNumber="true"
+                android:textColor="#FFFFFF" />
+            <EditText android:id="@+id/txtDireccion" android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:hint="Dirección" android:inputType="text"
+                android:layout_marginTop="10dip"
+                android:textColorHint="#FFFFFF"
+                android:phoneNumber="true"
+                android:textColor="#FFFFFF" />
+
+            <Button android:id="@+id/btnRegister" android:layout_height="wrap_content"
+                android:layout_width="wrap_content" android:text="enviar"
+                android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip" />
+
+            <TextView android:id="@+id/link_to_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dip"
+                android:layout_marginBottom="40dip"
+                android:text="Si ya tienes cuenta, ¡Accede!"
+                android:gravity="center"
+                android:textSize="20dip"
+                android:textColor="#FFFFFF"/>
+
+            <TextView android:id="@+id/register_error"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dip"
+                android:layout_marginBottom="40dip"
+
+                android:gravity="center"
+                android:textSize="20dip"
+                android:textColor="#0b84aa"/>
+        </LinearLayout>
+
+    </ScrollView>
+</FrameLayout>

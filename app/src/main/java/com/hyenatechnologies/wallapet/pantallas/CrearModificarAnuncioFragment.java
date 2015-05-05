@@ -81,13 +81,14 @@ public class CrearModificarAnuncioFragment extends Fragment{
 
     // Variables globales
     private EditText titulo;
-    private EditText email;
+
     private EditText descripcion;
-    private Spinner estado;
+
     private Spinner tipo;
     private Spinner especie;
     private EditText precio;
     private Button botonCrear;
+    private Conexiones conexiones;
     int modo = MODO_CREAR;
     Anuncio modificando;
     private List<String> ListaEstados = new ArrayList<String>();
@@ -103,16 +104,11 @@ public class CrearModificarAnuncioFragment extends Fragment{
         View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container, false);
         //Cargamos campos de id_a_cargar
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
-        email = (EditText) rootView.findViewById(R.id.crearAnuncioEmail);
-        descripcion = (EditText) rootView.findViewById(R.id.crearAnuncioDescripcion);
-        //spinner
-        estado = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioEstado);
-        ListaEstados.add("Abierto");
-        ListaEstados.add("Cerrado");
-        ArrayAdapter<String> adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaEstados);
-        estado.setAdapter(adapter);
-        //spinner
         tipo = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioTipo);
+        descripcion = (EditText) rootView.findViewById(R.id.crearAnuncioDescripcion);
+
+        //spinner
+
         ListaTipos.add("Adopcion");
         ListaTipos.add("Venta");
         ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaTipos);
@@ -137,6 +133,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        conexiones = new Conexiones(this.getActivity());
         //Si en el intent hay un anuncio JSON con nombre "anuncio",
         //es que estamos en modo actualizar. Si no, modo crear.
         Bundle bundle = this.getArguments();
@@ -184,9 +181,9 @@ public class CrearModificarAnuncioFragment extends Fragment{
                 try {
 
                     a.setTitulo(titulo.getText().toString());
-                    a.setEmail(email.getText().toString());
+                    a.setEmail("NO IMPORTA");
                     a.setDescripcion(descripcion.getText().toString());
-                    a.setEstado(estado.getSelectedItem().toString());
+                    a.setEstado("NO IMPORTA");
                     a.setEspecie(especie.getSelectedItem().toString());
                     a.setTipoIntercambio(tipo.getSelectedItem().toString());
                     a.setPrecio(Double.parseDouble(precio.getText().toString()));
@@ -201,13 +198,13 @@ public class CrearModificarAnuncioFragment extends Fragment{
                         if (modo == MODO_CREAR) {
                             //Modo crear
 
-                            Conexiones.createAnuncio(a);
+                            conexiones.createAnuncio(a);
                             Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
                                     Toast.LENGTH_LONG).show();
                         } else if (modo == MODO_ACTUALIZAR) {
                             //Modo actualizar, tenemos q poner el id del anuncio a modificar
                             a.setIdAnuncio(modificando.getIdAnuncio());
-                            Conexiones.updateAnuncio(a);
+                            conexiones.updateAnuncio(a);
                             Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
                                     Toast.LENGTH_LONG).show();
                         }
@@ -225,6 +222,14 @@ public class CrearModificarAnuncioFragment extends Fragment{
                             case 404:
                                 Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
                                         Toast.LENGTH_LONG).show();
+                                break;
+                            case 405:
+                                //No hay sesion iniciada, vamos al login...
+                                Toast.makeText(getActivity().getApplicationContext(), "Sesión caducada",
+                                        Toast.LENGTH_SHORT).show();
+                                Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+                                startActivity(myIntent);
+                                getActivity().finish();
                                 break;
 
                         }
@@ -271,12 +276,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
      */
     public void mostrarAnuncio(Anuncio a) {
 
-        email.setText(a.getEmail());
-        if (a.getEstado().compareTo("Abierto") == 0) {
-            estado.setGravity(0);
-        } else {
-            estado.setGravity(1);
-        }
+
         descripcion.setText(a.getDescripcion());
         String especieAnuncio = a.getEspecie();
         if (especieAnuncio.compareTo("Cualquiera") == 0){

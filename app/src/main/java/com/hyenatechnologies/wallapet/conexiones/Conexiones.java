@@ -10,11 +10,18 @@
  */
 package com.hyenatechnologies.wallapet.conexiones;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.hyenatechnologies.wallapet.Anuncio;
+import com.hyenatechnologies.wallapet.Cuenta;
+import com.hyenatechnologies.wallapet.DatosLogin;
+import com.hyenatechnologies.wallapet.RespuestaRegistro;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -35,13 +42,17 @@ import java.util.List;
  */
 public class Conexiones {
 
-    public static final String API_URL = "http://wallapet.com:8080/Wallapet/";
+    private Context context;
+    public Conexiones(Context c){
+        this.context = c;
+    }
+    public static final String API_URL = "http://192.168.1.120:8080/Wallapet/";
 
     /**
      * Obtiene del servidor un anuncio según ID.
      * En caso de error, lanza una ServerException.
      */
-    public static Anuncio getAnuncioById(int id) throws ServerException {
+    public  Anuncio getAnuncioById(int id) throws ServerException {
 
         String json = realizarGET(API_URL + "verAnuncio.do?id=" + id);
         return Anuncio.fromJson(json);
@@ -49,10 +60,30 @@ public class Conexiones {
     }
 
     /**
+     * Loguea y devuelve la cuenta. Si ha habido un error lanza una excepcion con el codigo
+     * @param dl
+     * @return
+     * @throws ServerException
+     */
+    public Cuenta login(DatosLogin dl) throws ServerException{
+        String json = realizarPOST(API_URL + "loginUsuario.do", "login", DatosLogin.toJson(dl));
+        return Cuenta.fromJson(json);
+    }
+
+    public RespuestaRegistro registrar(Cuenta c) throws ServerException{
+        String json = realizarPOST(API_URL + "registrarUsuario.do","usuario",Cuenta.toJson(c));
+        return RespuestaRegistro.fromJson(json);
+    }
+
+    public void logout() throws ServerException{
+        realizarGET(API_URL + "logout.do");
+    }
+
+    /**
      * Obtiene del servidor una busqueda de anuncios.
      * En caso de error, lanza una ServerException.
      */
-    public static List<Anuncio> getAnuncios(String tipo, String especie, String palabras) throws ServerException {
+    public  List<Anuncio> getAnuncios(String tipo, String especie, String palabras) throws ServerException {
         String json = realizarGET(API_URL + "buscarAnuncios.do?tipoAnuncio=" + tipo + "&" + "especie="
                 + especie + "&" + "palabrasClave=" + palabras);
         return Anuncio.fromJsonList(json);
@@ -62,18 +93,18 @@ public class Conexiones {
      * Crea el anuncio <a> en el servidor.
      * En caso de algún error, lanza una ServerException indicando el error.
      */
-    public static void createAnuncio(Anuncio a) throws ServerException {
+    public  void createAnuncio(Anuncio a) throws ServerException {
         String json = Anuncio.toJson(a);
-        realizarPost(API_URL + "crearAnuncio.do","anuncio",json);
+        realizarPOST(API_URL + "crearAnuncio.do", "anuncio", json);
     }
 
     /* Actualiza el anuncio <a> en el servidor.
      *  En caso de algún error, lanza una ServerException indicando el error.
      */
-    public static void updateAnuncio(Anuncio a) throws ServerException {
+    public  void updateAnuncio(Anuncio a) throws ServerException {
         String json = Anuncio.toJson(a);
         Log.d("Updating anuncio",json);
-        realizarPost(API_URL + "ActualizarAnuncio", "anuncio", json);
+        realizarPOST(API_URL + "ActualizarAnuncio", "anuncio", json);
     }
 
 
@@ -81,8 +112,8 @@ public class Conexiones {
      * Borra el anuncio identificado por <id> del servidor.
      *  En caso de algún error, lanza una ServerException indicando el error.
      */
-    public static void deleteAnuncio(int id) throws ServerException {
-            realizarPost(API_URL + "BorrarAnuncio?id=" + id, null, null);
+    public  void deleteAnuncio(int id) throws ServerException {
+            realizarPOST(API_URL + "BorrarAnuncio?id=" + id, null, null);
         //Nos da igual el texto de contenido.
 
     }
@@ -94,15 +125,18 @@ public class Conexiones {
      * lanza una ServerException con el codigo de Excepcion.
      * Sacado de StackOverflow.
      */
-    public static String realizarGET(String url) throws ServerException {
+    public String realizarGET(String url) throws ServerException {
 
         DefaultHttpClient client = new DefaultHttpClient();
 
         HttpGet getRequest = new HttpGet(url);
+        addJSESSIONID(getRequest);
 
         try {
 
+
             HttpResponse getResponse = client.execute(getRequest);
+            parseResponseJSESSION(getResponse);
             final int statusCode = getResponse.getStatusLine().getStatusCode();
 
             if (statusCode != HttpStatus.SC_OK) {
@@ -127,6 +161,8 @@ public class Conexiones {
         }
 
 
+
+
     }
 
 
@@ -137,9 +173,10 @@ public class Conexiones {
      * En caso contrario, lanza una excepción indicando el código de error.
 
      */
-    public static String realizarPost(String url,String claveParam, String valorParam) throws ServerException{
+    public String realizarPOST(String url, String claveParam, String valorParam) throws ServerException{
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
+        addJSESSIONID(httppost);
 
         try {
             // Verificación de parametros
@@ -153,7 +190,7 @@ public class Conexiones {
 
             //Ejecutamos el POST
             HttpResponse response = httpclient.execute(httppost);
-
+            parseResponseJSESSION(response);
             int code = response.getStatusLine().getStatusCode();
             if (code != HttpStatus.SC_OK) {
                 throw new ServerException(code);
@@ -169,5 +206,52 @@ public class Conexiones {
             Log.d("wallapet", e.getMessage());
             throw new ServerException(500);
         }
+    }
+
+
+    private  void parseResponseJSESSION(HttpResponse response){
+
+        try {
+
+            Header header = response.getFirstHeader("Set-Cookie");
+
+            String value = header.getValue();
+            if (value.contains("JSESSIONID")) {
+                int index = value.indexOf("JSESSIONID=");
+
+                int endIndex = value.indexOf(";", index);
+
+                String sessionID = value.substring(
+                        index + "JSESSIONID=".length(), endIndex);
+                SharedPreferences sharedPref = context.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
+                String id= sharedPref.getString("JSESSIONID","0");
+
+                if(id.equalsIgnoreCase(sessionID)){
+                    //Nos mantenemos en la misma sesión
+                    Log.d("SESION", "La sesion se mantiene");
+
+                }
+                else{
+                    //Ha cambiado la sesion, la guardamos
+                    Log.d("SESION", "New session id: " + sessionID);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("JSESSIONID",sessionID);
+                    editor.commit();
+                }
+
+
+
+            }
+        } catch (Exception e) {
+        }
+
+    }
+
+
+    private void addJSESSIONID(HttpRequest httpRequest){
+
+        SharedPreferences sharedPref = context.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
+        String id= sharedPref.getString("JSESSIONID","0");
+        httpRequest.setHeader("Cookie", "JSESSIONID=" + id);
     }
 }

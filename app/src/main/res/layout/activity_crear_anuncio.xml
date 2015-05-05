@@ -23,12 +23,7 @@
         android:layout_height="wrap_content"
         android:textColor="#ff000000" />
 
-    <EditText
-        android:hint="Email creador"
-        android:id="@+id/crearAnuncioEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#ff000000" />
+
 
     <EditText
         android:hint="Descripción"
@@ -37,11 +32,7 @@
         android:layout_height="wrap_content"
         android:textColor="#ff000000" />
 
-    <Spinner
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinnerCrearAnuncioEstado"
-        android:layout_gravity="center_horizontal" />
+
 
     <Spinner
         android:layout_width="fill_parent"

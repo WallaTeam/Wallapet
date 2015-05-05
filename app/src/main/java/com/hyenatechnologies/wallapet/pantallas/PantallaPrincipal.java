@@ -14,6 +14,7 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -31,6 +32,8 @@ import android.widget.Toast;
 import com.hyenatechnologies.wallapet.Item_objct;
 import com.hyenatechnologies.wallapet.NavigationAdapter;
 import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.conexiones.Conexiones;
+import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
 import java.util.ArrayList;
 
@@ -95,10 +98,9 @@ public class PantallaPrincipal  extends ActionBarActivity{
         NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(4, -1)));
         //Busqueda
         NavItms.add(new Item_objct(titulos[5], NavIcons.getResourceId(5, -1)));
-        //Configuracion
-        NavItms.add(new Item_objct(titulos[6], NavIcons.getResourceId(6, -1)));
-        //Share
-        NavItms.add(new Item_objct(titulos[7], NavIcons.getResourceId(7, -1)));
+        //Cerrar sesion
+        NavItms.add(new Item_objct(titulos[6], NavIcons.getResourceId(5, -1)));
+
         //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
         NavAdapter= new NavigationAdapter(this,NavItms);
         NavList.setAdapter(NavAdapter);
@@ -144,7 +146,7 @@ public class PantallaPrincipal  extends ActionBarActivity{
         });
 
         //Cuando la aplicacion cargue por defecto mostrar la opcion Home
-        MostrarFragment(2);
+        MostrarFragment(4);
 
     }
 
@@ -157,33 +159,31 @@ public class PantallaPrincipal  extends ActionBarActivity{
                 fragment = new ProfileFragment();
                 break;
             case 2:
-                fragment = new LoginFragment();
-                break;
-            case 3:
-                fragment = new RegistroFragment();
-                break;
-            case 4:
                 fragment = new CrearModificarAnuncioFragment();
                 break;
-            case 5:
+            case 3:
                 fragment = new VistaAnuncioFragment();
                 break;
-            case 6:
+            case 4:
                 fragment = new BusquedaAnunciosFragment();
                 break;
             case 7:
-                //si no esta la opcion mostrara un toast y nos mandara a Home
-                Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + " no disponible!", Toast.LENGTH_SHORT).show();
-                fragment = new ProfileFragment();
-                position=1;
-                break;
-            case 8:
+                Conexiones c = new Conexiones(this);
+                try{
+                    c.logout();
+                    Toast.makeText(getApplicationContext(), "Sesión cerrada", Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(PantallaPrincipal.this, LoginActivity.class);
+                    startActivity(myIntent);
+                    finish();
+                    break;
+                }
+                catch(ServerException ex){
+                    Toast.makeText(getApplicationContext(), "Error al hacer logout, no estas logueado?", Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 //si no esta la opcion mostrara un toast y nos mandara a Home
                 Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + " no disponible!", Toast.LENGTH_SHORT).show();
-                fragment = new ProfileFragment();
-                position=1;
                 break;
         }
         //Validamos si el fragment no es nulo

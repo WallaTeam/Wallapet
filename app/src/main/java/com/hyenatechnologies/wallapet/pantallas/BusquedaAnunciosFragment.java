@@ -2,6 +2,7 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -43,7 +44,7 @@ public class BusquedaAnunciosFragment extends Fragment {
     private List<String> ListaTipos = new ArrayList<String>();
     private List<String> ListaEspecies = new ArrayList<String>();
     private List<Anuncio> ListaAnuncios = new ArrayList<Anuncio>();
-
+private Conexiones conexiones;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +54,8 @@ public class BusquedaAnunciosFragment extends Fragment {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        conexiones = new Conexiones(this.getActivity());
         View rootView = inflater.inflate(R.layout.activity_buscar_anuncio, container, false);
         titulo = (TextView) rootView.findViewById(R.id.busquedaText);
         titulo2 = (TextView) rootView.findViewById(R.id.resultados);
@@ -122,15 +125,31 @@ public class BusquedaAnunciosFragment extends Fragment {
         if (tipoS.equals("Cualquiera")){
             tipoS = "";
         }
+        if (especieS.equals("Cualquiera")){
+            especieS = "";
+        }
         String palabrasClave = palabras.getText().toString();
         try {
             Toast.makeText(getActivity().getApplicationContext(), "Buscando anuncios... Espere por favor.",
                     Toast.LENGTH_LONG).show();
-            List<Anuncio> lista = Conexiones.getAnuncios(tipoS, especieS, palabrasClave);
+            List<Anuncio> lista = conexiones.getAnuncios(tipoS, especieS, palabrasClave);
             return lista;
         } catch(ServerException ex){
-            Toast.makeText(getActivity().getApplicationContext(), "No se pudo establecer conexión con el servidor",
-                    Toast.LENGTH_LONG).show();
+            switch(ex.getCode()){
+                case 500:
+                    Toast.makeText(getActivity().getApplicationContext(), "No se pudo establecer conexión con el servidor",
+                            Toast.LENGTH_LONG).show();
+                    break;
+                case 405:
+                    //No hay sesion iniciada, vamos al login...
+                    Toast.makeText(getActivity().getApplicationContext(), "Sesión caducada",
+                            Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(myIntent);
+                    getActivity().finish();
+                    break;
+            }
+
             return null;
         }
     }

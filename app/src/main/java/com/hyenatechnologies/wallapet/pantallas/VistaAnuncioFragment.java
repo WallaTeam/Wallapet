@@ -14,6 +14,7 @@ package com.hyenatechnologies.wallapet.pantallas;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -54,7 +55,7 @@ public class VistaAnuncioFragment extends Fragment {
     TextView anuncioPrecio;
     TextView anuncioTitulo;
     TextView anuncioEspecie;
-
+Conexiones conexiones;
     Anuncio actual;
     EditText id_a_cargar;
     Button botonVer;
@@ -74,6 +75,7 @@ public class VistaAnuncioFragment extends Fragment {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        conexiones = new Conexiones(this.getActivity());
         ((PantallaPrincipal) getActivity()).setTitle("Anuncio");
 
         //Cargamos cuadro de id_a_cargar de id de anuncio
@@ -156,7 +158,7 @@ public class VistaAnuncioFragment extends Fragment {
     private void cargarAnuncio(int idAnuncio) {
             Anuncio b;
             try {
-                b = Conexiones.getAnuncioById(idAnuncio);
+                b = conexiones.getAnuncioById(idAnuncio);
                 actual = b;
                 mostrarAnuncio(b);
                 Toast.makeText(getActivity().getApplicationContext(), "Anuncio cargado correctamente",
@@ -178,6 +180,14 @@ public class VistaAnuncioFragment extends Fragment {
                         Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
                                 Toast.LENGTH_LONG).show();
                         //getFragmentManager().popBackStackImmediate();
+                        break;
+                    case 405:
+                        //No hay sesion iniciada, vamos al login...
+                        Toast.makeText(getActivity().getApplicationContext(), "Sesión caducada",
+                                Toast.LENGTH_SHORT).show();
+                        Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+                        startActivity(myIntent);
+                        getActivity().finish();
                         break;
 
                 }
@@ -221,7 +231,7 @@ public class VistaAnuncioFragment extends Fragment {
      */
     public void borrarAnuncio(int idAnuncio){
         try {
-            Conexiones.deleteAnuncio(idAnuncio);
+            conexiones.deleteAnuncio(idAnuncio);
             Toast.makeText(getActivity().getApplicationContext(), "El anuncio se ha borrado con éxito",
                     Toast.LENGTH_LONG).show();
         } catch (ServerException ex) {
