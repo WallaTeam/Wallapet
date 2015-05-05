@@ -32,6 +32,22 @@
         <item>@drawable/ic_action_share</item>
     </array>
 
+    <string-array name="array_especies">
+        <item>Mostrar todos</item>
+        <item>Mamiferos</item>
+        <item>Reptiles</item>
+        <item>Anfibios</item>
+        <item>Artropodos</item>
+        <item>Otros</item>
+    </string-array>
+
+    <string-array name="array_tipos">
+        <item>Mostrar todos</item>
+        <item>Venta</item>
+        <item>Adopción</item>
+
+    </string-array>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

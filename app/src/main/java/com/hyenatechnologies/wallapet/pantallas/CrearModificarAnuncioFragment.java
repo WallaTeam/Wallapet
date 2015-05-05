@@ -109,7 +109,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
 
         //spinner
 
-        ListaTipos.add("Adopcion");
+        ListaTipos.add("Adopción");
         ListaTipos.add("Venta");
         ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaTipos);
         tipo.setAdapter(adapter2);

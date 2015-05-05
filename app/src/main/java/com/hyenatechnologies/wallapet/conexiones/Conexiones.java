@@ -84,8 +84,17 @@ public class Conexiones {
      * En caso de error, lanza una ServerException.
      */
     public  List<Anuncio> getAnuncios(String tipo, String especie, String palabras) throws ServerException {
-        String json = realizarGET(API_URL + "buscarAnuncios.do?tipoAnuncio=" + tipo + "&" + "especie="
-                + especie + "&" + "palabrasClave=" + palabras);
+        String URL = API_URL + "buscarAnuncios.do?";
+        if(tipo.length()> 0){
+            URL+="tipoAnuncio=" + tipo + "&";
+        }
+        if(especie.length()>0){
+            URL+="especie=" + especie + "&";
+        }
+        if(palabras.length()>0){
+            URL+="palabrasClave=" + palabras;
+        }
+        String json = realizarGET(URL);
         return Anuncio.fromJsonList(json);
     }
 

@@ -165,7 +165,7 @@ public class PantallaPrincipal  extends ActionBarActivity{
                 fragment = new VistaAnuncioFragment();
                 break;
             case 4:
-                fragment = new BusquedaAnunciosFragment();
+                fragment = new BusquedaAnunciosNew();
                 break;
             case 7:
                 Conexiones c = new Conexiones(this);
