@@ -1,13 +1,25 @@
-/** Copyright (C) 2015 Hyena Technologies
- This program is free software: you can redistribute it and/or modify it under the terms of the GNU
- General Public License as published by the Free Software Foundation, either version 3 of the
- License, or (at your option) any later version.
- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the GNU General Public License for more details.
- You should have received a copy of the GNU General Public License along with this program.
- If not, see http://www.gnu.org/licenses/.
+/**
+ * Copyright (C) 2015 Hyena Technologies
+ * This program is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU
+ * General Public License as published by the Free Software Foundation, either
+ * version 3 of the license, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with this
+ * program.
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ * Nombre:  CrearModificarAnuncioFragment.java
+ * Version: 4.5
+ * Autor: Raúl Piracés, Ismael Rodriguez, Sergio Soro.
+ * Fecha: 6-5-2015
+ * Descripcion: Este fichero implementa la pantalla de crear un nuevo anuncio o
+ * modificar uno existente.
  */
+
 
 package com.hyenatechnologies.wallapet.pantallas;
 
@@ -62,63 +74,109 @@ import java.util.Random;
 
 
 /**
- * Pantalla de crear un nuevo anuncio o modificar uno existente
+ * La clase proporciona la pantalla para la creación y modificación de anuncios,
+ * incluyendo los metodos correspondientes a estas acciones.
  */
-public class CrearModificarAnuncioFragment extends Fragment{
+
+public class CrearModificarAnuncioFragment extends Fragment {
 
     private static final int MODO_CREAR = 1;
     private static final int MODO_ACTUALIZAR = 2;
 
-    // Variables asociadas a la cámara
-    // Activity request codes
+    // Variables asociadas a la cámara.
+    // "Activity request codes", para la llamada a aplicaciones externas.
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int GALLERY_IMAGE_REQUEST_CODE = 200;
-    public final static String TAG = CrearModificarAnuncioFragment.class.getSimpleName();
 
-    // directory name to store captured images and videos
+    // Nombre del directorio asociado a las imagenes capturadas por Wallapet.
     private static final String IMAGE_DIRECTORY_NAME = "WallapetCamera";
+    int modo = MODO_CREAR;
+    Anuncio modificando;
+    // Variables para el tratamiento de imágenes.
     private Uri fileUri;
-    private File chosenFile; //chosen file from intent
     private ImageView imgPreview;
     private Button botonImagen, botonGaleria;
     private String currentImagePath;
     private String currentURL;
-
-
-    // Variables globales
+    // Variables globales de la clase.
     private EditText titulo;
-
     private EditText descripcion;
-
     private Spinner tipo;
     private Spinner especie;
     private EditText precio;
     private Button botonCrear;
     private Conexiones conexiones;
     private TextView lblPrecio;
-    int modo = MODO_CREAR;
-    Anuncio modificando;
-    private List<String> ListaEstados = new ArrayList<String>();
     private List<String> ListaTipos = new ArrayList<String>();
     private List<String> ListaEspecies = new ArrayList<String>();
 
+    /**
+     * Pre: file != null.
+     * Post: Devuelve el hash correspondiente al fichero representado por file.
+     * El hash devuelto en un string está codificado en SHA1.
+     */
+    private static String getHash(final File file) throws NoSuchAlgorithmException,
+            IOException {
+        final MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+        Random random = new Random();
+        try {
+            InputStream is = new BufferedInputStream(new FileInputStream(file));
+            final byte[] buffer = new byte[1024];
+            for (int read = 0; (read = is.read(buffer)) != -1; ) {
+                messageDigest.update(buffer, 0, read);
+            }
+        } catch (Exception ex) {
+            Long l = random.nextLong();
+            return l.toString();
+        }
+        // Convert the byte to hex format.
+        try {
+            Formatter formatter = new Formatter();
+            for (final byte b : messageDigest.digest()) {
+                formatter.format("%02x", b);
+            }
+            return formatter.toString();
+        } catch (Exception ex) {
+            Long l = random.nextLong();
+            return l.toString();
+        }
+    }
 
+    /**
+     * Pre: file != null.
+     * Post: Devuelve la extensión del fichero representado por file.
+     */
+    private static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        else return "";
+    }
+
+    /**
+     * Pre: inflater != null && container != null && savedInstanceState != null.
+     * Post: Método por defecto en la creación de vista. Encargado de crear todos
+     * los elementos de la pantalla e inicializarlos.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container, false);
-        //Cargamos campos de id_a_cargar
+        View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container,
+                false);
+        //Cargamos campos de id_a_cargar.
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
         tipo = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioTipo);
         descripcion = (EditText) rootView.findViewById(R.id.crearAnuncioDescripcion);
         lblPrecio = (TextView) rootView.findViewById(R.id.lblPrecio);
-        //spinner
+        //Spinner.
 
         ListaTipos.add("Adopción");
         ListaTipos.add("Venta");
-        ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaTipos);
+        ArrayAdapter<String> adapter2 =
+                new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                        ListaTipos);
         tipo.setAdapter(adapter2);
         precio = (EditText) rootView.findViewById(R.id.crearAnuncioPrecio);
 
@@ -128,18 +186,20 @@ public class CrearModificarAnuncioFragment extends Fragment{
         ListaEspecies.add("Anfibios");
         ListaEspecies.add("Artropodos");
         ListaEspecies.add("Otros");
-        ArrayAdapter<String> adapter3 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaEspecies);
+        ArrayAdapter<String> adapter3 = new ArrayAdapter(getActivity(),
+                android.R.layout.simple_list_item_1, ListaEspecies);
         especie.setAdapter(adapter3);
 
-        //Cargamos botones
+        //Cargamos botones.
         botonCrear = (Button) rootView.findViewById(R.id.crearAnuncioOK);
         botonImagen = (Button) rootView.findViewById(R.id.anadirImagen);
         botonGaleria = (Button) rootView.findViewById(R.id.anadirImagen2);
         imgPreview = (ImageView) rootView.findViewById(R.id.imgPreview);
         imgPreview.setVisibility(View.GONE);
 
-        //Estas dos lineas siguientes son para permitir el uso de la red
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        //Estas dos lineas siguientes son para permitir el uso de la red.
+        StrictMode.ThreadPolicy policy =
+                new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         conexiones = new Conexiones(this.getActivity());
@@ -156,12 +216,12 @@ public class CrearModificarAnuncioFragment extends Fragment{
             modo = MODO_CREAR;
             ((PantallaPrincipal) getActivity()).setTitle("Crear anuncio");
             botonCrear.setText("Crear anuncio");
-            //No nos pasan anuncio, nos piden crear
+            //No nos pasan anuncio, nos piden crear.
         } else {
             modo = MODO_ACTUALIZAR;
             ((PantallaPrincipal) getActivity()).setTitle("Actualizar anuncio");
             botonCrear.setText("Actualizar anuncio");
-            //Nos pasan anuncio, modificamos
+            //Nos pasan anuncio, modificamos.
             Anuncio a = Anuncio.fromJson(jsonAnuncio);
             modificando = a;
             mostrarAnuncio(a);
@@ -170,13 +230,14 @@ public class CrearModificarAnuncioFragment extends Fragment{
 
         tipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // si es tipo adopcion, quitamos el campo de precio, si no lo ponemos
-                if(position==0){
+            public void onItemSelected(AdapterView<?> parentView,
+                                       View selectedItemView, int position, long id){
+                // Si es tipo adopcion, quitamos el campo de precio, si no lo
+                // ponemos.
+                if (position == 0) {
                     precio.setVisibility(View.GONE);
                     lblPrecio.setVisibility(View.GONE);
-                }
-               else{
+                } else {
                     precio.setVisibility(View.VISIBLE);
                     lblPrecio.setVisibility(View.VISIBLE);
                 }
@@ -186,13 +247,13 @@ public class CrearModificarAnuncioFragment extends Fragment{
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
+                // No ocurre nada.
             }
 
         });
         botonImagen.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // capture picture
+                // Captura la imagen correspondiente.
                 captureImage();
             }
         });
@@ -202,12 +263,12 @@ public class CrearModificarAnuncioFragment extends Fragment{
                 takeFromGallery();
             }
         });
-        //Establecemos que hace el boton al ser pulsado
+        //Establecemos que hace el boton al ser pulsado.
         botonCrear.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                //Recogemos datos de los campos de id_a_cargar
+                //Recogemos datos de los campos de id_a_cargar.
                 Anuncio a = new Anuncio();
                 try {
 
@@ -217,11 +278,10 @@ public class CrearModificarAnuncioFragment extends Fragment{
                     a.setEstado("NO IMPORTA");
                     a.setEspecie(especie.getSelectedItem().toString());
                     a.setTipoIntercambio(tipo.getSelectedItem().toString());
-                    if(tipo.getSelectedItemPosition()==1){
+                    if (tipo.getSelectedItemPosition() == 1) {
                         a.setPrecio(Double.parseDouble(precio.getText().toString()));
-                    }
-                    else{
-                        //Es de adopcion, da igual el precio
+                    } else {
+                        //Es de adopcion, da igual el precio.
                         a.setPrecio(0.0);
                     }
 
@@ -229,29 +289,33 @@ public class CrearModificarAnuncioFragment extends Fragment{
                     if (currentImagePath != null && currentImagePath.length() != 0) {
                         uploadImage();
                         a.setRutaImagen(currentURL);
-                    }
-                    else if(modo== MODO_ACTUALIZAR){
+                    } else if (modo == MODO_ACTUALIZAR) {
                         a.setRutaImagen(modificando.getRutaImagen());
                     }
-                    //Guardamos el anuncio
+                    //Guardamos el anuncio.
                     try {
                         if (modo == MODO_CREAR) {
-                            //Modo crear
+                            //Modo crear.
 
                             conexiones.createAnuncio(a);
-                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Anuncio creado correctamente",
                                     Toast.LENGTH_SHORT).show();
 
-                            //Se va a la seccion de busquedas
+                            //Se va a la seccion de busquedas.
                             FragmentManager fragmentManager = getFragmentManager();
                             Fragment fragment = new BusquedaAnunciosNew();
-                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
+                            fragmentManager.beginTransaction().
+                                    replace(R.id.content_frame, fragment).
+                                    addToBackStack(null).commit();
 
                         } else if (modo == MODO_ACTUALIZAR) {
-                            //Modo actualizar, tenemos q poner el id del anuncio a modificar
+                            // Modo actualizar, tenemos q poner el id del anuncio a
+                            // modificar.
                             a.setIdAnuncio(modificando.getIdAnuncio());
                             conexiones.updateAnuncio(a);
-                            Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Anuncio actualizado correctamente",
                                     Toast.LENGTH_SHORT).show();
                             getFragmentManager().popBackStack();
                         }
@@ -259,22 +323,27 @@ public class CrearModificarAnuncioFragment extends Fragment{
                         switch (ex.getCode()) {
 
                             case 500:
-                                Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Error al contactar con el servidor",
                                         Toast.LENGTH_SHORT).show();
                                 break;
                             case 403:
-                                Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Error de permisos",
                                         Toast.LENGTH_SHORT).show();
                                 break;
                             case 404:
-                                Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "No existe el anuncio indicado.",
                                         Toast.LENGTH_SHORT).show();
                                 break;
                             case 405:
                                 //No hay sesion iniciada, vamos al login...
-                                Toast.makeText(getActivity().getApplicationContext(), "Sesión caducada",
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "Sesión caducada",
                                         Toast.LENGTH_SHORT).show();
-                                Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+                                Intent myIntent = new Intent(getActivity(),
+                                        LoginActivity.class);
                                 startActivity(myIntent);
                                 getActivity().finish();
                                 break;
@@ -282,10 +351,10 @@ public class CrearModificarAnuncioFragment extends Fragment{
                         }
 
                     }
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
 
-                    Toast.makeText(getActivity().getApplicationContext(), "Debe rellenar todos los campos (excepto la imagen)",
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Debe rellenar todos los campos (excepto la imagen)",
                             Toast.LENGTH_SHORT).show();
                 } finally {
 
@@ -293,31 +362,24 @@ public class CrearModificarAnuncioFragment extends Fragment{
             }
         });
 
-        if(modo == MODO_ACTUALIZAR){
-            if(modificando.getRutaImagen()!=null && modificando.getRutaImagen().length()>0)
-            new DownloadImageTask((ImageView) imgPreview)
-                    .execute(modificando.getRutaImagen());
+        if (modo == MODO_ACTUALIZAR) {
+            if (modificando.getRutaImagen() != null &&
+                    modificando.getRutaImagen().length() > 0)
+                new DownloadImageTask((ImageView) imgPreview)
+                        .execute(modificando.getRutaImagen());
         }
         return rootView;
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getActivity().getMenuInflater().inflate(R.menu.menu_crear_anuncio, menu);
-        return true;
-    }
-    */
-
+    /**
+     * Pre: cierto.
+     * Post: manejar el menu de opciones y elementos.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        //noinspection SimplifiableIfStatement.
         if (id == R.id.action_settings) {
             return true;
         }
@@ -326,24 +388,25 @@ public class CrearModificarAnuncioFragment extends Fragment{
     }
 
     /**
-     * Rellena los campos
+     * Pre: cierto.
+     * Post: rellena los campos correspondientes del anuncio.
      */
     public void mostrarAnuncio(Anuncio a) {
 
 
         descripcion.setText(a.getDescripcion());
         String especieAnuncio = a.getEspecie();
-        if (especieAnuncio.compareTo("Cualquiera") == 0){
+        if (especieAnuncio.compareTo("Cualquiera") == 0) {
             especie.setSelection(0);
-        } else if (especieAnuncio.compareTo("Mamíferos") == 0){
+        } else if (especieAnuncio.compareTo("Mamíferos") == 0) {
             especie.setSelection(1);
-        } else if (especieAnuncio.compareTo("Reptiles") == 0){
+        } else if (especieAnuncio.compareTo("Reptiles") == 0) {
             especie.setSelection(2);
-        } else if (especieAnuncio.compareTo("Anfibios") == 0){
+        } else if (especieAnuncio.compareTo("Anfibios") == 0) {
             especie.setSelection(3);
-        } else if (especieAnuncio.compareTo("Artrópodos") == 0){
+        } else if (especieAnuncio.compareTo("Artrópodos") == 0) {
             especie.setSelection(4);
-        } else if (especieAnuncio.compareTo("Otros") == 0){
+        } else if (especieAnuncio.compareTo("Otros") == 0) {
             especie.setSelection(5);
         }
         if (a.getTipoIntercambio().compareTo("Adopción") == 0) {
@@ -355,61 +418,71 @@ public class CrearModificarAnuncioFragment extends Fragment{
         titulo.setText(a.getTitulo());
     }
 
-    /*
-     * Capturing Camera Image will lauch camera app requrest image capture
+    /**
+     * Pre: cierto.
+     * Post: lanza la acticidad encargada de capturar una imagen (camara) para el
+     * anuncio.
      */
     private void captureImage() {
         Intent imageIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File imagesFolder = new File(Environment.getExternalStorageDirectory(), IMAGE_DIRECTORY_NAME);
+        File imagesFolder = new File(Environment.getExternalStorageDirectory(),
+                IMAGE_DIRECTORY_NAME);
         imagesFolder.mkdirs();
         File image = new File(imagesFolder, "toUpload.jpg");
         fileUri = Uri.fromFile(image);
         imageIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-        startActivityForResult(imageIntent,CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+        startActivityForResult(imageIntent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
     }
 
     /**
-     *
+     * Pre: cierto.
+     * Post: este metodo se encarga de llamar a la actividad correspondiente para
+     * coger una imagen de la galeria.
      */
-    private void takeFromGallery(){
-        Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    private void takeFromGallery() {
+        Intent i = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, GALLERY_IMAGE_REQUEST_CODE);
     }
 
     /**
-     * Receiving activity result method will be called after closing the camera
-     * */
+     * Pre: cierto.
+     * Post: recibe el resultado de la actividad
+     * (sera llamado tras cerrar la camara).
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // if the result is capturing Image
+        // Si el resultado pertenece a la captura de imagen.
         if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                // successfully captured the image
-                // display it in image view
+                // vista previa de imagen.
                 previewCapturedImage();
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                // user cancelled Image capture
+                // captura cancelada por usuario.
                 Toast.makeText(getActivity().getApplicationContext(),
-                        "El usuario ha cancelado la captura de imagen.", Toast.LENGTH_SHORT)
+                        "El usuario ha cancelado la captura de imagen.",
+                        Toast.LENGTH_SHORT)
                         .show();
             } else {
-                // failed to capture image
+                // fallo al capturar la imagen.
                 Toast.makeText(getActivity().getApplicationContext(),
-                        "¡Fallo al capturar la imagen! Compruebe el estado de la camara y contacte con el desarrollador", Toast.LENGTH_SHORT)
+                        "¡Fallo al capturar la imagen! Compruebe el estado de la " +
+                                "camara y contacte con el desarrollador",
+                        Toast.LENGTH_SHORT)
                         .show();
             }
-        } else if (requestCode == GALLERY_IMAGE_REQUEST_CODE){
+        } else if (requestCode == GALLERY_IMAGE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                // successfully captured the image
-                // display it in image view
+                // vista previa de imagen.
                 previewGalleryImage(data);
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                // user cancelled Image capture
+                // captura cancelada por usuario.
                 Toast.makeText(getActivity().getApplicationContext(),
-                        "El usuario ha cancelado la selección de imagen.", Toast.LENGTH_SHORT)
+                        "El usuario ha cancelado la selección de imagen.",
+                        Toast.LENGTH_SHORT)
                         .show();
             } else {
-                // failed to capture image
+                // fallo al capturar la imagen.
                 Toast.makeText(getActivity().getApplicationContext(),
                         "¡Fallo al obtener la imagen!", Toast.LENGTH_SHORT)
                         .show();
@@ -417,19 +490,17 @@ public class CrearModificarAnuncioFragment extends Fragment{
         }
     }
 
-    /*
-     * Display image from a path to ImageView
+    /**
+     * Pre: cierto.
+     * Post: muestra una determinada imagen desde una ruta interna del dispositivo.
      */
     private void previewCapturedImage() {
         try {
 
             imgPreview.setVisibility(View.VISIBLE);
 
-            // bimatp factory
+            // bimatp factory.
             BitmapFactory.Options options = new BitmapFactory.Options();
-
-            // downsizing image as it throws OutOfMemory Exception for larger
-            // images
             options.inSampleSize = 8;
 
             final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
@@ -443,23 +514,22 @@ public class CrearModificarAnuncioFragment extends Fragment{
     }
 
     /**
-     * Display image from a gallery path to ImageView
+     * Pre: cierto.
+     * Post: muestra una vista previa de la imagen desde la galeria a un ImageView.
      */
-    private void previewGalleryImage(Intent data){
+    private void previewGalleryImage(Intent data) {
         try {
             imgPreview.setVisibility(View.VISIBLE);
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor =  getActivity().getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
             // bimatp factory
             BitmapFactory.Options options = new BitmapFactory.Options();
-
-            // downsizing image as it throws OutOfMemory Exception for larger
-            // images
             options.inSampleSize = 8;
             final Bitmap bitmap = BitmapFactory.decodeFile(picturePath,
                     options);
@@ -472,11 +542,12 @@ public class CrearModificarAnuncioFragment extends Fragment{
     }
 
     /**
-     * Upload image to the server
+     * Pre: cierto.
+     * Post: sube la imagen seleccionada al server mediante una petición POST.
      */
     private void uploadImage() {
      /*
-      Create the @Upload object
+      Crear el objeto de subida.
      */
         HttpURLConnection connection = null;
         DataOutputStream outputStream = null;
@@ -501,27 +572,30 @@ public class CrearModificarAnuncioFragment extends Fragment{
             URL url = new URL(urlServer);
             connection = (HttpURLConnection) url.openConnection();
 
-            // Allow Inputs &amp; Outputs.
+            // Aceptar inputs y outputs.
             connection.setDoInput(true);
             connection.setDoOutput(true);
             connection.setUseCaches(false);
 
-            // Set HTTP method to POST.
+            // HTTP -> POST.
             connection.setRequestMethod("POST");
 
             connection.setRequestProperty("Connection", "Keep-Alive");
-            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            connection.setRequestProperty("Content-Type",
+                    "multipart/form-data;boundary=" + boundary);
 
             outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + uploadedfile + "\"" + lineEnd);
+            outputStream.writeBytes("Content-Disposition: form-data;" +
+                    " name=\"uploadedfile\";filename=\"" + uploadedfile + "\"" +
+                    lineEnd);
             outputStream.writeBytes(lineEnd);
 
             bytesAvailable = fileInputStream.available();
             bufferSize = Math.min(bytesAvailable, maxBufferSize);
             buffer = new byte[bufferSize];
 
-            // Read file
+            // Leer el fichero.
             bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
             while (bytesRead > 0) {
@@ -534,11 +608,11 @@ public class CrearModificarAnuncioFragment extends Fragment{
             outputStream.writeBytes(lineEnd);
             outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
-            // Responses from the server (code and message)
+            // Respuesta del servidor (mensaje y codigo).
             int serverResponseCode = connection.getResponseCode();
             String serverResponseMessage = connection.getResponseMessage();
 
-            if (serverResponseCode!=200) {
+            if (serverResponseCode != 200) {
                 Toast.makeText(getActivity().getApplicationContext(),
                         "¡Fallo al subir la imagen!", Toast.LENGTH_SHORT)
                         .show();
@@ -550,50 +624,34 @@ public class CrearModificarAnuncioFragment extends Fragment{
             outputStream.close();
         } catch (Exception ex) {
             Toast.makeText(getActivity().getApplicationContext(),
-                    "¡Fallo al subir la imagen! La imagen no puede superar 25MB.", Toast.LENGTH_SHORT)
+                    "¡Fallo al subir la imagen! La imagen no puede superar 25MB.",
+                    Toast.LENGTH_SHORT)
                     .show();
         }
     }
 
-    private static String getHash(final File file) throws NoSuchAlgorithmException, IOException {
-        final MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
-        Random random = new Random();
-        try {
-            InputStream is = new BufferedInputStream(new FileInputStream(file));
-            final byte[] buffer = new byte[1024];
-            for (int read = 0; (read = is.read(buffer)) != -1; ) {
-                messageDigest.update(buffer, 0, read);
-            }
-        } catch (Exception ex) {
-            Long l = random.nextLong();
-            return l.toString();
-        }
-        // Convert the byte to hex format
-        try {
-            Formatter formatter = new Formatter();
-            for (final byte b : messageDigest.digest()) {
-                formatter.format("%02x", b);
-            }
-            return formatter.toString();
-        } catch (Exception ex) {
-            Long l = random.nextLong();
-            return l.toString();
-        }
-    }
-
-    private static String getFileExtension(File file) {
-        String fileName = file.getName();
-        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-            return fileName.substring(fileName.lastIndexOf(".")+1);
-        else return "";
-    }
+    /**
+     * Pre: cierto.
+     * Post: clase que implementa la descarga de imagen correspondiente a la vista y
+     * modificación de un anuncio.
+     */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
+        /**
+         * Constructor por defecto de la clase.
+         * @param bmImage
+         */
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
         }
 
+        /**
+         * Pre: cierto.
+         * Post: metodo en segundo plano encargado de recuperar la imagen.
+         * @param urls en la que se encuentra la imagen.
+         * @return Bitmap con la imagen descargada.
+         */
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
@@ -607,13 +665,20 @@ public class CrearModificarAnuncioFragment extends Fragment{
             return mIcon11;
         }
 
+        /**
+         * Pre: cierto.
+         * Post: metodo llamado tras la ejecución del metodo de descarga en segundo plano.
+         * @param result con la imagen obtenida.
+         */
         protected void onPostExecute(Bitmap result) {
-            Configuration configuration = getActivity().getResources().getConfiguration();
+            Configuration configuration = getActivity().getResources().
+                    getConfiguration();
             int screenWidthDp = configuration.screenWidthDp;
-            final float scale = getActivity().getResources().getDisplayMetrics().density;
+            final float scale = getActivity().getResources().
+                    getDisplayMetrics().density;
             int p = (int) (screenWidthDp * scale + 0.5f);
 
-            if(result!=null) {
+            if (result != null) {
                 Bitmap b2 = Bitmap.createScaledBitmap(result, p, p, true);
                 bmImage.setVisibility(View.VISIBLE);
                 bmImage.setImageBitmap(b2);
