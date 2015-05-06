@@ -61,7 +61,8 @@ public class Conexiones {
     /*
      * Pre: dl != null y contiene los datos de login a verificar.
      * Post: Loguea al usuario indicado con la contraseña indicada y devuelve el objeto Cuenta
-     * correspondiente al usuario logueado. Si ha habido un error lanza una excepción ServerException.
+     * correspondiente al usuario logueado. Si ha habido un error lanza una excepción
+     * ServerException.
      */
     public Cuenta login(DatosLogin dl) throws ServerException{
         String json = realizarPOST(API_URL + "loginUsuario.do", "login", DatosLogin.toJson(dl));
