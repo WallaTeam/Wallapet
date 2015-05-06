@@ -29,6 +29,7 @@ public class RegistroActivity extends ActionBarActivity {
     EditText txtApellidos;
     EditText txtTelefono;
     EditText txtDireccion;
+
     Button btnRegister;
     Conexiones conexiones;
     @Override
@@ -51,6 +52,7 @@ public class RegistroActivity extends ActionBarActivity {
         txtTelefono = (EditText) findViewById(R.id.txtTelefono);
         btnRegister = (Button) findViewById(R.id.btnRegister);
 
+
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(comprobarCampos()){
@@ -72,9 +74,9 @@ public class RegistroActivity extends ActionBarActivity {
                         RespuestaRegistro rr = conexiones.registrar(c);
                         String codigo = rr.getRespuestaRegistro();
                         switch(codigo){
-                            case "mail_o_DNI_repetido":
+                            case "mail_o_DNI_o_nick_repetido":
                                 Toast.makeText(getApplicationContext(), "Mail o DNI en uso",
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             case "OK":
                                 Toast.makeText(getApplicationContext(), "Registro correcto",
@@ -93,7 +95,7 @@ public class RegistroActivity extends ActionBarActivity {
                                 break;
                             default:
                                 Toast.makeText(getApplicationContext(), "Respuesta desconocida del servidor",
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                         }
 
@@ -104,11 +106,11 @@ public class RegistroActivity extends ActionBarActivity {
 
                             case 500:
                                 Toast.makeText(getApplicationContext(), "Error al contactar con el servidor",
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             default:
                                 Toast.makeText(getApplicationContext(), "Error al contactar con el servidor",
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
                                 break;
 
 
@@ -118,7 +120,7 @@ public class RegistroActivity extends ActionBarActivity {
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "Por favor rellene todos los campos",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                 }
 
             }

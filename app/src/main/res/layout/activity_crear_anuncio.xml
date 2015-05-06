@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     tools:context="com.hyenatechnologies.wallapet.pantallas.CrearModificarAnuncioFragment">
 
     <ScrollView
@@ -13,72 +15,142 @@
         android:layout_height="fill_parent"
         android:padding="10dip">
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-    <EditText
-        android:hint="Titulo del anuncio"
-        android:id="@+id/crearAnuncioTitulo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#ff000000" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Especie"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+                    <Spinner
+                        android:id="@+id/spinnerCrearAnuncioEspecie"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Tipo anuncio"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+                    <Spinner
+                        android:id="@+id/spinnerCrearAnuncioTipo"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
 
 
 
-    <EditText
-        android:hint="Descripción"
-        android:id="@+id/crearAnuncioDescripcion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#ff000000" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Título"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/crearAnuncioTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#ff000000" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Descripción"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <EditText
+
+                android:id="@+id/crearAnuncioDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#ff000000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/lblPrecio"
+                android:layout_height="wrap_content"
+                android:text="Precio en euros"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/crearAnuncioPrecio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textColor="#ff000000" />
 
 
 
-    <Spinner
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinnerCrearAnuncioTipo"
-        android:layout_gravity="center_horizontal" />
+            <!-- To display picture taken -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-    <Spinner
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinnerCrearAnuncioEspecie" />
+                <Button
+                    android:id="@+id/anadirImagen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cámara" />
 
-    <EditText
-        android:hint="Precio"
-        android:id="@+id/crearAnuncioPrecio"
-        android:inputType="numberDecimal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#ff000000" />
+                <Button
+                    android:id="@+id/anadirImagen2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Galería" />
 
-    <!-- To display picture taken -->
-    <ImageView
-        android:id="@+id/imgPreview"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:visibility="gone"/>
-
-    <Button
-        android:id="@+id/anadirImagen2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Imagen desde galeria" />
-
-    <Button
-        android:id="@+id/anadirImagen"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Imagen desde cámara" />
-
-    <Button
-        android:id="@+id/crearAnuncioOK"
-        android:layout_width="match_parent"
-        android:text="Crear anuncio"
-        android:layout_height="wrap_content" />
+            </LinearLayout>
 
 
-    </LinearLayout>
+
+            <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/imgPreview"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/no_image" />
+
+            <Button
+                android:id="@+id/crearAnuncioOK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crear anuncio" />
+
+
+        </LinearLayout>
     </ScrollView>
 </FrameLayout>

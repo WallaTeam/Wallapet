@@ -94,7 +94,7 @@ private Conexiones conexiones;
                     cambiarVista();
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Su búsqueda no produjo ningún resultado",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -131,14 +131,14 @@ private Conexiones conexiones;
         String palabrasClave = palabras.getText().toString();
         try {
             Toast.makeText(getActivity().getApplicationContext(), "Buscando anuncios... Espere por favor.",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
             List<Anuncio> lista = conexiones.getAnuncios(tipoS, especieS, palabrasClave);
             return lista;
         } catch(ServerException ex){
             switch(ex.getCode()){
                 case 500:
                     Toast.makeText(getActivity().getApplicationContext(), "No se pudo establecer conexión con el servidor",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                     break;
                 case 405:
                     //No hay sesion iniciada, vamos al login...

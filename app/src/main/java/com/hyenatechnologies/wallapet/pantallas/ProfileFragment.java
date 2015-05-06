@@ -11,59 +11,124 @@
 
 package com.hyenatechnologies.wallapet.pantallas;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.hyenatechnologies.wallapet.Cuenta;
 import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.ValorSesion;
+import com.hyenatechnologies.wallapet.conexiones.Conexiones;
+import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
 /*  Fragment para seccion perfil */
 public class ProfileFragment extends Fragment {
 
-    Button boton;
-    EditText texto;
+    TextView usuario;
+    TextView nombre;
+    TextView apellidos;
+    TextView email;
+    TextView telefono;
+    TextView direccion;
+    TextView DNI;
+    Button btnBorrar;
+    Conexiones conexiones;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView;
-        rootView = inflater.inflate(R.layout.profile, container, false);
+        rootView = inflater.inflate(R.layout.activity_perfil, container, false);
 
-        boton = (Button) rootView.findViewById(R.id.verAnuncioBoton);
-        texto = (EditText) rootView.findViewById(R.id.verAnuncio);
+        ((PantallaPrincipal) getActivity()).setTitle("Perfil de usuario");
+        usuario = (TextView) rootView.findViewById(R.id.perfil_usuario);
+        nombre = (TextView) rootView.findViewById(R.id.perfil_nombre);
+        apellidos = (TextView) rootView.findViewById(R.id.perfil_apellidos);
+        email = (TextView) rootView.findViewById(R.id.perfil_email);
+        telefono = (TextView) rootView.findViewById(R.id.perfil_telefono);
+        direccion = (TextView) rootView.findViewById(R.id.perfil_direccion);
+        DNI = (TextView) rootView.findViewById(R.id.perfil_DNI);
+        btnBorrar = (Button) rootView.findViewById(R.id.borrarCuenta);
 
-        /** al pulsar el boton se lanza el fragment de ver anuncio
-        boton.setOnClickListener(new View.OnClickListener() {
+        conexiones = new Conexiones(getActivity());
+        Cuenta c = ValorSesion.getCuenta();
+        if(c!=null){
+            usuario.setText(c.getUsuario());
+            nombre.setText(c.getNombre());
+            apellidos.setText(c.getApellido());
+            email.setText(c.getEmail());
+            telefono.setText("" + c.getTelefono());
+            direccion.setText(c.getDireccion());
+            DNI.setText(c.getDNI());
+        }
+        else{
+            //No hay sesion iniciada, vamos al login...
+            Toast.makeText(getActivity().getApplicationContext(), "Sesión caducada",
+                    Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(myIntent);
+            getActivity().finish();
 
-            @Override
+        }
+        btnBorrar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                LayoutInflater li = LayoutInflater.from(getActivity());
+                final View prompt = li.inflate(R.layout.dialogoborrarusuario, null);
 
-                if (!texto.getText().toString().equals("")) {
-                    int id = Integer.parseInt(texto.getText().toString());
-                    FragmentManager fragmentManager = getFragmentManager();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setView(prompt);
 
-                    //Paso 2: Crear una nueva transacción
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                // Mostramos el mensaje del cuadro de dialogo
+                alertDialogBuilder.setCancelable(false)
+                        .setPositiveButton("BORRAR CUENTA", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                try{
+                                    conexiones.borrarUsuario(ValorSesion.getCuenta().getEmail());
+                                    //Se ha borrado con éxito
+                                    //Nos vamos a pantalla de login
+                                    Toast.makeText(getActivity().getApplicationContext(), "Cuenta borrada con exito",
+                                            Toast.LENGTH_SHORT).show();
+                                    Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+                                    startActivity(myIntent);
+                                    getActivity().finish();
+                                }
+                                catch(ServerException ex){
+                                    switch (ex.getCode()) {
 
-                    //Paso 3: Crear un nuevo fragmento y añadirlo
-                    VistaAnuncioFragment vista = new VistaAnuncioFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("anuncio",id);
-                    vista.setArguments(bundle);
-                    transaction.replace(R.id.content_frame, vista);
-                    transaction.addToBackStack(null);
-                    //Paso 4: Confirmar el cambio
-                    transaction.commit();
+                                        case 500:
+                                            Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                                    Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 403:
+                                            Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                                    Toast.LENGTH_SHORT).show();
+                                            break;
+                                    }
+                                }
+                            }
+                        })
 
-                }
+                        .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
 
+
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
-        */
         return rootView;
     }
 }
+

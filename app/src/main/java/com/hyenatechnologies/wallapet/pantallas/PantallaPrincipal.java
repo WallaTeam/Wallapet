@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.hyenatechnologies.wallapet.Item_objct;
 import com.hyenatechnologies.wallapet.NavigationAdapter;
 import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.ValorSesion;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
@@ -87,19 +88,21 @@ public class PantallaPrincipal  extends ActionBarActivity{
         NavItms = new ArrayList<Item_objct>();
         //Agregamos objetos Item_objct al array
         //Perfil
-        NavItms.add(new Item_objct(titulos[0], NavIcons.getResourceId(0, -1)));
-        //Favoritos
+        if(ValorSesion.getCuenta() == null) {
+            NavItms.add(new Item_objct(titulos[0], NavIcons.getResourceId(0, -1)));
+        }
+        else{
+            NavItms.add(new Item_objct(titulos[0] + " - " + ValorSesion.getCuenta().getUsuario(), NavIcons.getResourceId(0, -1)));
+        }
+        //Crear
         NavItms.add(new Item_objct(titulos[1], NavIcons.getResourceId(1, -1)));
-        //Eventos
+        //Buscar
         NavItms.add(new Item_objct(titulos[2], NavIcons.getResourceId(2, -1)));
-        //Lugares
-        NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(3, -1)));
-        //Etiquetas
-        NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(4, -1)));
-        //Busqueda
-        NavItms.add(new Item_objct(titulos[5], NavIcons.getResourceId(5, -1)));
-        //Cerrar sesion
-        NavItms.add(new Item_objct(titulos[6], NavIcons.getResourceId(5, -1)));
+        //Compartir
+        NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(4, -1)));
+        //Cerrar sesión
+        NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(5, -1)));
+
 
         //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
         NavAdapter= new NavigationAdapter(this,NavItms);
@@ -141,12 +144,18 @@ public class PantallaPrincipal  extends ActionBarActivity{
         NavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-                MostrarFragment(position);
+                if(position<=0){
+                    MostrarFragment(1);
+                }
+                else{
+                    MostrarFragment(position);
+                }
+
             }
         });
 
         //Cuando la aplicacion cargue por defecto mostrar la opcion Home
-        MostrarFragment(4);
+        MostrarFragment(3);
 
     }
 
@@ -162,12 +171,12 @@ public class PantallaPrincipal  extends ActionBarActivity{
                 fragment = new CrearModificarAnuncioFragment();
                 break;
             case 3:
-                fragment = new VistaAnuncioFragment();
-                break;
-            case 4:
                 fragment = new BusquedaAnunciosNew();
                 break;
-            case 7:
+            case 4:
+                //Opción de compartir
+                break;
+            case 5:
                 Conexiones c = new Conexiones(this);
                 try{
                     c.logout();

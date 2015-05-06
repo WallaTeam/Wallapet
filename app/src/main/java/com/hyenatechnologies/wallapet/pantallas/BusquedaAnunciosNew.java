@@ -52,6 +52,7 @@ public class BusquedaAnunciosNew extends Fragment {
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        ((PantallaPrincipal) getActivity()).setTitle("Buscar anuncios");
         conexiones = new Conexiones(this.getActivity());
         View rootView = inflater.inflate(R.layout.activity_buscar_anuncio_new, container, false);
         spinnerEspecie = (Spinner) rootView.findViewById(R.id.spinnerEspecie);
@@ -63,7 +64,7 @@ public class BusquedaAnunciosNew extends Fragment {
             lista = conexiones.getAnuncios("", "", "");
         } catch (ServerException ex) {
             Toast.makeText(this.getActivity().getApplicationContext(), "Error obteniendo la lista",
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_SHORT).show();
         }
 
         miAdaptador = new AdaptadorAnuncios(this.getActivity(), 0, lista);
@@ -100,7 +101,7 @@ public class BusquedaAnunciosNew extends Fragment {
 
                 } catch (ServerException ex) {
                     Toast.makeText(getActivity().getApplicationContext(), "Error obteniendo la lista",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                 }
 
                 miAdaptador.clear();
@@ -132,7 +133,7 @@ public class BusquedaAnunciosNew extends Fragment {
 
                 } catch (ServerException ex) {
                     Toast.makeText(getActivity().getApplicationContext(), "Error obteniendo la lista",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                 }
 
                 miAdaptador.clear();
@@ -193,7 +194,7 @@ public class BusquedaAnunciosNew extends Fragment {
 
                                 } catch (ServerException ex) {
                                     Toast.makeText(getActivity().getApplicationContext(), "Error obteniendo la lista",
-                                            Toast.LENGTH_LONG).show();
+                                            Toast.LENGTH_SHORT).show();
                                 }
 
                                 miAdaptador.clear();
@@ -212,7 +213,7 @@ public class BusquedaAnunciosNew extends Fragment {
 
                                 } catch (ServerException ex) {
                                     Toast.makeText(getActivity().getApplicationContext(), "Error obteniendo la lista",
-                                            Toast.LENGTH_LONG).show();
+                                            Toast.LENGTH_SHORT).show();
                                 }
 
                                 miAdaptador.clear();

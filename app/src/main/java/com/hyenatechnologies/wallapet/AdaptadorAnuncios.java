@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -30,12 +31,20 @@ public class AdaptadorAnuncios extends ArrayAdapter<Anuncio> {
         TextView titulo = (TextView) view.findViewById(R.id.lista_titulo);
         TextView especie = (TextView) view.findViewById(R.id.lista_especie);
         TextView precio = (TextView) view.findViewById(R.id.lista_precio);
-        TextView tipo = (TextView) view.findViewById(R.id.lista_tipo);
-
+        TextView nick = (TextView) view.findViewById(R.id.lista_tipo);
+        ImageView image = (ImageView) view.findViewById(R.id.thumbnail);
         titulo.setText(anuncio.getTitulo());
         especie.setText("Especie: " + anuncio.getEspecie());
-        precio.setText("" + anuncio.getPrecio() + " €");
-        tipo.setText(anuncio.getTipoIntercambio());
+        if(anuncio.getTipoIntercambio().contains("Venta")){
+            precio.setText("Venta - " + anuncio.getPrecio() + " Euros");
+            image.setImageResource(R.drawable.sell);
+        }
+        else{
+            precio.setText("Adopcion");
+            image.setImageResource(R.drawable.deal);
+        }
+
+        nick.setText("");
         //Modificamos el texto del View construido
 
 

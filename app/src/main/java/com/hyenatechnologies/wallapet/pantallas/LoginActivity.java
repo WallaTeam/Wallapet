@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.hyenatechnologies.wallapet.Cuenta;
 import com.hyenatechnologies.wallapet.DatosLogin;
 import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.ValorSesion;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
@@ -61,8 +62,9 @@ public class LoginActivity extends ActionBarActivity {
                 dl.setPass(txtPass.getText().toString());
                 try {
                     Cuenta c = conexiones.login(dl);
+                    ValorSesion.setCuenta(c);
                     Toast.makeText(getApplicationContext(), "Autentificacion correcta. Bienvenido " + c.getNombre() + " " + c.getApellido(),
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
 
                     //Si login exitoso, guardamos login para proxima vez
                     SharedPreferences sharedPref = getSharedPreferences("configuracion", Context.MODE_PRIVATE);
@@ -79,11 +81,11 @@ public class LoginActivity extends ActionBarActivity {
 
                         case 500:
                             Toast.makeText(getApplicationContext(), "Error al contactar con el servidor",
-                                    Toast.LENGTH_LONG).show();
+                                    Toast.LENGTH_SHORT).show();
                             break;
                         case 403:
                             Toast.makeText(getApplicationContext(), "Usuario o pass incorrectos",
-                                    Toast.LENGTH_LONG).show();
+                                    Toast.LENGTH_SHORT).show();
                             break;
 
 

@@ -13,24 +13,30 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyenatechnologies.wallapet.Anuncio;
@@ -89,6 +95,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
     private EditText precio;
     private Button botonCrear;
     private Conexiones conexiones;
+    private TextView lblPrecio;
     int modo = MODO_CREAR;
     Anuncio modificando;
     private List<String> ListaEstados = new ArrayList<String>();
@@ -106,7 +113,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
         tipo = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioTipo);
         descripcion = (EditText) rootView.findViewById(R.id.crearAnuncioDescripcion);
-
+        lblPrecio = (TextView) rootView.findViewById(R.id.lblPrecio);
         //spinner
 
         ListaTipos.add("Adopción");
@@ -114,6 +121,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
         ArrayAdapter<String> adapter2 = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, ListaTipos);
         tipo.setAdapter(adapter2);
         precio = (EditText) rootView.findViewById(R.id.crearAnuncioPrecio);
+
         especie = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioEspecie);
         ListaEspecies.add("Mamiferos");
         ListaEspecies.add("Reptiles");
@@ -128,6 +136,7 @@ public class CrearModificarAnuncioFragment extends Fragment{
         botonImagen = (Button) rootView.findViewById(R.id.anadirImagen);
         botonGaleria = (Button) rootView.findViewById(R.id.anadirImagen2);
         imgPreview = (ImageView) rootView.findViewById(R.id.imgPreview);
+        imgPreview.setVisibility(View.GONE);
 
         //Estas dos lineas siguientes son para permitir el uso de la red
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -159,6 +168,28 @@ public class CrearModificarAnuncioFragment extends Fragment{
 
         }
 
+        tipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // si es tipo adopcion, quitamos el campo de precio, si no lo ponemos
+                if(position==0){
+                    precio.setVisibility(View.GONE);
+                    lblPrecio.setVisibility(View.GONE);
+                }
+               else{
+                    precio.setVisibility(View.VISIBLE);
+                    lblPrecio.setVisibility(View.VISIBLE);
+                }
+
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
         botonImagen.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // capture picture
@@ -186,12 +217,21 @@ public class CrearModificarAnuncioFragment extends Fragment{
                     a.setEstado("NO IMPORTA");
                     a.setEspecie(especie.getSelectedItem().toString());
                     a.setTipoIntercambio(tipo.getSelectedItem().toString());
-                    a.setPrecio(Double.parseDouble(precio.getText().toString()));
-                    Toast.makeText(getActivity().getApplicationContext(), "Creando anuncio... Espere por favor.",
-                            Toast.LENGTH_LONG).show();
+                    if(tipo.getSelectedItemPosition()==1){
+                        a.setPrecio(Double.parseDouble(precio.getText().toString()));
+                    }
+                    else{
+                        //Es de adopcion, da igual el precio
+                        a.setPrecio(0.0);
+                    }
+
+
                     if (currentImagePath != null && currentImagePath.length() != 0) {
                         uploadImage();
                         a.setRutaImagen(currentURL);
+                    }
+                    else if(modo== MODO_ACTUALIZAR){
+                        a.setRutaImagen(modificando.getRutaImagen());
                     }
                     //Guardamos el anuncio
                     try {
@@ -200,28 +240,35 @@ public class CrearModificarAnuncioFragment extends Fragment{
 
                             conexiones.createAnuncio(a);
                             Toast.makeText(getActivity().getApplicationContext(), "Anuncio creado correctamente",
-                                    Toast.LENGTH_LONG).show();
+                                    Toast.LENGTH_SHORT).show();
+
+                            //Se va a la seccion de busquedas
+                            FragmentManager fragmentManager = getFragmentManager();
+                            Fragment fragment = new BusquedaAnunciosNew();
+                            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
+
                         } else if (modo == MODO_ACTUALIZAR) {
                             //Modo actualizar, tenemos q poner el id del anuncio a modificar
                             a.setIdAnuncio(modificando.getIdAnuncio());
                             conexiones.updateAnuncio(a);
                             Toast.makeText(getActivity().getApplicationContext(), "Anuncio actualizado correctamente",
-                                    Toast.LENGTH_LONG).show();
+                                    Toast.LENGTH_SHORT).show();
+                            getFragmentManager().popBackStack();
                         }
                     } catch (ServerException ex) {
                         switch (ex.getCode()) {
 
                             case 500:
                                 Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             case 403:
                                 Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             case 404:
                                 Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
-                                        Toast.LENGTH_LONG).show();
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             case 405:
                                 //No hay sesion iniciada, vamos al login...
@@ -237,13 +284,20 @@ public class CrearModificarAnuncioFragment extends Fragment{
                     }
                 }
                 catch(Exception ex){
+
                     Toast.makeText(getActivity().getApplicationContext(), "Debe rellenar todos los campos (excepto la imagen)",
-                            Toast.LENGTH_LONG).show();
+                            Toast.LENGTH_SHORT).show();
                 } finally {
 
                 }
             }
         });
+
+        if(modo == MODO_ACTUALIZAR){
+            if(modificando.getRutaImagen()!=null && modificando.getRutaImagen().length()>0)
+            new DownloadImageTask((ImageView) imgPreview)
+                    .execute(modificando.getRutaImagen());
+        }
         return rootView;
     }
 
@@ -292,10 +346,10 @@ public class CrearModificarAnuncioFragment extends Fragment{
         } else if (especieAnuncio.compareTo("Otros") == 0){
             especie.setSelection(5);
         }
-        if (a.getTipoIntercambio().compareTo("Adopcion") == 0) {
-            tipo.setGravity(0);
+        if (a.getTipoIntercambio().compareTo("Adopción") == 0) {
+            tipo.setSelection(0);
         } else {
-            tipo.setGravity(1);
+            tipo.setSelection(1);
         }
         precio.setText("" + a.getPrecio());
         titulo.setText(a.getTitulo());
@@ -533,4 +587,38 @@ public class CrearModificarAnuncioFragment extends Fragment{
             return fileName.substring(fileName.lastIndexOf(".")+1);
         else return "";
     }
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            Configuration configuration = getActivity().getResources().getConfiguration();
+            int screenWidthDp = configuration.screenWidthDp;
+            final float scale = getActivity().getResources().getDisplayMetrics().density;
+            int p = (int) (screenWidthDp * scale + 0.5f);
+
+            if(result!=null) {
+                Bitmap b2 = Bitmap.createScaledBitmap(result, p, p, true);
+                bmImage.setVisibility(View.VISIBLE);
+                bmImage.setImageBitmap(b2);
+            }
+        }
+    }
 }
+

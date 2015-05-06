@@ -46,7 +46,7 @@ public class Conexiones {
     public Conexiones(Context c){
         this.context = c;
     }
-    public static final String API_URL = "http://192.168.1.120:8080/Wallapet/";
+    public static final String API_URL = "http://wallapet.com:8080/Wallapet/";
 
     /**
      * Obtiene del servidor un anuncio según ID.
@@ -71,7 +71,7 @@ public class Conexiones {
     }
 
     public RespuestaRegistro registrar(Cuenta c) throws ServerException{
-        String json = realizarPOST(API_URL + "registrarUsuario.do","usuario",Cuenta.toJson(c));
+        String json = realizarPOST(API_URL + "registrarUsuario.do", "usuario", Cuenta.toJson(c));
         return RespuestaRegistro.fromJson(json);
     }
 
@@ -79,6 +79,13 @@ public class Conexiones {
         realizarGET(API_URL + "logout.do");
     }
 
+    public void borrarUsuario(String mail) throws ServerException{
+        realizarGET(API_URL + "borrarUsuario.do?mail=" + mail );
+    }
+
+    public void cerrarAnuncio(int id) throws ServerException{
+        realizarPOST(API_URL + "cerrarAnuncio.do","id","" + id);
+    }
     /**
      * Obtiene del servidor una busqueda de anuncios.
      * En caso de error, lanza una ServerException.

@@ -14,9 +14,7 @@
     <string-array name="nav_options">
         <item>Perfil</item>
         <item>Crear anuncio</item>
-        <item>Ver anuncios</item>
         <item>Buscar anuncios</item>
-        <item>Configuración</item>
         <item>Compartir</item>
         <item>Cerrar sesión</item>
     </string-array>
