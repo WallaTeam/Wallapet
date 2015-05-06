@@ -1,13 +1,10 @@
-/** Copyright (C) 2015 Hyena Technologies
- This program is free software: you can redistribute it and/or modify it under the terms of the GNU
- General Public License as published by the Free Software Foundation, either version 3 of the
- License, or (at your option) any later version.
- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the GNU General Public License for more details.
- You should have received a copy of the GNU General Public License along with this program.
- If not, see http://www.gnu.org/licenses/.
- */
+/*
+* Nombre: Conexiones.java
+* Version: 1.0
+* Autor: Ismael Rodriguez
+* Fecha: 15­4­2015
+* Descripcion: Este fichero implementa las funciones de conexion con el servidor.
+*/
 package com.hyenatechnologies.wallapet.conexiones;
 
 import android.content.Context;
@@ -40,6 +37,7 @@ import java.util.List;
 /**
  * Clase que contiene los métodos para realizar operaciones con el servidor Web.
  */
+
 public class Conexiones {
 
     private Context context;
@@ -48,9 +46,10 @@ public class Conexiones {
     }
     public static final String API_URL = "http://wallapet.com:8080/Wallapet/";
 
-    /**
-     * Obtiene del servidor un anuncio según ID.
-     * En caso de error, lanza una ServerException.
+    /*
+     * Pre: id >= 0
+     * Post: Devuelve el anuncio que tiene como identificador idAnuncio si existe.
+     * En caso de que no existe o haya un error de servidor, lanzará una ServerException.
      */
     public  Anuncio getAnuncioById(int id) throws ServerException {
 
@@ -59,38 +58,64 @@ public class Conexiones {
 
     }
 
-    /**
-     * Loguea y devuelve la cuenta. Si ha habido un error lanza una excepcion con el codigo
-     * @param dl
-     * @return
-     * @throws ServerException
+    /*
+     * Pre: dl != null y contiene los datos de login a verificar.
+     * Post: Loguea al usuario indicado con la contraseña indicada y devuelve el objeto Cuenta
+     * correspondiente al usuario logueado. Si ha habido un error lanza una excepción ServerException.
      */
     public Cuenta login(DatosLogin dl) throws ServerException{
         String json = realizarPOST(API_URL + "loginUsuario.do", "login", DatosLogin.toJson(dl));
         return Cuenta.fromJson(json);
     }
 
+    /*
+     * Pre: c!=null
+     * Post: Registra al usuario indicado en el sistema, devolviendo un objeto RespuestaRegistro
+     * que indica si se ha registrado correctamente, o hay algún dato que ya está registrado (DNI,
+     * mail o nick). Si se produce algún error de servidor, o falta algún dato por rellenar,
+     * lanza una ServerException.
+     */
     public RespuestaRegistro registrar(Cuenta c) throws ServerException{
         String json = realizarPOST(API_URL + "registrarUsuario.do", "usuario", Cuenta.toJson(c));
         return RespuestaRegistro.fromJson(json);
     }
 
+    /*
+    * Pre: ninguno
+    * Post: Desloguea al usuario logueado. Si se produce un error del servidor o no había usuario
+    * logueado, lanza una ServerException.
+    */
     public void logout() throws ServerException{
         realizarGET(API_URL + "logout.do");
     }
 
+    /*
+    * Pre: mail != null
+    * Post: Borra el usuario indicado sí y sólo si el usuario que está logueado es el mismo
+    * que la cuenta indicada. Lanza ServerException en caso de que no sea así o error del servidor.
+    */
     public void borrarUsuario(String mail) throws ServerException{
         realizarGET(API_URL + "borrarUsuario.do?mail=" + mail );
     }
 
+    /*
+     * Pre: id >= 0
+    * Post: Cierra el anuncio indicado si existe y es propiedad del usuario logueado.
+    * Si no es así o se produce un error en el servidor, lanza una ServerException.
+    */
     public void cerrarAnuncio(int id) throws ServerException{
         realizarPOST(API_URL + "cerrarAnuncio.do","id","" + id);
     }
-    /**
-     * Obtiene del servidor una busqueda de anuncios.
-     * En caso de error, lanza una ServerException.
-     */
-    public  List<Anuncio> getAnuncios(String tipo, String especie, String palabras) throws ServerException {
+
+     /*
+     * Pre: tipo, especie y palabras != null
+    * Post: Obtiene y devuelve del servidor el resultado de una búsqueda de anuncios definidos por
+    * el tipo, especie y palabras siempre que no sean cadenas vacías. Si ocurre algún error
+    * lanza una ServerException.
+    */
+    public  List<Anuncio> getAnuncios(String tipo, String especie, String palabras)
+            throws ServerException {
+
         String URL = API_URL + "buscarAnuncios.do?";
         if(tipo.length()> 0){
             URL+="tipoAnuncio=" + tipo + "&";
@@ -105,17 +130,21 @@ public class Conexiones {
         return Anuncio.fromJsonList(json);
     }
 
-    /**
-     * Crea el anuncio <a> en el servidor.
-     * En caso de algún error, lanza una ServerException indicando el error.
-     */
+
+    /*
+   * Pre: a!=null
+  * Post: Crea el anuncio indicado, con el estado "abierto" y con el "mail" del usuario logueado.
+  * Si hay un error, se lanza ServerException.
+  */
     public  void createAnuncio(Anuncio a) throws ServerException {
         String json = Anuncio.toJson(a);
         realizarPOST(API_URL + "crearAnuncio.do", "anuncio", json);
     }
-
-    /* Actualiza el anuncio <a> en el servidor.
-     *  En caso de algún error, lanza una ServerException indicando el error.
+    /*
+      * Pre: a!=null
+     * Post: Actualiza el anuncio <a> en el servidor, salvo el mail del creador y el estado
+     * del anuncio.
+     * En caso de algún error, lanza una ServerException, indicando el error
      */
     public  void updateAnuncio(Anuncio a) throws ServerException {
         String json = Anuncio.toJson(a);
@@ -124,17 +153,18 @@ public class Conexiones {
     }
 
 
-    /**
-     * Borra el anuncio identificado por <id> del servidor.
-     *  En caso de algún error, lanza una ServerException indicando el error.
-     */
+
+     /*
+   * Pre: id >= 0
+  * Post: Borra el anuncio con id indicado si el usuario creador es el logueado.
+  * En caso contrario o en caso de otro error, lanza ServerException
+  */
     public  void deleteAnuncio(int id) throws ServerException {
             realizarPOST(API_URL + "BorrarAnuncio?id=" + id, null, null);
-        //Nos da igual el texto de contenido.
-
     }
 
     /**
+     * Pre: url != null
      * Realiza un GET a la URL indicada y devuelve, si el código
      * de la respuesta es 200 OK, el contenido de dicha respuesta.
      * En caso de error de comunicación o de acceso denegado,
@@ -155,12 +185,15 @@ public class Conexiones {
             parseResponseJSESSION(getResponse);
             final int statusCode = getResponse.getStatusLine().getStatusCode();
 
+
             if (statusCode != HttpStatus.SC_OK) {
+
                 //No es OK, lanzamos excepcion con el codigo
                 Log.w("wallapet",
                         "Error " + statusCode + " for URL " + url);
                 throw new ServerException(statusCode);
             } else {
+
                 //Es OK, devolvemos contenido
                 HttpEntity getResponseEntity = getResponse.getEntity();
                 InputStream is = getResponseEntity.getContent();
@@ -170,6 +203,7 @@ public class Conexiones {
             }
 
         } catch (IOException e) {
+
             //Excepcion, lanzamos 500 server error
             getRequest.abort();
             Log.w("wallapet", "Error for URL " + url, e);
@@ -183,20 +217,26 @@ public class Conexiones {
 
 
     /**
+     * Pre: url!=null, claveParam!=null y claveParam.length > 0,valorParam!=null y valorParam.length
+     * >0
      * Realiza un POST a la dirección <url> con un parámetro
      * con clave <claveParam> y valor <valorParam>, y devuelve el contenido
      * de la respuesta como cadena si su código es 200 OK.
      * En caso contrario, lanza una excepción indicando el código de error.
 
      */
-    public String realizarPOST(String url, String claveParam, String valorParam) throws ServerException{
+    public String realizarPOST(String url, String claveParam, String valorParam)
+            throws ServerException{
+
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
         addJSESSIONID(httppost);
 
         try {
+
             // Verificación de parametros
             if (claveParam!=null && valorParam!=null) {
+
                 //Añadimos el parametro
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
                 nameValuePairs.add(new BasicNameValuePair(claveParam, valorParam));
@@ -218,6 +258,7 @@ public class Conexiones {
                 return s.hasNext() ? s.next() : "";
             }
         } catch (IOException e) {
+
             //Error
             Log.d("wallapet", e.getMessage());
             throw new ServerException(500);
@@ -225,6 +266,11 @@ public class Conexiones {
     }
 
 
+    /**
+     * Pre: response es una respuesta de POST o GET
+     * Post: Comprueba que la sesión actual sigue teniendo vigor.
+     * Si no, la actualiza.
+     */
     private  void parseResponseJSESSION(HttpResponse response){
 
         try {
@@ -239,15 +285,18 @@ public class Conexiones {
 
                 String sessionID = value.substring(
                         index + "JSESSIONID=".length(), endIndex);
-                SharedPreferences sharedPref = context.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
+                SharedPreferences sharedPref =
+                        context.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
                 String id= sharedPref.getString("JSESSIONID","0");
 
                 if(id.equalsIgnoreCase(sessionID)){
+
                     //Nos mantenemos en la misma sesión
                     Log.d("SESION", "La sesion se mantiene");
 
                 }
                 else{
+
                     //Ha cambiado la sesion, la guardamos
                     Log.d("SESION", "New session id: " + sessionID);
                     SharedPreferences.Editor editor = sharedPref.edit();
@@ -264,9 +313,14 @@ public class Conexiones {
     }
 
 
+    /**
+     * Pre: httpRequest es una petición HTTP POST o GET
+     * Post: añade el JsessionID a la petición POST o GET para identificar sesión.
+     */
     private void addJSESSIONID(HttpRequest httpRequest){
 
-        SharedPreferences sharedPref = context.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+                context.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
         String id= sharedPref.getString("JSESSIONID","0");
         httpRequest.setHeader("Cookie", "JSESSIONID=" + id);
     }
