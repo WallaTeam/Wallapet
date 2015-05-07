@@ -3,7 +3,7 @@
  * Version: 2.0
  * Autor: Raúl Piracés, Ismael Rodriguez, David Vergara.
  * Fecha: 10-4-2015
- * Descripcion: Este fichero implementa la actividad de login.
+ * Descripcion:Este fichero implementa la actividad de login.
  */
 package com.hyenatechnologies.wallapet.pantallas;
 

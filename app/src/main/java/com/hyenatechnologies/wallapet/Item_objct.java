@@ -14,7 +14,7 @@ public class Item_objct {
 
     /**
      * Pre: title!=null, icon es un numero de recurso de la aplicacion
-     * Post: crea un nuevo objeto Item_objct
+     * Post:crea un nuevo objeto Item_objct
      *
      */
     public Item_objct(String title, int icon) {

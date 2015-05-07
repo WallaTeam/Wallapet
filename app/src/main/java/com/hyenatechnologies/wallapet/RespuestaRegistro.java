@@ -17,7 +17,7 @@ public class RespuestaRegistro {
     private String RespuestaRegistro;
 
     /**
-     * Pre: cierto
+     *Pre: cierto
      * Post: devuelve la respuesta de registro.
      */
     public String getRespuestaRegistro() {

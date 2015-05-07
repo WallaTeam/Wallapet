@@ -18,7 +18,7 @@ public class DatosLogin {
     private String pass;
 
     /**
-     * Pre: cierto
+     *Pre: cierto
      * Post: Devuelve pass
      */
     public String getPass() {

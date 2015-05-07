@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase que contiene los métodos para realizar operaciones con el servidor Web.
+ *Clase que contiene los métodos para realizar operaciones con el servidor Web.
  */
 
 public class Conexiones {

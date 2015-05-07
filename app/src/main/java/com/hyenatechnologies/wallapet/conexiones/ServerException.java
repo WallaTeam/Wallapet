@@ -18,7 +18,7 @@ public class ServerException extends Exception {
     }
 
     /**
-     * Pre: cierto
+     *Pre: cierto
      * Post: devuelve el codigo de error
      */
     public int getCode(){

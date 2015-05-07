@@ -21,7 +21,7 @@ public class ValorSesion {
     }
 
     /**
-     * Pre: cierto
+     *Pre: cierto
      * Post: establece la cuenta actual a "cuenta", que puede ser null.
      */
     public static void setCuenta(Cuenta cuenta) {

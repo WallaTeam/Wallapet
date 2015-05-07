@@ -175,7 +175,7 @@ public class RegistroActivity extends ActionBarActivity {
     }
 
     /**
-     * Pre: cierto
+     *Pre: cierto
      * Post: Devuelve cierto si y solo si todos los campos estan rellenados.
      * Falso en caso contrario.
      */

@@ -210,7 +210,7 @@ public class BusquedaAnunciosFragment extends Fragment {
     @Override
     /**
      * Pre: item!=null
-     * Post: Controla si se ha pulsado una opcion de menu
+     * Post:Controla si se ha pulsado una opcion de menu
      */
     public boolean onOptionsItemSelected(MenuItem item) {
 

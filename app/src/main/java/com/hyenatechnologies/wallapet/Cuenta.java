@@ -24,7 +24,7 @@ public class Cuenta {
 
 
     /**
-     * Pre: Cierto.
+     *Pre: Cierto.
      * Post: Devueve la conversion de c en un JSON.
      */
     public static String toJson(Cuenta c) {

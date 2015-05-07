@@ -31,7 +31,7 @@ public class Anuncio {
 
     /*
     * Pre: a!=null
-    * Post: devuelve una cadena con el JSON del anuncio
+    *Post: devuelve una cadena con el JSON del anuncio
      */
     public static String toJson(Anuncio a){
         Gson gson = new Gson();

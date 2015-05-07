@@ -41,7 +41,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     /**
-     * Pre: inflater != null && container != null && savedInstanceState != null.
+     *Pre: inflater != null && container != null && savedInstanceState != null.
      * Post: Método por defecto en la creación de vista. Encargado de crear todos
      * los elementos de la pantalla e inicializarlos.
      */

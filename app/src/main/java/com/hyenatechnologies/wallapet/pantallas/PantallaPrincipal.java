@@ -163,7 +163,7 @@ public class PantallaPrincipal  extends ActionBarActivity{
 
     }
 
-    /* Pre: position >=1
+    /*Pre: position >=1
      *Post: Muestra el fragment correspondiente a la posicion indicada en el drawer.
      */
     public void MostrarFragment(int position) {

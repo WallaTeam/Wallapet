@@ -61,7 +61,7 @@ import java.util.Random;
 
 
 /**
- * La clase proporciona la pantalla para la creación y modificación de anuncios,
+ *La clase proporciona la pantalla para la creación y modificación de anuncios,
  * incluyendo los metodos correspondientes a estas acciones.
  */
 

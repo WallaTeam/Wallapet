@@ -35,7 +35,7 @@ public class NavigationAdapter extends BaseAdapter {
 
     @Override
     /**
-     * Pre: position >= 0
+     *Pre: position >= 0
      * Post:Retorna objeto Item_objct del array list con la posicion indicada.
      */
     public Object getItem(int position) {

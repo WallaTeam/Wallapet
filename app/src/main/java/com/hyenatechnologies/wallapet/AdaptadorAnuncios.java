@@ -34,7 +34,7 @@ public class AdaptadorAnuncios extends ArrayAdapter<Anuncio> {
     }
 
     /**
-     * Pre: parametros no nulos
+     *Pre: parametros no nulos
      * Post: Construye un nuevo objeto View con el Layout correspondiente a la
      * posicion position y lo devuelve. El ultimo parametro es el padre
      * al que la lista va a ser añadida.
