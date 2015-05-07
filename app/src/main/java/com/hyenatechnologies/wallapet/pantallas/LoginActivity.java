@@ -20,12 +20,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.hyenatechnologies.wallapet.Cuenta;
-import com.hyenatechnologies.wallapet.DatosLogin;
 import com.hyenatechnologies.wallapet.R;
-import com.hyenatechnologies.wallapet.ValorSesion;
+import com.hyenatechnologies.wallapet.clasesEstaticas.ValorSesion;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Cuenta;
+import com.hyenatechnologies.wallapet.objetosDeDatos.DatosLogin;
 
 public class LoginActivity extends ActionBarActivity {
 
@@ -43,7 +43,7 @@ public class LoginActivity extends ActionBarActivity {
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login2);
+        setContentView(R.layout.activity_login);
 
         //Estas dos lineas siguientes son para permitir el uso de la red
         StrictMode.ThreadPolicy policy =
@@ -105,7 +105,7 @@ public class LoginActivity extends ActionBarActivity {
 
                     //Vamos a pantalla principal, que sera la de busqueda
                     Intent myIntent = new Intent(LoginActivity.this,
-                            PantallaPrincipal.class);
+                            PantallaPrincipalActivity.class);
                     startActivity(myIntent);
                 } catch (ServerException ex) {
                     switch (ex.getCode()) {

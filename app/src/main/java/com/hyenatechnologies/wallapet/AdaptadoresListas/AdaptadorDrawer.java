@@ -1,12 +1,12 @@
 /**
- * Nombre:  NavigationAdapter.java
+ * Nombre:  AdaptadorDrawer.java
  * Version: 1.0
  * Autor:  Sergio Soro
  * Fecha: 3-4-2015
  * Descripcion: Este fichero implementa un adaptador para la lista del Drawer.
  */
 
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.AdaptadoresListas;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -16,17 +16,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.objetosDeDatos.DrawerItem;
+
 import java.util.ArrayList;
 
-public class NavigationAdapter extends BaseAdapter {
+public class AdaptadorDrawer extends BaseAdapter {
     private Activity activity;
-    ArrayList<Item_objct> arrayitms;
+    ArrayList<DrawerItem> arrayitms;
 
     /**
      * Pre: parametros != null
-     * Post: Crea un nuevo objeto NavigationAdapter
+     * Post: Crea un nuevo objeto NavigationAdapter.
      */
-    public NavigationAdapter(Activity activity, ArrayList<Item_objct> listarry) {
+    public AdaptadorDrawer(Activity activity, ArrayList<DrawerItem> listarry) {
         super();
         this.activity = activity;
         this.arrayitms = listarry;
@@ -79,8 +82,8 @@ public class NavigationAdapter extends BaseAdapter {
             view = new Fila();
 
             //Creo objeto item y lo obtengo del array
-            Item_objct itm = arrayitms.get(position);
-            convertView = inflator.inflate(R.layout.itm, null);
+            DrawerItem itm = arrayitms.get(position);
+            convertView = inflator.inflate(R.layout.item_drawer, null);
 
             //Titulo
             view.titulo_itm = (TextView) convertView.findViewById(R.id.title_item);

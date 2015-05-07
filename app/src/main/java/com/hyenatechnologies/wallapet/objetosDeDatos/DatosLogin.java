@@ -7,7 +7,7 @@
  * para enviar datos de login.
  */
 
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.objetosDeDatos;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -19,7 +19,7 @@ public class DatosLogin {
 
     /**
      *Pre: cierto
-     * Post: Devuelve pass
+     * Post: Devuelve pass.
      */
     public String getPass() {
         return pass;
@@ -27,7 +27,7 @@ public class DatosLogin {
 
     /**
      * Pre: pass!=null
-     * Post: establece el pass
+     * Post: establece el pass.
      */
     public void setPass(String pass) {
         this.pass = pass;
@@ -36,7 +36,7 @@ public class DatosLogin {
 
     /**
      * Pre: cierto
-     * Post: devuelve mail
+     * Post: devuelve mail.
      */
     public String getMail() {
         return mail;
@@ -44,15 +44,15 @@ public class DatosLogin {
 
     /**
      * Pre: mail!=null
-     * Post: Establece el mail
+     * Post: Establece el mail.
      */
     public void setMail(String mail) {
         this.mail = mail;
     }
 
     /**
-    *Pre: c!=null
-    *Post: Devuelve la representacion JSON de c
+     *Pre: c!=null
+     *Post: Devuelve la representacion JSON de c.
      */
     public static String toJson(DatosLogin c) {
         Gson gson = new Gson();

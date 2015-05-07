@@ -38,10 +38,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyenatechnologies.wallapet.Anuncio;
 import com.hyenatechnologies.wallapet.R;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Anuncio;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -150,14 +150,15 @@ public class CrearModificarAnuncioFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.activity_crear_anuncio, container,
+        View rootView = inflater.inflate(R.layout.fragment_crear_anuncio, container,
                 false);
+
         //Cargamos campos de id_a_cargar.
         titulo = (EditText) rootView.findViewById(R.id.crearAnuncioTitulo);
         tipo = (Spinner) rootView.findViewById(R.id.spinnerCrearAnuncioTipo);
         descripcion = (EditText) rootView.findViewById(R.id.crearAnuncioDescripcion);
         lblPrecio = (TextView) rootView.findViewById(R.id.lblPrecio);
-        //Spinner.
+
 
         ListaTipos.add("Adopción");
         ListaTipos.add("Venta");
@@ -190,6 +191,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
         StrictMode.setThreadPolicy(policy);
 
         conexiones = new Conexiones(this.getActivity());
+
         //Si en el intent hay un anuncio JSON con nombre "anuncio",
         //es que estamos en modo actualizar. Si no, modo crear.
         Bundle bundle = this.getArguments();
@@ -200,14 +202,18 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
 
         if (jsonAnuncio == null) {
-            modo = MODO_CREAR;
-            ((PantallaPrincipal) getActivity()).setTitle("Crear anuncio");
-            botonCrear.setText("Crear anuncio");
+
             //No nos pasan anuncio, nos piden crear.
+            modo = MODO_CREAR;
+            ((PantallaPrincipalActivity) getActivity()).setTitle("Crear anuncio");
+            botonCrear.setText("Crear anuncio");
+
+
         } else {
             modo = MODO_ACTUALIZAR;
-            ((PantallaPrincipal) getActivity()).setTitle("Actualizar anuncio");
+            ((PantallaPrincipalActivity) getActivity()).setTitle("Actualizar anuncio");
             botonCrear.setText("Actualizar anuncio");
+
             //Nos pasan anuncio, modificamos.
             Anuncio a = Anuncio.fromJson(jsonAnuncio);
             modificando = a;
@@ -219,8 +225,8 @@ public class CrearModificarAnuncioFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parentView,
                                        View selectedItemView, int position, long id){
-                // Si es tipo adopcion, quitamos el campo de precio, si no lo
-                // ponemos.
+
+                // Si es tipo adopcion,quitamos el campo de precio, si no lo ponemos.
                 if (position == 0) {
                     precio.setVisibility(View.GONE);
                     lblPrecio.setVisibility(View.GONE);
@@ -234,12 +240,14 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
+
                 // No ocurre nada.
             }
 
         });
         botonImagen.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 // Captura la imagen correspondiente.
                 captureImage();
             }
@@ -297,8 +305,8 @@ public class CrearModificarAnuncioFragment extends Fragment {
                                     addToBackStack(null).commit();
 
                         } else if (modo == MODO_ACTUALIZAR) {
-                            // Modo actualizar, tenemos q poner el id del anuncio a
-                            // modificar.
+                            /* Modo actualizar, tenemos q poner el id del anuncio a
+                            modificar. */
                             a.setIdAnuncio(modificando.getIdAnuncio());
                             conexiones.updateAnuncio(a);
                             Toast.makeText(getActivity().getApplicationContext(),

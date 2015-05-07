@@ -25,11 +25,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.hyenatechnologies.wallapet.AdaptadorAnuncios;
-import com.hyenatechnologies.wallapet.Anuncio;
+import com.hyenatechnologies.wallapet.AdaptadoresListas.AdaptadorAnuncios;
 import com.hyenatechnologies.wallapet.R;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Anuncio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true); //Indica que salgan los iconos de menu
-        ((PantallaPrincipal) getActivity()).setTitle("Buscar anuncios"); //Titulo
+        ((PantallaPrincipalActivity) getActivity()).setTitle("Buscar anuncios"); //Titulo
         conexiones = new Conexiones(this.getActivity()); //Objeto de conexion
 
         /** Sirve para permitir red en hilo de GUI */
@@ -69,7 +69,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
 
         View rootView =
-                inflater.inflate(R.layout.activity_buscar_anuncio_new,
+                inflater.inflate(R.layout.fragment_buscar_anuncio,
                         container, false);
 
         spinnerEspecie = (Spinner) rootView.findViewById(R.id.spinnerEspecie);
@@ -210,7 +210,7 @@ public class BusquedaAnunciosFragment extends Fragment {
     @Override
     /**
      * Pre: item!=null
-     * Post:Controla si se ha pulsado una opcion de menu
+     * Post:Controla si se ha pulsado una opcion de menu.
      */
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -229,7 +229,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
                 //Caso de buscar anuncio
                 LayoutInflater li = LayoutInflater.from(this.getActivity());
-                final View prompt = li.inflate(R.layout.dialogopalabras, null);
+                final View prompt = li.inflate(R.layout.dialog_filtrar_palabras, null);
 
                 AlertDialog.Builder alertDialogBuilder =
                         new AlertDialog.Builder(this.getActivity());

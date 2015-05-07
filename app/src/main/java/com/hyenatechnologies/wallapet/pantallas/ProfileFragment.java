@@ -20,11 +20,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyenatechnologies.wallapet.Cuenta;
 import com.hyenatechnologies.wallapet.R;
-import com.hyenatechnologies.wallapet.ValorSesion;
+import com.hyenatechnologies.wallapet.clasesEstaticas.ValorSesion;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Cuenta;
 
 
 public class ProfileFragment extends Fragment {
@@ -49,9 +49,9 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView;
-        rootView = inflater.inflate(R.layout.activity_perfil, container, false);
+        rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
         conexiones = new Conexiones(getActivity());
-        ((PantallaPrincipal) getActivity()).setTitle("Perfil de usuario");
+        ((PantallaPrincipalActivity) getActivity()).setTitle("Perfil de usuario");
 
         //Cargamos elementos de GUI
         usuario = (TextView) rootView.findViewById(R.id.perfil_usuario);
@@ -95,7 +95,7 @@ public class ProfileFragment extends Fragment {
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 LayoutInflater li = LayoutInflater.from(getActivity());
-                final View prompt = li.inflate(R.layout.dialogoborrarusuario, null);
+                final View prompt = li.inflate(R.layout.dialog_borrar_usuario_confirmar, null);
 
                 AlertDialog.Builder alertDialogBuilder =
                         new AlertDialog.Builder(getActivity());

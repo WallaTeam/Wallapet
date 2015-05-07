@@ -34,11 +34,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyenatechnologies.wallapet.Anuncio;
 import com.hyenatechnologies.wallapet.R;
-import com.hyenatechnologies.wallapet.ValorSesion;
+import com.hyenatechnologies.wallapet.clasesEstaticas.ValorSesion;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Anuncio;
 
 import java.io.InputStream;
 
@@ -76,8 +76,8 @@ public class VistaAnuncioFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
         View rootView = inflater.inflate(
-                R.layout.activity_vista_anuncio, container, false);
-        ((PantallaPrincipal) getActivity()).setTitle("Ver anuncio");
+                R.layout.fragment_vista_anuncio, container, false);
+        ((PantallaPrincipalActivity) getActivity()).setTitle("Ver anuncio");
 
 
         //Estas dos lineas siguientes son para permitir el uso de la red
@@ -140,7 +140,7 @@ public class VistaAnuncioFragment extends Fragment {
             public void onClick(View v) {
 
                 LayoutInflater li = LayoutInflater.from(getActivity());
-                final View prompt = li.inflate(R.layout.dialogofinalizaranuncio,
+                final View prompt = li.inflate(R.layout.dialog_finalizar_anuncio_confirmar,
                         null);
 
                 AlertDialog.Builder alertDialogBuilder =
@@ -221,7 +221,7 @@ public class VistaAnuncioFragment extends Fragment {
 
     /**
      * Pre: a!=null
-     * Post: Muestra el anuncio a en pantalla
+     * Post: Muestra el anuncio a en pantalla.
      */
     public void mostrarAnuncio(Anuncio a) {
 
@@ -345,7 +345,7 @@ public class VistaAnuncioFragment extends Fragment {
     public void borrarAnuncio(final int idAnuncio) {
 
         LayoutInflater li = LayoutInflater.from(getActivity());
-        final View prompt = li.inflate(R.layout.dialogoborraranuncio, null);
+        final View prompt = li.inflate(R.layout.dialog_borrar_anuncio_confirmar, null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 getActivity());
@@ -429,7 +429,7 @@ public class VistaAnuncioFragment extends Fragment {
     }
 
     /**
-     * Clase que implementa la descarga asincrona de imagen de anuncio
+     * Clase que implementa la descarga asincrona de imagen de anuncio.
      */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;

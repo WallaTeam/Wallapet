@@ -6,7 +6,7 @@
  * Descripcion: Este fichero implementa una adaptador que permite poblar
  * la lista de busqueda de anuncios de forma personalizada.
  */
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.AdaptadoresListas;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.hyenatechnologies.wallapet.R;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Anuncio;
 
 import java.util.List;
 
@@ -41,7 +44,7 @@ public class AdaptadorAnuncios extends ArrayAdapter<Anuncio> {
      */
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = actividad.getLayoutInflater();
-        View view = inflater.inflate(R.layout.elemento_lista, null, true);
+        View view = inflater.inflate(R.layout.item_lista_anuncios, null, true);
 
         Anuncio anuncio = lista.get(position);
         TextView titulo = (TextView) view.findViewById(R.id.lista_titulo);
@@ -83,7 +86,7 @@ public class AdaptadorAnuncios extends ArrayAdapter<Anuncio> {
 
     /**
      * Pre: position >= 0
-     * Post: devuelve el id del objeto con indice indicado
+     * Post: devuelve el id del objeto con indice indicado.
      */
     public long getItemId(int position){
         return lista.get(position).getIdAnuncio();
@@ -91,7 +94,7 @@ public class AdaptadorAnuncios extends ArrayAdapter<Anuncio> {
 
     /**
      * Pre: cierto
-     * Post: limpia la lista
+     * Post: limpia la lista.
      */
     public void clear(){
         this.lista.clear();

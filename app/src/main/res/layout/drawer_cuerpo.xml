@@ -3,7 +3,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!-- The main content view -->
+    <!-- The drawer_cuerpo content view -->
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"

@@ -1,5 +1,5 @@
 /**
- * Nombre:  PantallaPrincipal.java
+ * Nombre:  PantallaPrincipalActivity.java
  * Version: 1.2
  * Autor: Sergio Soro
  * Fecha: 10-4-2015
@@ -27,26 +27,26 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.hyenatechnologies.wallapet.Item_objct;
-import com.hyenatechnologies.wallapet.NavigationAdapter;
+import com.hyenatechnologies.wallapet.AdaptadoresListas.AdaptadorDrawer;
 import com.hyenatechnologies.wallapet.R;
-import com.hyenatechnologies.wallapet.ValorSesion;
+import com.hyenatechnologies.wallapet.clasesEstaticas.ValorSesion;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+import com.hyenatechnologies.wallapet.objetosDeDatos.DrawerItem;
 
 import java.util.ArrayList;
 
 
-public class PantallaPrincipal  extends ActionBarActivity{
+public class PantallaPrincipalActivity extends ActionBarActivity{
 
 
     public final static String TAG =
             CrearModificarAnuncioFragment.class.getSimpleName();
     private String[] titulos;
     private ListView NavList;
-    private ArrayList<Item_objct> NavItms;
+    private ArrayList<DrawerItem> NavItms;
     private TypedArray NavIcons;
-    private NavigationAdapter NavAdapter;
+    private AdaptadorDrawer NavAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -63,17 +63,17 @@ public class PantallaPrincipal  extends ActionBarActivity{
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.drawer_cuerpo);
         fragmentManager = getFragmentManager();
 
 
         NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavList = (ListView) findViewById(R.id.lista);
 
-        //Declaramos el header el caul sera el layout de header.xml
-        View header = getLayoutInflater().inflate(R.layout.header, null);
+        //Declaramos el drawer_cabecera el caul sera el layout de drawer_cabecera.xmlecera.xml
+        View header = getLayoutInflater().inflate(R.layout.drawer_cabecera, null);
 
-        //Establecemos header
+        //Establecemos drawer_cabecera
         NavList.addHeaderView(header);
 
         //Tomamos listado  de imgs desde drawable
@@ -83,33 +83,33 @@ public class PantallaPrincipal  extends ActionBarActivity{
         titulos = getResources().getStringArray(R.array.nav_options);
 
         //Listado de titulos de barra de navegacion
-        NavItms = new ArrayList<Item_objct>();
+        NavItms = new ArrayList<DrawerItem>();
 
         /*Mostramos opcion de perfil*/
         if(ValorSesion.getCuenta() == null) {
-            NavItms.add(new Item_objct(titulos[0], NavIcons.getResourceId(0, -1)));
+            NavItms.add(new DrawerItem(titulos[0], NavIcons.getResourceId(0, -1)));
         }
         else{
-            NavItms.add(new Item_objct(titulos[0] + " - " +
+            NavItms.add(new DrawerItem(titulos[0] + " - " +
                     ValorSesion.getCuenta().getUsuario(),
                     NavIcons.getResourceId(0, -1)));
         }
 
         //Crear
-        NavItms.add(new Item_objct(titulos[1], NavIcons.getResourceId(1, -1)));
+        NavItms.add(new DrawerItem(titulos[1], NavIcons.getResourceId(1, -1)));
 
         //Buscar
-        NavItms.add(new Item_objct(titulos[2], NavIcons.getResourceId(2, -1)));
+        NavItms.add(new DrawerItem(titulos[2], NavIcons.getResourceId(2, -1)));
 
         //Compartir
-        NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(4, -1)));
+        NavItms.add(new DrawerItem(titulos[3], NavIcons.getResourceId(4, -1)));
 
         //Cerrar sesión
-        NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(5, -1)));
+        NavItms.add(new DrawerItem(titulos[4], NavIcons.getResourceId(5, -1)));
 
 
         //Declaramos y seteamos adaptador al cual le pasamos el array con los titulos
-        NavAdapter= new NavigationAdapter(this,NavItms);
+        NavAdapter= new AdaptadorDrawer(this,NavItms);
         NavList.setAdapter(NavAdapter);
 
         mTitle = mDrawerTitle = getTitle();
@@ -191,7 +191,7 @@ public class PantallaPrincipal  extends ActionBarActivity{
                     c.logout();
                     Toast.makeText(getApplicationContext(), "Sesión cerrada",
                             Toast.LENGTH_SHORT).show();
-                    Intent myIntent = new Intent(PantallaPrincipal.this,
+                    Intent myIntent = new Intent(PantallaPrincipalActivity.this,
                             LoginActivity.class);
                     startActivity(myIntent);
                     finish();
@@ -247,7 +247,7 @@ public class PantallaPrincipal  extends ActionBarActivity{
     @Override
     /**
      * Pre: newConfig != null
-     * Post: Llamado cuando cambia la configuracion
+     * Post: Llamado cuando cambia la configuracion.
      */
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

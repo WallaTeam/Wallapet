@@ -6,7 +6,7 @@
  * Descripcion: Este fichero implementa la representacion de un Anuncio.
  */
 
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.objetosDeDatos;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -31,7 +31,7 @@ public class Anuncio {
 
     /*
     * Pre: a!=null
-    *Post: devuelve una cadena con el JSON del anuncio
+    *Post: devuelve una cadena con el JSON del anuncio.
      */
     public static String toJson(Anuncio a){
         Gson gson = new Gson();
@@ -41,7 +41,7 @@ public class Anuncio {
 
     /**
      * Pre: a!=null
-     * Post: Devuelve una cadena con el JSON de la lista de anuncios
+     * Post: Devuelve una cadena con el JSON de la lista de anuncios.
      */
     public static String listToJson(List<Anuncio> a){
         Gson gson = new Gson();
@@ -59,7 +59,7 @@ public class Anuncio {
 
     /*
     *Pre: json!=null y json representa una lista de  Anuncio en JSON
-    *Post: devuelve el objeto List<Anuncio> correspondiente
+    *Post: devuelve el objeto List<Anuncio> correspondiente.
      */
     public static List<Anuncio> fromJsonList(String json) throws JsonParseException{
         Gson gson = new Gson();
@@ -74,7 +74,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve el precio
+     * Post: devuelve el precio.
      */
     public double getPrecio() {
         return precio;
@@ -82,7 +82,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: cambia el precio del anuncio
+     * Post: cambia el precio del anuncio.
      */
     public void setPrecio(double precio) {
         this.precio = precio;
@@ -90,7 +90,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve el titulo
+     * Post: devuelve el titulo.
      */
     public String getTitulo() {
         return titulo;
@@ -98,7 +98,7 @@ public class Anuncio {
 
     /**
      * Pre: titulo != null
-     * Post: cambia el titulo del anuncio
+     * Post: cambia el titulo del anuncio.
      */
     public void setTitulo(String titulo) {
         this.titulo = titulo;
@@ -107,7 +107,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve el id de anuncio
+     * Post: devuelve el id de anuncio.
      */
     public int getIdAnuncio() {
         return idAnuncio;
@@ -115,7 +115,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: cambia el id del anuncio
+     * Post: cambia el id del anuncio.
      */
     public void setIdAnuncio(int idAnuncio) {
         this.idAnuncio = idAnuncio;
@@ -123,7 +123,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve el email
+     * Post: devuelve el email.
      */
     public String getEmail() {
         return email;
@@ -132,7 +132,7 @@ public class Anuncio {
 
     /**
      * Pre: email != null
-     * Post: cambia el email del anuncio
+     * Post: cambia el email del anuncio.
      */
     public void setEmail(String email) {
         this.email = email;
@@ -140,7 +140,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve el estado
+     * Post: devuelve el estado.
      */
     public String getEstado() {
         return estado;
@@ -148,7 +148,7 @@ public class Anuncio {
 
     /**
      * Pre: estado != null
-     * Post: cambia el estado del anuncio
+     * Post: cambia el estado del anuncio.
      */
     public void setEstado(String estado) {
         this.estado = estado;
@@ -156,7 +156,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve la descripcion
+     * Post: devuelve la descripcion.
      */
     public String getDescripcion() {
         return descripcion;
@@ -164,7 +164,7 @@ public class Anuncio {
 
     /**
      * Pre: descripcion != null
-     * Post: cambia la descripcion del anuncio
+     * Post: cambia la descripcion del anuncio.
      */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
@@ -172,7 +172,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve el tipo de intercambio
+     * Post: devuelve el tipo de intercambio.
      */
     public String getTipoIntercambio() {
         return tipoIntercambio;
@@ -180,7 +180,7 @@ public class Anuncio {
 
     /**
      * Pre: tipoIntercambio != null
-     * Post: cambia el tipo del anuncio
+     * Post: cambia el tipo del anuncio.
      */
     public void setTipoIntercambio(String tipoIntercambio) {
         this.tipoIntercambio = tipoIntercambio;
@@ -188,7 +188,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve la especie
+     * Post: devuelve la especie.
      */
     public String getEspecie() {
         return especie;
@@ -196,7 +196,7 @@ public class Anuncio {
 
     /**
      * Pre: especie != null
-     * Post: cambia la especie del anuncio
+     * Post: cambia la especie del anuncio.
      */
     public void setEspecie(String especie) {
         this.especie = especie;
@@ -204,7 +204,7 @@ public class Anuncio {
 
     /**
      * Pre: cierto
-     * Post: devuelve la ruta de imagen
+     * Post: devuelve la ruta de imagen.
      */
     public String getRutaImagen() {
         return rutaImagen;
@@ -212,7 +212,7 @@ public class Anuncio {
 
     /**
      * Pre: rutaImagen != null
-     * Post: cambia la ruta de imagen del anuncio
+     * Post: cambia la ruta de imagen del anuncio.
      */
     public void setRutaImagen(String rutaImagen) {
         this.rutaImagen = rutaImagen;

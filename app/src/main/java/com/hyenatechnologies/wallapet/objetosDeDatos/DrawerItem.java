@@ -1,30 +1,30 @@
 /**
- * Nombre:  Item_objct.java
+ * Nombre:  DrawerItem.java
  * Version: 1.0
  * Autor:  Sergio Soro
  * Fecha: 3-4-2015
  * Descripcion: Este fichero implementa una estructura de datos que sirve
  * como elemento de lista del Drawer lateral.
  */
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.objetosDeDatos;
 
-public class Item_objct {
+public class DrawerItem {
     private String titulo;
     private int icono;
 
     /**
      * Pre: title!=null, icon es un numero de recurso de la aplicacion
-     * Post:crea un nuevo objeto Item_objct
+     * Post:crea un nuevo objeto DrawerItem.
      *
      */
-    public Item_objct(String title, int icon) {
+    public DrawerItem(String title, int icon) {
         this.titulo = title;
         this.icono = icon;
     }
 
     /**
      * Pre: cierto
-     * Post: devuelve el titulo
+     * Post: devuelve el titulo.
      */
     public String getTitulo() {
         return titulo;
@@ -32,7 +32,7 @@ public class Item_objct {
 
     /**
      * Pre: titulo!=null
-     * Post: establece el titulo
+     * Post: establece el titulo.
      */
     public void setTitulo(String titulo) {
         this.titulo = titulo;
@@ -40,7 +40,7 @@ public class Item_objct {
 
     /**
      * Pre: cierto
-     * Post: devuelve el icono
+     * Post: devuelve el icono.
      */
     public int getIcono() {
         return icono;
@@ -48,7 +48,7 @@ public class Item_objct {
 
     /**
      * Pre: icono corresponde a un numero de recurso de la aplicacion.
-     * Post: establece el icono
+     * Post: establece el icono.
      */
     public void setIcono(int icono) {
         this.icono = icono;

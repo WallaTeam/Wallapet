@@ -6,7 +6,7 @@
  * Descripcion: Este fichero implementa la representacion de una Cuenta.
  */
 
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.objetosDeDatos;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -45,7 +45,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: getContrasegna() = this.contrasegna
+     * Post: getContrasegna() = this.contrasegna.
      */
     public String getContrasegna() {
         return contrasegna;
@@ -53,7 +53,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: this.contrasegna = contrasegna
+     * Post: this.contrasegna = contrasegna.
      */
     public void setContrasegna(String contrasegna) {
         this.contrasegna = contrasegna;
@@ -61,7 +61,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto..
-     * Post: getDNI() = this.DNI
+     * Post: getDNI() = this.DNI.
      */
     public String getDNI() {
         return DNI;
@@ -69,7 +69,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: this.DNI = dNI
+     * Post: this.DNI = dNI.
      */
     public void setDNI(String dNI) {
         DNI = dNI;
@@ -77,7 +77,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: getNombre() = nombre
+     * Post: getNombre() = nombre.
      */
     public String getNombre() {
         return nombre;
@@ -85,7 +85,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: this.nombre = nombre
+     * Post: this.nombre = nombre.
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -93,7 +93,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: getApellido() = this.apellido
+     * Post: getApellido() = this.apellido.
      */
     public String getApellido() {
         return apellido;
@@ -101,7 +101,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post:
+     * Post: this.apellido = apellido.
      */
     public void setApellido(String apellido) {
         this.apellido = apellido;
@@ -109,17 +109,21 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: getDireccion() = this.direccion
+     * Post: getDireccion() = this.direccion.
      */
     public String getDireccion() {
         return direccion;
     }
 
+    /**
+     * Pre: Cierto.
+     * Post: getUsuario() = this.usuario;
+     */
     public String getUsuario(){ return usuario;}
 
     /**
      * Pre: Cierto.
-     * Post: this.direccion = direccion
+     * Post: this.direccion = direccion.
      */
     public void setDireccion(String direccion) {
         this.direccion = direccion;
@@ -127,7 +131,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: getEmail() = this.email
+     * Post: getEmail() = this.email.
      */
     public String getEmail() {
         return email;
@@ -135,7 +139,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: this.email = email
+     * Post: this.email = email.
      */
     public void setEmail(String email) {
         this.email = email;
@@ -143,7 +147,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: getTelefono() = this.telefono
+     * Post: getTelefono() = this.telefono.
      */
     public int getTelefono() {
         return telefono;
@@ -151,7 +155,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: this.telefono = telefono
+     * Post: this.telefono = telefono.
      */
     public void setTelefono(int telefono) {
         this.telefono = telefono;
@@ -159,7 +163,7 @@ public class Cuenta {
 
     /**
      * Pre: Cierto.
-     * Post: this.usuario = usuario
+     * Post: this.usuario = usuario.
      */
     public void setUsuario(String usuario) { this.usuario = usuario;}
 }

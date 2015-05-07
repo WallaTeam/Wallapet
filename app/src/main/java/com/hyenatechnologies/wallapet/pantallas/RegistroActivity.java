@@ -21,11 +21,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.hyenatechnologies.wallapet.Cuenta;
 import com.hyenatechnologies.wallapet.R;
-import com.hyenatechnologies.wallapet.RespuestaRegistro;
 import com.hyenatechnologies.wallapet.conexiones.Conexiones;
 import com.hyenatechnologies.wallapet.conexiones.ServerException;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Cuenta;
+import com.hyenatechnologies.wallapet.objetosDeDatos.RespuestaRegistro;
 
 public class RegistroActivity extends ActionBarActivity {
 
@@ -48,7 +48,7 @@ public class RegistroActivity extends ActionBarActivity {
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro2);
+        setContentView(R.layout.activity_registro);
 
         //Estas dos lineas siguientes son para permitir el uso de la red
         StrictMode.ThreadPolicy policy =

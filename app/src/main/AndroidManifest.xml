@@ -37,7 +37,7 @@
             android:label="@string/title_activity_registro" >
         </activity>
         <activity
-            android:name=".pantallas.PantallaPrincipal"
+            android:name=".pantallas.PantallaPrincipalActivity"
             android:label="Principal" >
         </activity>
     </application>

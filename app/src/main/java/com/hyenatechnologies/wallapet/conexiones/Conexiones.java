@@ -11,10 +11,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.hyenatechnologies.wallapet.Anuncio;
-import com.hyenatechnologies.wallapet.Cuenta;
-import com.hyenatechnologies.wallapet.DatosLogin;
-import com.hyenatechnologies.wallapet.RespuestaRegistro;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Anuncio;
+import com.hyenatechnologies.wallapet.objetosDeDatos.Cuenta;
+import com.hyenatechnologies.wallapet.objetosDeDatos.DatosLogin;
+import com.hyenatechnologies.wallapet.objetosDeDatos.RespuestaRegistro;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;

@@ -6,7 +6,9 @@
  * Descripcion: Este fichero implementa la clase que guarda de forma estatica
  * la cuenta de la sesion actual.
  */
-package com.hyenatechnologies.wallapet;
+package com.hyenatechnologies.wallapet.clasesEstaticas;
+
+import com.hyenatechnologies.wallapet.objetosDeDatos.Cuenta;
 
 public class ValorSesion {
 
@@ -14,7 +16,7 @@ public class ValorSesion {
 
     /**
      * Pre: cierto
-     * Post: devuelve la cuenta actual
+     * Post: devuelve la cuenta actual.
      */
     public static Cuenta getCuenta() {
         return cuenta;
