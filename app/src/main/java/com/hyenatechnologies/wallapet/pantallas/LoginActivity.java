@@ -1,3 +1,10 @@
+/**
+ * Nombre:  LoginActivity.java
+ * Version: 2.0
+ * Autor: Raúl Piracés, Ismael Rodriguez, David Vergara.
+ * Fecha: 10-4-2015
+ * Descripcion: Este fichero implementa la actividad de login.
+ */
 package com.hyenatechnologies.wallapet.pantallas;
 
 import android.content.Context;
@@ -27,34 +34,54 @@ public class LoginActivity extends ActionBarActivity {
     Button btnLogin;
     Button btnRegister;
     Conexiones conexiones;
+
     @Override
+    /**
+     * Pre: inflater != null && container != null && savedInstanceState != null.
+     * Post: Método por defecto en la creación de vista. Encargado de crear todos
+     * los elementos de la pantalla e inicializarlos.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
+
+        //Estas dos lineas siguientes son para permitir el uso de la red
+        StrictMode.ThreadPolicy policy =
+                new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         conexiones = new Conexiones(this);
+
+        //Inicializamos componentes de vista
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPass = (EditText) findViewById(R.id.txtPass);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnRegister = (Button) findViewById(R.id.btnRegistro);
-        //Estas dos lineas siguientes son para permitir el uso de la red
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         //Rellenamos cajas con valores guardados de ultimo login exitoso
-        SharedPreferences sharedPref = this.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =
+                this.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
         txtEmail.setText(sharedPref.getString("usuario", ""));
         txtPass.setText(sharedPref.getString("pass", ""));
 
 
+        /**
+         * Click listener del boton de registro. Abre actividad de registro.
+         */
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent myIntent = new Intent(LoginActivity.this, RegistroActivity.class);
+                Intent myIntent = new Intent(LoginActivity.this,
+                        RegistroActivity.class);
 
                startActivity(myIntent);
-                //finish();
             }
         });
 
+        /**
+         * Click listener del boton de login. Obtiene los datos introducidos por el
+         * cliente e intenta loguearse con ellos, devolviendo un error en caso de que
+         * no haya habido exito, o pasando a la pantalla de busqueda si lo ha habido.
+         */
         btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 DatosLogin dl = new DatosLogin();
@@ -63,31 +90,35 @@ public class LoginActivity extends ActionBarActivity {
                 try {
                     Cuenta c = conexiones.login(dl);
                     ValorSesion.setCuenta(c);
-                    Toast.makeText(getApplicationContext(), "Autentificacion correcta. Bienvenido " + c.getNombre() + " " + c.getApellido(),
+                    Toast.makeText(getApplicationContext(),
+                            "Autentificacion correcta. Bienvenido " +
+                                    c.getNombre() + " " + c.getApellido(),
                             Toast.LENGTH_SHORT).show();
 
                     //Si login exitoso, guardamos login para proxima vez
-                    SharedPreferences sharedPref = getSharedPreferences("configuracion", Context.MODE_PRIVATE);
+                    SharedPreferences sharedPref = getSharedPreferences(
+                            "configuracion", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString("usuario", txtEmail.getText().toString());
                     editor.putString("pass", txtPass.getText().toString());
                     editor.commit();
 
-                    Intent myIntent = new Intent(LoginActivity.this, PantallaPrincipal.class);
-
+                    //Vamos a pantalla principal, que sera la de busqueda
+                    Intent myIntent = new Intent(LoginActivity.this,
+                            PantallaPrincipal.class);
                     startActivity(myIntent);
                 } catch (ServerException ex) {
                     switch (ex.getCode()) {
-
                         case 500:
-                            Toast.makeText(getApplicationContext(), "Error al contactar con el servidor",
+                            Toast.makeText(getApplicationContext(),
+                                    "Error al contactar con el servidor",
                                     Toast.LENGTH_SHORT).show();
                             break;
                         case 403:
-                            Toast.makeText(getApplicationContext(), "Usuario o pass incorrectos",
+                            Toast.makeText(getApplicationContext(),
+                                    "Usuario o pass incorrectos",
                                     Toast.LENGTH_SHORT).show();
                             break;
-
 
                     }
                 }
@@ -96,24 +127,23 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     @Override
+    /**
+     * Pre: menu!=null
+     * Post: Infla los objetos del menu para usarse en el action bar.
+     * En esta pantalla no hay.
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
     }
 
     @Override
+    /**
+     * Pre: item!=null
+     * Post: Controla si se ha pulsado una opcion de menu. En
+     * esta pantalla no hay.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }

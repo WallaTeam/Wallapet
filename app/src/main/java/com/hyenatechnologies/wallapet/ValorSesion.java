@@ -1,26 +1,32 @@
+/**
+ * Nombre:  ValorSesion.java
+ * Version: 1.0
+ * Autor:  Ismael Rodriguez
+ * Fecha: 6-5-2015
+ * Descripcion: Este fichero implementa la clase que guarda de forma estatica
+ * la cuenta de la sesion actual.
+ */
 package com.hyenatechnologies.wallapet;
 
-/**
- * Created by ismaro3 on 06/05/2015.
- */
 public class ValorSesion {
 
     private static Cuenta cuenta;
-    private static String JSESSIONID;
 
+    /**
+     * Pre: cierto
+     * Post: devuelve la cuenta actual
+     */
     public static Cuenta getCuenta() {
         return cuenta;
     }
 
+    /**
+     * Pre: cierto
+     * Post: establece la cuenta actual a "cuenta", que puede ser null.
+     */
     public static void setCuenta(Cuenta cuenta) {
         ValorSesion.cuenta = cuenta;
     }
 
-    public static String getJSESSIONID() {
-        return JSESSIONID;
-    }
 
-    public static void setJSESSIONID(String JSESSIONID) {
-        ValorSesion.JSESSIONID = JSESSIONID;
-    }
 }

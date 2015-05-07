@@ -49,7 +49,8 @@ public class Conexiones {
     /*
      * Pre: id >= 0
      * Post: Devuelve el anuncio que tiene como identificador idAnuncio si existe.
-     * En caso de que no existe o haya un error de servidor, lanzará una ServerException.
+     * En caso de que no existe o haya un error de servidor,
+     * lanzará una ServerException.
      */
     public  Anuncio getAnuncioById(int id) throws ServerException {
 
@@ -60,31 +61,33 @@ public class Conexiones {
 
     /*
      * Pre: dl != null y contiene los datos de login a verificar.
-     * Post: Loguea al usuario indicado con la contraseña indicada y devuelve el objeto Cuenta
-     * correspondiente al usuario logueado. Si ha habido un error lanza una excepción
-     * ServerException.
+     * Post: Loguea al usuario indicado con la contraseña indicada y devuelve el
+     * objeto Cuenta correspondiente al usuario logueado. Si ha habido un error
+     * lanza una excepción ServerException.
      */
     public Cuenta login(DatosLogin dl) throws ServerException{
-        String json = realizarPOST(API_URL + "loginUsuario.do", "login", DatosLogin.toJson(dl));
+        String json = realizarPOST(API_URL + "loginUsuario.do", "login",
+                DatosLogin.toJson(dl));
         return Cuenta.fromJson(json);
     }
 
     /*
      * Pre: c!=null
-     * Post: Registra al usuario indicado en el sistema, devolviendo un objeto RespuestaRegistro
-     * que indica si se ha registrado correctamente, o hay algún dato que ya está registrado (DNI,
-     * mail o nick). Si se produce algún error de servidor, o falta algún dato por rellenar,
-     * lanza una ServerException.
+     * Post: Registra al usuario indicado en el sistema, devolviendo un objeto
+     * RespuestaRegistro que indica si se ha registrado correctamente, o hay algún
+     * dato que ya está registrado (DNI, mail o nick). Si se produce algún error de
+     * servidor, o falta algún dato por rellenar, lanza una ServerException.
      */
     public RespuestaRegistro registrar(Cuenta c) throws ServerException{
-        String json = realizarPOST(API_URL + "registrarUsuario.do", "usuario", Cuenta.toJson(c));
+        String json = realizarPOST(API_URL + "registrarUsuario.do", "usuario",
+                Cuenta.toJson(c));
         return RespuestaRegistro.fromJson(json);
     }
 
     /*
     * Pre: ninguno
-    * Post: Desloguea al usuario logueado. Si se produce un error del servidor o no había usuario
-    * logueado, lanza una ServerException.
+    * Post: Desloguea al usuario logueado. Si se produce un error del servidor o no
+    * había usuario logueado, lanza una ServerException.
     */
     public void logout() throws ServerException{
         realizarGET(API_URL + "logout.do");
@@ -92,8 +95,9 @@ public class Conexiones {
 
     /*
     * Pre: mail != null
-    * Post: Borra el usuario indicado sí y sólo si el usuario que está logueado es el mismo
-    * que la cuenta indicada. Lanza ServerException en caso de que no sea así o error del servidor.
+    * Post: Borra el usuario indicado sí y sólo si el usuario que está logueado es el
+    * mismo que la cuenta indicada. Lanza ServerException en caso de que no sea así o
+    * error del servidor.
     */
     public void borrarUsuario(String mail) throws ServerException{
         realizarGET(API_URL + "borrarUsuario.do?mail=" + mail );
@@ -110,9 +114,9 @@ public class Conexiones {
 
      /*
      * Pre: tipo, especie y palabras != null
-    * Post: Obtiene y devuelve del servidor el resultado de una búsqueda de anuncios definidos por
-    * el tipo, especie y palabras siempre que no sean cadenas vacías. Si ocurre algún error
-    * lanza una ServerException.
+    * Post: Obtiene y devuelve del servidor el resultado de una búsqueda de anuncios
+    * definidos por el tipo, especie y palabras siempre que no sean cadenas vacías.
+    * Si ocurre algún error lanza una ServerException.
     */
     public  List<Anuncio> getAnuncios(String tipo, String especie, String palabras)
             throws ServerException {
@@ -134,7 +138,8 @@ public class Conexiones {
 
     /*
    * Pre: a!=null
-  * Post: Crea el anuncio indicado, con el estado "abierto" y con el "mail" del usuario logueado.
+  * Post: Crea el anuncio indicado, con el estado "abierto" y con el "mail" del
+  * usuario logueado.
   * Si hay un error, se lanza ServerException.
   */
     public  void createAnuncio(Anuncio a) throws ServerException {
@@ -143,8 +148,8 @@ public class Conexiones {
     }
     /*
       * Pre: a!=null
-     * Post: Actualiza el anuncio <a> en el servidor, salvo el mail del creador y el estado
-     * del anuncio.
+     * Post: Actualiza el anuncio <a> en el servidor, salvo el mail del creador y el
+     * estado del anuncio.
      * En caso de algún error, lanza una ServerException, indicando el error
      */
     public  void updateAnuncio(Anuncio a) throws ServerException {
@@ -218,8 +223,8 @@ public class Conexiones {
 
 
     /**
-     * Pre: url!=null, claveParam!=null y claveParam.length > 0,valorParam!=null y valorParam.length
-     * >0
+     * Pre: url!=null, claveParam!=null y claveParam.length > 0,valorParam!=null y
+     * valorParam.length >0
      * Realiza un POST a la dirección <url> con un parámetro
      * con clave <claveParam> y valor <valorParam>, y devuelve el contenido
      * de la respuesta como cadena si su código es 200 OK.
@@ -287,7 +292,8 @@ public class Conexiones {
                 String sessionID = value.substring(
                         index + "JSESSIONID=".length(), endIndex);
                 SharedPreferences sharedPref =
-                        context.getSharedPreferences("configuracion", Context.MODE_PRIVATE);
+                        context.getSharedPreferences("configuracion",
+                                Context.MODE_PRIVATE);
                 String id= sharedPref.getString("JSESSIONID","0");
 
                 if(id.equalsIgnoreCase(sessionID)){

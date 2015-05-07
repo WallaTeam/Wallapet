@@ -1,12 +1,9 @@
-/** Copyright (C) 2015 Hyena Technologies
- This program is free software: you can redistribute it and/or modify it under the terms of the GNU
- General Public License as published by the Free Software Foundation, either version 3 of the
- License, or (at your option) any later version.
- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the GNU General Public License for more details.
- You should have received a copy of the GNU General Public License along with this program.
- If not, see http://www.gnu.org/licenses/.
+/**
+ * Nombre:  Cuenta.java
+ * Version: 1.2
+ * Autor: Raul Piraces, Ismael Rodriguez
+ * Fecha: 5-4-2015
+ * Descripcion: Este fichero implementa la representacion de una Cuenta.
  */
 
 package com.hyenatechnologies.wallapet;
@@ -24,11 +21,12 @@ public class Cuenta {
     private int telefono;
     private String contrasegna;
     private String usuario;
+
+
     /**
      * Pre: Cierto.
      * Post: Devueve la conversion de c en un JSON.
      */
-    // Pasa a JSON
     public static String toJson(Cuenta c) {
         Gson gson = new Gson();
         return gson.toJson(c);
@@ -40,7 +38,6 @@ public class Cuenta {
      * Pre: Cierto.
      * Post: Devuelve el objeto Cuenta resultante de transformar json.
      */
-    // Obtiene objeto de JSON
     public static Cuenta fromJson(String json)throws JsonParseException {
         Gson gson = new Gson();
         return gson.fromJson(json, Cuenta.class);

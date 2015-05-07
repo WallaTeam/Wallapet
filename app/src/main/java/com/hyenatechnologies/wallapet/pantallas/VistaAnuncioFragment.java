@@ -1,12 +1,10 @@
-/** Copyright (C) 2015 Hyena Technologies
- This program is free software: you can redistribute it and/or modify it under the terms of the GNU
- General Public License as published by the Free Software Foundation, either version 3 of the
- License, or (at your option) any later version.
- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the GNU General Public License for more details.
- You should have received a copy of the GNU General Public License along with this program.
- If not, see http://www.gnu.org/licenses/.
+/**
+ * Nombre:  VistaAnuncioFragment.java
+ * Version: 2.0
+ * Autor: Sergio Soro, Raul Piraces, Ismael Rodriguez
+ * Fecha: 5-4-2015
+ * Descripcion: Este fichero implementa el fragmento de mostrar informacion
+ * de un anuncio.
  */
 
 package com.hyenatechnologies.wallapet.pantallas;
@@ -51,7 +49,6 @@ import java.io.InputStream;
 public class VistaAnuncioFragment extends Fragment {
 
     //Variables
-
     TextView anuncioEmail;
     TextView anuncioEstado;
     TextView anuncioDescripcion;
@@ -60,30 +57,36 @@ public class VistaAnuncioFragment extends Fragment {
     TextView anuncioTitulo;
     TextView anuncioEspecie;
     TextView lblPrecio;
-Conexiones conexiones;
+    Conexiones conexiones;
     Anuncio actual;
     EditText id_a_cargar;
     Button botonComprar;
     Button botonCerrar;
     ImageView imagen;
 
-    public VistaAnuncioFragment() {
-    }
 
-
+    @Override
+    /**
+     * Pre: inflater != null && container != null && savedInstanceState != null.
+     * Post: Método por defecto en la creación de vista. Encargado de crear todos
+     * los elementos de la pantalla e inicializarlos.
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        View rootView = inflater.inflate(R.layout.activity_vista_anuncio, container, false);
 
+        super.onCreate(savedInstanceState);
+        View rootView = inflater.inflate(
+                R.layout.activity_vista_anuncio, container, false);
+        ((PantallaPrincipal) getActivity()).setTitle("Ver anuncio");
 
 
         //Estas dos lineas siguientes son para permitir el uso de la red
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.ThreadPolicy policy =
+                new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         conexiones = new Conexiones(this.getActivity());
-        ((PantallaPrincipal) getActivity()).setTitle("Ver anuncio");
+
 
         //Cargamos cuadro de id_a_cargar de id de anuncio
         id_a_cargar = (EditText) rootView.findViewById(R.id.verAnuncio);
@@ -92,7 +95,8 @@ Conexiones conexiones;
         imagen = (ImageView) rootView.findViewById(R.id.ficha_imagen);
         anuncioEmail = (TextView) rootView.findViewById(R.id.anuncioEmail);
         anuncioEstado = (TextView) rootView.findViewById(R.id.anuncioEstado);
-        anuncioDescripcion = (TextView) rootView.findViewById(R.id.anuncioDescripcion);
+        anuncioDescripcion = (TextView) rootView.findViewById(
+                R.id.anuncioDescripcion);
         anuncioTipo = (TextView) rootView.findViewById(R.id.anuncioTipo);
         anuncioPrecio = (TextView) rootView.findViewById(R.id.anuncioPrecio);
         anuncioTitulo = (TextView) rootView.findViewById(R.id.anuncioTitulo);
@@ -102,70 +106,92 @@ Conexiones conexiones;
         lblPrecio = (TextView) rootView.findViewById(R.id.lblPrecio);
 
 
-        //Cargamos el anuncio que nos pasan por bundle, 1 en caso de que no nos pasen nada
+        /*Cargamos el anuncio que nos pasan por bundle, 1 en caso de que no nos
+        pasen nada*/
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             int a = bundle.getInt("anuncio", 1);
             cargarAnuncio(a);
 
-            //Miramos si el usuario logueado es el propietario. Si es así,
-            //se muestran iconos de borrar y editar.
-            if (actual.getEmail().equalsIgnoreCase(ValorSesion.getCuenta().getEmail())){
+            /*Miramos si el usuario logueado es el propietario. Si es así,
+            se muestran iconos de borrar y editar.*/
+            if (actual.getEmail().
+                    equalsIgnoreCase(ValorSesion.getCuenta().getEmail())) {
                 setHasOptionsMenu(true);
                 botonComprar.setVisibility(View.GONE);
-            }
-            else{
+            } else {
                 setHasOptionsMenu(false);
                 botonCerrar.setVisibility(View.GONE);
             }
 
-            if(actual.getTipoIntercambio().contains("Adopci")){
+            if (actual.getTipoIntercambio().contains("Adopci")) {
+
                 //es de tipo Adopcion ó Adopción, se quita el campo de precio
                 anuncioPrecio.setVisibility(View.GONE);
                 lblPrecio.setVisibility(View.GONE);
             }
         }
 
+        /**
+         * Click listener del boton de cerrar anuncio. Se cerrara el anuncio si el
+         * que clicka es el propietario. En caso de error se mostrara.
+         */
         botonCerrar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 LayoutInflater li = LayoutInflater.from(getActivity());
-                final View prompt = li.inflate(R.layout.dialogofinalizaranuncio, null);
+                final View prompt = li.inflate(R.layout.dialogofinalizaranuncio,
+                        null);
 
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder alertDialogBuilder =
+                        new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(prompt);
 
                 // Mostramos el mensaje del cuadro de dialogo
                 alertDialogBuilder.setCancelable(false)
-                        .setPositiveButton("FINALIZAR TRATO", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("FINALIZAR TRATO", new DialogInterface.
+                                OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+
                                 //Se cierra el anuncio
-                                try{
+                                try {
                                     conexiones.cerrarAnuncio(actual.getIdAnuncio());
-                                    Toast.makeText(getActivity().getApplicationContext(), "Anuncio cerrado con éxito",
+                                    Toast.makeText(getActivity().
+                                                    getApplicationContext(),
+                                            "Anuncio cerrado con éxito",
                                             Toast.LENGTH_SHORT).show();
+
                                     //Cerrado con éxito, se vuelve atrás
                                     getFragmentManager().popBackStack();
-                                }
-                                catch(ServerException ex){
-                                    switch(ex.getCode()){
+                                } catch (ServerException ex) {
+                                    switch (ex.getCode()) {
                                         case 500:
-                                            Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Error al contactar con server",
                                                     Toast.LENGTH_SHORT).show();
                                             break;
                                         case 403:
-                                            Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Error de permisos",
                                                     Toast.LENGTH_SHORT).show();
                                             break;
                                         case 404:
-                                            Toast.makeText(getActivity().getApplicationContext(), "No existe el anuncio indicado.",
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "No existe el anuncio indicado.",
                                                     Toast.LENGTH_SHORT).show();
                                             break;
                                         case 405:
-                                            //No hay sesion iniciada, vamos al login...
-                                            Toast.makeText(getActivity().getApplicationContext(), "Sesión caducada",
+                                            //No hay sesion iniciada, vamos al login
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Sesión caducada",
                                                     Toast.LENGTH_SHORT).show();
-                                            Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+                                            Intent myIntent = new Intent(
+                                                    getActivity(),
+                                                    LoginActivity.class);
                                             startActivity(myIntent);
                                             getActivity().finish();
                                             break;
@@ -174,14 +200,16 @@ Conexiones conexiones;
                             }
                         })
 
-                        .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+                        .setNegativeButton("CANCELAR",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface d, int id) {
 
+                                        //En caso de cancelar no se hace nada
+                                        d.cancel();
+                                    }
+                                });
 
-
+                //Se muestra el dialogo
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
 
@@ -192,13 +220,16 @@ Conexiones conexiones;
 
 
     /**
-     * Muestra el anuncio en pantalla
+     * Pre: a!=null
+     * Post: Muestra el anuncio a en pantalla
      */
     public void mostrarAnuncio(Anuncio a) {
-        if(a.getEmail().equalsIgnoreCase(ValorSesion.getCuenta().getEmail())){
+
+        if (a.getEmail().equalsIgnoreCase(ValorSesion.getCuenta().getEmail())) {
+
+            //El anuncio visualizado pertenece al logueado
             anuncioEmail.setText(a.getEmail() + " (TÚ)");
-        }
-        else{
+        } else {
             anuncioEmail.setText(a.getEmail());
         }
 
@@ -208,105 +239,85 @@ Conexiones conexiones;
         anuncioPrecio.setText("" + a.getPrecio() + "€");
         anuncioTitulo.setText(a.getTitulo());
         anuncioEspecie.setText(a.getEspecie());
-        if (a.getRutaImagen()!=null && a.getRutaImagen().length()>0) {
-            // show The Image
+
+        if (a.getRutaImagen() != null && a.getRutaImagen().length() > 0) {
+
+            /* Hay imagen en el anuncio que estamos cargando, cargamos la imagen
+            de forma asincrona */
             new DownloadImageTask((ImageView) imagen)
                     .execute(a.getRutaImagen());
         }
     }
 
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
+    /**
+     * Pre: idAnuncio >=0
+     * Post: Carga de la base de datos el anuncio con id <idanuncio> y lo muestra,
+     * indicando error si se produce algun problema.
+     */
+    private void cargarAnuncio(int idAnuncio) {
+        Anuncio b;
+        try {
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
+            //Se intenta obtener el anuncio
+            b = conexiones.getAnuncioById(idAnuncio);
+            actual = b;
+            mostrarAnuncio(b);
 
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
+        } catch (ServerException ex) {
 
-        protected void onPostExecute(Bitmap result) {
-            Configuration configuration = getActivity().getResources().getConfiguration();
-            int screenWidthDp = configuration.screenWidthDp;
-            final float scale = getActivity().getResources().getDisplayMetrics().density;
-            int p = (int) (screenWidthDp * scale + 0.5f);
+            //El anuncio no existe
+            switch (ex.getCode()) {
+                case 404:
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "El anuncio indicado no existe",
+                            Toast.LENGTH_SHORT).show();
 
-            if(result!=null) {
-                Bitmap b2 = Bitmap.createScaledBitmap(result, p, p, true);
-                bmImage.setImageBitmap(b2);
+                    break;
+                case 500:
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Error al contactar con el servidor",
+                            Toast.LENGTH_SHORT).show();
+
+                    break;
+                case 403:
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Error de permisos",
+                            Toast.LENGTH_SHORT).show();
+
+                    break;
+                case 405:
+                    //No hay sesion iniciada, vamos al login...
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Sesión caducada",
+                            Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(getActivity(),
+                            LoginActivity.class);
+                    startActivity(myIntent);
+                    getActivity().finish();
+                    break;
             }
         }
     }
 
     /**
-     * Carga de la base de datos el anuncio con id <idanuncio>
-     * y lo muestra.
-     *
-     * @param idAnuncio
+     * Pre: menu!=null e inflater!=null
+     * Post: Infla los objetos del menu para usarse en el action bar.
+     * En este caso, infla el menu de vista de anuncio.
      */
-    private void cargarAnuncio(int idAnuncio) {
-            Anuncio b;
-            try {
-                b = conexiones.getAnuncioById(idAnuncio);
-                actual = b;
-                mostrarAnuncio(b);
-
-            } catch (ServerException ex) {
-                //El anuncio no existe
-                switch (ex.getCode()) {
-                    case 404:
-                        Toast.makeText(getActivity().getApplicationContext(), "El anuncio indicado no existe",
-                                Toast.LENGTH_SHORT).show();
-                        //getActivity().getFragmentManager().beginTransaction().remove(this).commit();
-                        break;
-                    case 500:
-                        Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
-                                Toast.LENGTH_SHORT).show();
-                       // getFragmentManager().popBackStackImmediate();
-                        break;
-                    case 403:
-                        Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
-                                Toast.LENGTH_SHORT).show();
-                        //getFragmentManager().popBackStackImmediate();
-                        break;
-                    case 405:
-                        //No hay sesion iniciada, vamos al login...
-                        Toast.makeText(getActivity().getApplicationContext(), "Sesión caducada",
-                                Toast.LENGTH_SHORT).show();
-                        Intent myIntent = new Intent(getActivity(), LoginActivity.class);
-                        startActivity(myIntent);
-                        getActivity().finish();
-                        break;
-
-                }
-            }
-
-    }
-
-    public void onCreateOptionsMenu(
-
-            Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
         inflater.inflate(R.menu.menu_vista_anuncio, menu);
 
     }
 
     /**
-     * Lanza el fragment de actualizar anuncio, con los datos del anuncio cargado.
+     * Pre: cierto
+     * Post: Lanza el fragment de actualizar anuncio, con los datos del anuncio
+     * cargado.
      */
-    public void lanzarFragmentActualizar(){
-        // do s.th.
+    public void lanzarFragmentActualizar() {
+
         //Paso 1: Obtener la instancia del administrador de fragmentos
         FragmentManager fragmentManager = getFragmentManager();
 
@@ -320,44 +331,59 @@ Conexiones conexiones;
         fragment.setArguments(bundle);
         transaction.replace(R.id.content_frame, fragment);
         transaction.addToBackStack(null);
+
         //Paso 4: Confirmar el cambio
         transaction.commit();
     }
 
     /**
-     * Borra de la base de datos el anuncio especificado
-     * @param idAnuncio
+     * Pre: idAnuncio >=0
+     * Post: Borra de la base de datos el anuncio especificado. Si no existe o se
+     * produce algun error de servidor o permisos, lo indica en pantalla.
+     * Muestra un dialogo de confirmacion antes de borrar.
      */
-    public void borrarAnuncio(final int idAnuncio){
+    public void borrarAnuncio(final int idAnuncio) {
 
         LayoutInflater li = LayoutInflater.from(getActivity());
         final View prompt = li.inflate(R.layout.dialogoborraranuncio, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                getActivity());
         alertDialogBuilder.setView(prompt);
 
         // Mostramos el mensaje del cuadro de dialogo
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("BORRAR ANUNCIO", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
+                        //Pulsa boton de borrar anuncio
                         try {
 
                             conexiones.deleteAnuncio(idAnuncio);
-                            Toast.makeText(getActivity().getApplicationContext(), "El anuncio se ha borrado con éxito",
+
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "El anuncio se ha borrado con éxito",
                                     Toast.LENGTH_SHORT).show();
+                            //Volvemos atras
                             getFragmentManager().popBackStack();
                         } catch (ServerException ex) {
                             switch (ex.getCode()) {
                                 case 404:
-                                    Toast.makeText(getActivity().getApplicationContext(), "El anuncio indicado no existe",
+                                    Toast.makeText(getActivity().
+                                                    getApplicationContext(),
+                                            "El anuncio indicado no existe",
                                             Toast.LENGTH_SHORT).show();
                                     break;
                                 case 500:
-                                    Toast.makeText(getActivity().getApplicationContext(), "Error al contactar con el servidor",
+                                    Toast.makeText(getActivity().
+                                                    getApplicationContext(),
+                                            "Error al contactar con el servidor",
                                             Toast.LENGTH_SHORT).show();
                                     break;
                                 case 403:
-                                    Toast.makeText(getActivity().getApplicationContext(), "Error de permisos",
+                                    Toast.makeText(getActivity().
+                                                    getApplicationContext(),
+                                            "Error de permisos",
                                             Toast.LENGTH_SHORT).show();
                                     break;
 
@@ -368,10 +394,11 @@ Conexiones conexiones;
 
                 .setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
+                        //Cancelar borrado
                         dialog.cancel();
                     }
                 });
-
 
 
         AlertDialog alertDialog = alertDialogBuilder.create();
@@ -381,21 +408,76 @@ Conexiones conexiones;
 
     @Override
     /**
-     * Controla las acciones del menu
+     * Pre: item!=null
+     * Post: Controla las acciones del menu
      */
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle item selection
         switch (item.getItemId()) {
             case R.id.actualizar_evento:
+
+                //Actualizar anuncio
                 lanzarFragmentActualizar();
                 return true;
             case R.id.borrar_evento:
-                // do s.th
+
+                //Borrar anuncio
                 borrarAnuncio(actual.getIdAnuncio());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    /**
+     * Clase que implementa la descarga asincrona de imagen de anuncio
+     */
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        /**
+         * Pre: bmImage != null
+         * Post: ha inicialiado el objeto
+         */
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        /**
+         * Pre: urls es una lista con al menos una url
+         * Post: Ha descargado la imagen de la url de forma asincrona.
+         */
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        /**
+         * Pre: result!=null y se ha descargado la imagen
+         * Post: Pone la imagen en la GUI, cambiandole el tamaño antes
+         * para evitar lags.
+         */
+        protected void onPostExecute(Bitmap result) {
+            Configuration configuration = getActivity().
+                    getResources().getConfiguration();
+            int screenWidthDp = configuration.screenWidthDp;
+            final float scale = getActivity().getResources().
+                    getDisplayMetrics().density;
+            int p = (int) (screenWidthDp * scale + 0.5f);
+
+            if (result != null) {
+                Bitmap b2 = Bitmap.createScaledBitmap(result, p, p, true);
+                bmImage.setImageBitmap(b2);
+            }
+        }
+    }
+
 
 }

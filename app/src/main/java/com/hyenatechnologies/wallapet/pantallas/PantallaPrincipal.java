@@ -1,12 +1,10 @@
-/** Copyright (C) 2015 Hyena Technologies
- This program is free software: you can redistribute it and/or modify it under the terms of the GNU
- General Public License as published by the Free Software Foundation, either version 3 of the
- License, or (at your option) any later version.
- This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- See the GNU General Public License for more details.
- You should have received a copy of the GNU General Public License along with this program.
- If not, see http://www.gnu.org/licenses/.
+/**
+ * Nombre:  PantallaPrincipal.java
+ * Version: 1.2
+ * Autor: Sergio Soro
+ * Fecha: 10-4-2015
+ * Descripcion: Este fichero implementa la actividad que soporta a los fragments
+ * que tienen un drawer lateral.
  */
 
 package com.hyenatechnologies.wallapet.pantallas;
@@ -38,20 +36,12 @@ import com.hyenatechnologies.wallapet.conexiones.ServerException;
 
 import java.util.ArrayList;
 
-/**
- * WallaPet Android App
- * Hyena Technologies ¢ 2015
- */
 
-
-/**
- * Actividad principal. De momento permite ejecutar cosas de prueba
- * como ver anuncio por id o crear anuncil.
- */
 public class PantallaPrincipal  extends ActionBarActivity{
 
-    //pruebas menu
-    public final static String TAG = CrearModificarAnuncioFragment.class.getSimpleName();
+
+    public final static String TAG =
+            CrearModificarAnuncioFragment.class.getSimpleName();
     private String[] titulos;
     private ListView NavList;
     private ArrayList<Item_objct> NavItms;
@@ -66,84 +56,98 @@ public class PantallaPrincipal  extends ActionBarActivity{
 
 
     @Override
+    /**
+     * Pre: inflater != null && container != null && savedInstanceState != null.
+     * Post: Método por defecto en la creación de vista. Encargado de crear todos
+     * los elementos de la pantalla e inicializarlos.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         fragmentManager = getFragmentManager();
 
 
-
-        // Set the adapter for the list view
         NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavList = (ListView) findViewById(R.id.lista);
+
         //Declaramos el header el caul sera el layout de header.xml
         View header = getLayoutInflater().inflate(R.layout.header, null);
+
         //Establecemos header
         NavList.addHeaderView(header);
+
         //Tomamos listado  de imgs desde drawable
         NavIcons = getResources().obtainTypedArray(R.array.navigation_iconos);
-        //Tomamos listado  de titulos desde el string-array de los recursos @string/nav_options
+
+        //Tomamos listado  de titulos desde el string-array de los recursos
         titulos = getResources().getStringArray(R.array.nav_options);
+
         //Listado de titulos de barra de navegacion
         NavItms = new ArrayList<Item_objct>();
-        //Agregamos objetos Item_objct al array
-        //Perfil
+
+        /*Mostramos opcion de perfil*/
         if(ValorSesion.getCuenta() == null) {
             NavItms.add(new Item_objct(titulos[0], NavIcons.getResourceId(0, -1)));
         }
         else{
-            NavItms.add(new Item_objct(titulos[0] + " - " + ValorSesion.getCuenta().getUsuario(), NavIcons.getResourceId(0, -1)));
+            NavItms.add(new Item_objct(titulos[0] + " - " +
+                    ValorSesion.getCuenta().getUsuario(),
+                    NavIcons.getResourceId(0, -1)));
         }
+
         //Crear
         NavItms.add(new Item_objct(titulos[1], NavIcons.getResourceId(1, -1)));
+
         //Buscar
         NavItms.add(new Item_objct(titulos[2], NavIcons.getResourceId(2, -1)));
+
         //Compartir
         NavItms.add(new Item_objct(titulos[3], NavIcons.getResourceId(4, -1)));
+
         //Cerrar sesión
         NavItms.add(new Item_objct(titulos[4], NavIcons.getResourceId(5, -1)));
 
 
-        //Declaramos y seteamos nuestrp adaptador al cual le pasamos el array con los titulos
+        //Declaramos y seteamos adaptador al cual le pasamos el array con los titulos
         NavAdapter= new NavigationAdapter(this,NavItms);
         NavList.setAdapter(NavAdapter);
-
 
         mTitle = mDrawerTitle = getTitle();
 
         //Declaramos el mDrawerToggle y las imgs a utilizar
         mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                NavDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* Icono de navegacion*/
-                R.string.app_name,  /* "open drawer" description */
-                R.string.hello_world  /* "close drawer" description */
+                this,
+                NavDrawerLayout,
+                R.drawable.ic_drawer,
+                R.string.app_name,
+                R.string.hello_world
         ) {
 
-            /** Called when a drawer has settled in a completely closed state. */
+            /** Llamado cuando el drawer se cierra por completo. */
             public void onDrawerClosed(View view) {
-                Log.e("Cerrado completo", "!!");
+               // Log.e("Cerrado completo", "!!");
             }
 
-            /** Called when a drawer has settled in a completely open state. */
+            /** Llamado cuando el drawer se abre por completo */
             public void onDrawerOpened(View drawerView) {
-                Log.e("Apertura completa", "!!");
+               // Log.e("Apertura completa", "!!");
             }
         };
 
-        // Establecemos que mDrawerToggle declarado anteriormente sea el DrawerListener
+        //Establecemos que mDrawerToggle declarado anteriormente sea el DrawerListener
         NavDrawerLayout.setDrawerListener(mDrawerToggle);
-        //Establecemos que el ActionBar muestre el Boton Home
 
+        //Establecemos que el ActionBar muestre el Boton Home
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
 
-        //Establecemos la accion al clickear sobre cualquier item del menu.
-        //De la misma forma que hariamos en una app comun con un listview.
+        /*Establecemos la accion al clickear sobre cualquier item del menu.
+        De la misma forma que hariamos en una app comun con un listview.*/
         NavList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                                    int position, long id) {
                 if(position<=0){
                     MostrarFragment(1);
                 }
@@ -154,14 +158,16 @@ public class PantallaPrincipal  extends ActionBarActivity{
             }
         });
 
-        //Cuando la aplicacion cargue por defecto mostrar la opcion Home
+        //Cuando la aplicacion cargue por defecto mostrar la opcion "Buscar"
         MostrarFragment(3);
 
     }
 
-    /*Pasando la posicion de la opcion en el menu nos mostrara el Fragment correspondiente*/
+    /* Pre: position >=1
+     *Post: Muestra el fragment correspondiente a la posicion indicada en el drawer.
+     */
     public void MostrarFragment(int position) {
-        // update the main content by replacing fragments
+
         Fragment fragment = null;
         switch (position) {
             case 1:
@@ -171,36 +177,48 @@ public class PantallaPrincipal  extends ActionBarActivity{
                 fragment = new CrearModificarAnuncioFragment();
                 break;
             case 3:
-                fragment = new BusquedaAnunciosNew();
+                fragment = new BusquedaAnunciosFragment();
                 break;
             case 4:
+
                 //Opción de compartir
                 break;
             case 5:
                 Conexiones c = new Conexiones(this);
                 try{
+
+                    //Se desloguea y envia a pantalla de login
                     c.logout();
-                    Toast.makeText(getApplicationContext(), "Sesión cerrada", Toast.LENGTH_SHORT).show();
-                    Intent myIntent = new Intent(PantallaPrincipal.this, LoginActivity.class);
+                    Toast.makeText(getApplicationContext(), "Sesión cerrada",
+                            Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(PantallaPrincipal.this,
+                            LoginActivity.class);
                     startActivity(myIntent);
                     finish();
                     break;
                 }
                 catch(ServerException ex){
-                    Toast.makeText(getApplicationContext(), "Error al hacer logout, no estas logueado?", Toast.LENGTH_SHORT).show();
+                    //Error al desloguear, se indica.
+                    Toast.makeText(getApplicationContext(), "Error al hacer logout,"+
+                            " no estas logueado?", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
+
                 //si no esta la opcion mostrara un toast y nos mandara a Home
-                Toast.makeText(getApplicationContext(), "Opcion " + titulos[position - 1] + " no disponible!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Opcion " +
+                        titulos[position - 1] + " no disponible!",
+                        Toast.LENGTH_SHORT).show();
                 break;
         }
+
         //Validamos si el fragment no es nulo
         if (fragment != null) {
             FragmentManager fragmentManager = getFragmentManager();
 
             //el addToBackStack sirve para poder volver atras con boton back
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment)
+                    .addToBackStack(null).commit();
 
             // Actualizamos el contenido segun la opcion elegida
             NavList.setItemChecked(position, true);
@@ -209,23 +227,38 @@ public class PantallaPrincipal  extends ActionBarActivity{
             //Cerramos el menu deslizable
             NavDrawerLayout.closeDrawer(NavList);
         } else {
+
             //Si el fragment es nulo mostramos un mensaje de error.
             Log.e("Error  ", "MostrarFragment"+position);
         }
     }
 
     @Override
+    /**
+     * Pre: cierto
+     * Post: Sincroniza el toggle state tras onRestoreInstanceState.
+     */
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
+
         mDrawerToggle.syncState();
     }
+
     @Override
+    /**
+     * Pre: newConfig != null
+     * Post: Llamado cuando cambia la configuracion
+     */
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
     @Override
+    /**
+     * Pre: cierto.
+     * Post: manejar el menu de opciones y elementos.
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
@@ -237,11 +270,19 @@ public class PantallaPrincipal  extends ActionBarActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Pre: cierto
+     * Post: Establece idAnuncio al parametro pasado.
+     */
     public void setAnuncioID (int i){
         idAnuncio = i;
     }
 
     @Override
+    /**
+     * Pre: cierto
+     * Post: ejecutado al pulsar el boton de atras
+     */
     public void onBackPressed() {
         if(fragmentManager.getBackStackEntryCount() != 0) {
             fragmentManager.popBackStack();
