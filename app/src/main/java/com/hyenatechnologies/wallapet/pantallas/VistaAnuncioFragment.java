@@ -88,8 +88,7 @@ public class VistaAnuncioFragment extends Fragment {
         conexiones = new Conexiones(this.getActivity());
 
 
-        //Cargamos cuadro de id_a_cargar de id de anuncio
-        id_a_cargar = (EditText) rootView.findViewById(R.id.verAnuncio);
+
 
         //Declaramos cuadros de id_a_cargar
         imagen = (ImageView) rootView.findViewById(R.id.ficha_imagen);
