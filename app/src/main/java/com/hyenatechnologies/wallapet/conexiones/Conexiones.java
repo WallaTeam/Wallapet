@@ -44,7 +44,7 @@ public class Conexiones {
     public Conexiones(Context c){
         this.context = c;
     }
-    public static final String API_URL = "http://wallapet.com:8080/Wallapet/";
+    public static final String API_URL = "http://10.1.29.116:8080/Wallapet/";
 
     /*
      * Pre: id >= 0
@@ -56,6 +56,18 @@ public class Conexiones {
 
         String json = realizarGET(API_URL + "verAnuncio.do?id=" + id);
         return Anuncio.fromJson(json);
+
+    }
+
+    /*
+    * Pre: id >= 0
+    * Post: Pone en contacto al usuario logueado con el propietario del
+    * anuncio indicado enviando PDFs..
+    */
+    public  void realizarTrato(int id) throws ServerException {
+
+        String json = realizarGET(API_URL + "datosUsuario.do?id=" + id);
+
 
     }
 

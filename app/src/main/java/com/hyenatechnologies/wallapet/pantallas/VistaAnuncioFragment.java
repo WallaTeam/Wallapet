@@ -88,8 +88,7 @@ public class VistaAnuncioFragment extends Fragment {
         conexiones = new Conexiones(this.getActivity());
 
 
-        //Cargamos cuadro de id_a_cargar de id de anuncio
-        id_a_cargar = (EditText) rootView.findViewById(R.id.verAnuncio);
+
 
         //Declaramos cuadros de id_a_cargar
         imagen = (ImageView) rootView.findViewById(R.id.ficha_imagen);
@@ -132,6 +131,88 @@ public class VistaAnuncioFragment extends Fragment {
             }
         }
 
+        /**
+         * Click listener del boton de realizar trato.En caso de error se mostrara.
+         */
+        botonComprar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                LayoutInflater li = LayoutInflater.from(getActivity());
+                final View prompt = li.inflate(R.layout.dialog_comprar,
+                        null);
+
+                AlertDialog.Builder alertDialogBuilder =
+                        new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setView(prompt);
+
+                // Mostramos el mensaje del cuadro de dialogo
+                alertDialogBuilder.setCancelable(false)
+                        .setPositiveButton("CONTACTAR", new DialogInterface.
+                                OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                //Se cierra el anuncio
+                                try {
+                                    conexiones.realizarTrato(actual.getIdAnuncio());
+                                    Toast.makeText(getActivity().
+                                                    getApplicationContext(),
+                                            "PDFs de contacto enviados",
+                                            Toast.LENGTH_SHORT).show();
+
+                                    //Cerrado con éxito, se vuelve atrás
+                                    getFragmentManager().popBackStack();
+                                } catch (ServerException ex) {
+                                    switch (ex.getCode()) {
+                                        case 500:
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Error al contactar con server",
+                                                    Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 403:
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Error de permisos",
+                                                    Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 404:
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "No existe el anuncio indicado.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            break;
+                                        case 405:
+                                            //No hay sesion iniciada, vamos al login
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Sesión caducada",
+                                                    Toast.LENGTH_SHORT).show();
+                                            Intent myIntent = new Intent(
+                                                    getActivity(),
+                                                    LoginActivity.class);
+                                            startActivity(myIntent);
+                                            getActivity().finish();
+                                            break;
+                                    }
+                                }
+                            }
+                        })
+
+                        .setNegativeButton("CANCELAR",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface d, int id) {
+
+                                        //En caso de cancelar no se hace nada
+                                        d.cancel();
+                                    }
+                                });
+
+                //Se muestra el dialogo
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+            }
+        });
         /**
          * Click listener del boton de cerrar anuncio. Se cerrara el anuncio si el
          * que clicka es el propietario. En caso de error se mostrara.
