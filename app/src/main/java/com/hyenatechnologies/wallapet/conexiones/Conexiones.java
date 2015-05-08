@@ -60,6 +60,18 @@ public class Conexiones {
     }
 
     /*
+    * Pre: id >= 0
+    * Post: Pone en contacto al usuario logueado con el propietario del
+    * anuncio indicado enviando PDFs..
+    */
+    public  void realizarTrato(int id) throws ServerException {
+
+        String json = realizarGET(API_URL + "datosUsuario.do?id=" + id);
+
+
+    }
+
+    /*
      * Pre: dl != null y contiene los datos de login a verificar.
      * Post: Loguea al usuario indicado con la contraseña indicada y devuelve el
      * objeto Cuenta correspondiente al usuario logueado. Si ha habido un error
