@@ -6,6 +6,11 @@ Copyright (C) 2015 Hyena Technologies.
 You can check our official site in http://wallapet.com.
 Also you can view our repository pages in http://piraces.github.io/Wallapet.
 
+# Official Wiki for Wallapet
+The project wiki has been moved from github to our server (externally) using "MediaWiki".
+The wiki is available in: [wiki.wallapet.com](http://wiki.wallapet.com/).
+Check it out!
+
 # Technologies
 The following technologies are being used in the development of Wallapet:
 - [JSON](http://json.org/)
