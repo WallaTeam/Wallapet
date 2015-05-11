@@ -89,7 +89,6 @@ public class VistaAnuncioFragment extends Fragment {
 
 
 
-
         //Declaramos cuadros de id_a_cargar
         imagen = (ImageView) rootView.findViewById(R.id.ficha_imagen);
         anuncioEmail = (TextView) rootView.findViewById(R.id.anuncioEmail);
