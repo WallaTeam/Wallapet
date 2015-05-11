@@ -40,7 +40,7 @@ public class AdaptadorAnuncios extends ArrayAdapter<Anuncio> {
      *Pre: parametros no nulos
      * Post: Construye un nuevo objeto View con el Layout correspondiente a la
      * posicion position y lo devuelve. El ultimo parametro es el padre
-     * al que la lista va a ser añadida.
+     * al que la lista va a ser anadida.
      */
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = actividad.getLayoutInflater();
@@ -102,7 +102,7 @@ public class AdaptadorAnuncios extends ArrayAdapter<Anuncio> {
 
     /**
      * Pre: lista2!=null
-     * Post: añade a la lista actual todos los elementos de la lista indicada.
+     * Post: aï¿½ade a la lista actual todos los elementos de la lista indicada.
      */
     public void addAll(List<Anuncio> lista2){
         this.lista.addAll(lista2);
