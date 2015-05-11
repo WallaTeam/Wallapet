@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -63,7 +64,8 @@ public class VistaAnuncioFragment extends Fragment {
     Button botonComprar;
     Button botonCerrar;
     ImageView imagen;
-
+    DownloadImageTask imageTask;
+int idAnuncio;
 
     @Override
     /**
@@ -111,23 +113,7 @@ public class VistaAnuncioFragment extends Fragment {
             int a = bundle.getInt("anuncio", 1);
             cargarAnuncio(a);
 
-            /*Miramos si el usuario logueado es el propietario. Si es así,
-            se muestran iconos de borrar y editar.*/
-            if (actual.getEmail().
-                    equalsIgnoreCase(ValorSesion.getCuenta().getEmail())) {
-                setHasOptionsMenu(true);
-                botonComprar.setVisibility(View.GONE);
-            } else {
-                setHasOptionsMenu(false);
-                botonCerrar.setVisibility(View.GONE);
-            }
 
-            if (actual.getTipoIntercambio().contains("Adopci")) {
-
-                //es de tipo Adopcion ó Adopción, se quita el campo de precio
-                anuncioPrecio.setVisibility(View.GONE);
-                lblPrecio.setVisibility(View.GONE);
-            }
         }
 
         /**
@@ -165,7 +151,8 @@ public class VistaAnuncioFragment extends Fragment {
                                         case 500:
                                             Toast.makeText(getActivity().
                                                             getApplicationContext(),
-                                                    "Error al contactar con server " + ex.getCode(),
+                                                    "Error al contactar con server "
+                                                            + ex.getCode(),
                                                     Toast.LENGTH_SHORT).show();
                                             break;
                                         case 403:
@@ -324,8 +311,10 @@ public class VistaAnuncioFragment extends Fragment {
 
             /* Hay imagen en el anuncio que estamos cargando, cargamos la imagen
             de forma asincrona */
-            new DownloadImageTask((ImageView) imagen)
-                    .execute(a.getRutaImagen());
+            imageTask = new DownloadImageTask((ImageView) imagen);
+            imageTask.execute(a.getRutaImagen());
+            //new DownloadImageTask((ImageView) imagen)
+            //        .execute(a.getRutaImagen());
         }
     }
 
@@ -335,49 +324,9 @@ public class VistaAnuncioFragment extends Fragment {
      * Post: Carga de la base de datos el anuncio con id <idanuncio> y lo muestra,
      * indicando error si se produce algun problema.
      */
-    private void cargarAnuncio(int idAnuncio) {
-        Anuncio b;
-        try {
-
-            //Se intenta obtener el anuncio
-            b = conexiones.getAnuncioById(idAnuncio);
-            actual = b;
-            mostrarAnuncio(b);
-
-        } catch (ServerException ex) {
-
-            //El anuncio no existe
-            switch (ex.getCode()) {
-                case 404:
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "El anuncio indicado no existe",
-                            Toast.LENGTH_SHORT).show();
-
-                    break;
-                case 500:
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Error al contactar con el servidor",
-                            Toast.LENGTH_SHORT).show();
-
-                    break;
-                case 403:
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Error de permisos",
-                            Toast.LENGTH_SHORT).show();
-
-                    break;
-                case 405:
-                    //No hay sesion iniciada, vamos al login...
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Sesión caducada",
-                            Toast.LENGTH_SHORT).show();
-                    Intent myIntent = new Intent(getActivity(),
-                            LoginActivity.class);
-                    startActivity(myIntent);
-                    getActivity().finish();
-                    break;
-            }
-        }
+    private void cargarAnuncio(int idA) {
+            idAnuncio = idA;
+        new LoadAnuncioTask().execute("");
     }
 
     /**
@@ -416,6 +365,22 @@ public class VistaAnuncioFragment extends Fragment {
         transaction.commit();
     }
 
+    @Override
+    /**
+     * Pre: cierto
+     * Post: Llamado al matar el fragment, mata el hilo de descarga de la imagen.
+     */
+    public void onStop() {
+
+        super.onStop();
+
+
+        //check the state of the task
+        if(imageTask != null && imageTask.getStatus() == AsyncTask.Status.RUNNING)
+            imageTask.cancel(true);
+
+    }
+
     /**
      * Pre: idAnuncio >=0
      * Post: Borra de la base de datos el anuncio especificado. Si no existe o se
@@ -449,22 +414,35 @@ public class VistaAnuncioFragment extends Fragment {
                         } catch (ServerException ex) {
                             switch (ex.getCode()) {
                                 case 404:
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                            "El anuncio indicado no existe",
-                                            Toast.LENGTH_SHORT).show();
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "El anuncio indicado no existe",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                                     break;
                                 case 500:
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                            "Error al contactar con el servidor",
-                                            Toast.LENGTH_SHORT).show();
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Error al contactar con servidor",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     break;
                                 case 403:
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                            "Error de permisos",
-                                            Toast.LENGTH_SHORT).show();
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        public void run() {
+                                            Toast.makeText(getActivity().
+                                                            getApplicationContext(),
+                                                    "Error de permisos",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                     break;
 
                             }
@@ -508,6 +486,121 @@ public class VistaAnuncioFragment extends Fragment {
         }
     }
 
+
+    /**
+     * Clase que se encarga de la carga del anuncio en segundo plano (sin imagen)
+     */
+    private class LoadAnuncioTask extends AsyncTask<String, Void, Anuncio> {
+
+        private ProgressDialog dialogo;
+
+        public LoadAnuncioTask(){
+            super();
+            dialogo = new ProgressDialog(getActivity());
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de cargando...
+         */
+        protected void onPreExecute() {
+            dialogo.setMessage("Cargando...");
+            dialogo.show();
+        }
+
+
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Carga el anuncio en background
+         * */
+        protected Anuncio doInBackground(String... urls) {
+
+            //No hacemos caso del url
+            Anuncio b;
+            try {
+
+                //Se intenta obtener el anuncio
+                b = conexiones.getAnuncioById(idAnuncio);
+                actual = b;
+                return b;
+
+            } catch (ServerException ex) {
+                switch (ex.getCode()) {
+                    case 404:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "El anuncio indicado no existe",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        break;
+                    case 500:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error al contactar con servidor",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 403:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error de permisos",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+
+                }
+
+                return null;
+            }
+
+
+        }
+
+
+        @Override
+        /**
+         * Pre: result!=null
+         * Post: actualiza la UI cuando se han cargado los anuncios.
+         */
+        protected void onPostExecute(Anuncio result) {
+
+            if (dialogo.isShowing()) {
+                dialogo.dismiss();
+            }
+            if(result!=null) {
+                mostrarAnuncio(result);
+             /*Miramos si el usuario logueado es el propietario. Si es así,
+            se muestran iconos de borrar y editar.*/
+                if (actual.getEmail().
+                        equalsIgnoreCase(ValorSesion.getCuenta().getEmail())) {
+                    setHasOptionsMenu(true);
+                    botonComprar.setVisibility(View.GONE);
+                } else {
+                    setHasOptionsMenu(false);
+                    botonCerrar.setVisibility(View.GONE);
+                }
+
+                if (actual.getTipoIntercambio().contains("Adopci")) {
+
+                    //es de tipo Adopcion ó Adopción, se quita el campo de precio
+                    anuncioPrecio.setVisibility(View.GONE);
+                    lblPrecio.setVisibility(View.GONE);
+                }
+            }
+
+        }
+    }
     /**
      * Clase que implementa la descarga asincrona de imagen de anuncio.
      */
@@ -558,6 +651,5 @@ public class VistaAnuncioFragment extends Fragment {
             }
         }
     }
-
 
 }

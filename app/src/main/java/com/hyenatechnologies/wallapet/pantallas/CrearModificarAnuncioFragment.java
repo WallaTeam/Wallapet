@@ -13,6 +13,7 @@ package com.hyenatechnologies.wallapet.pantallas;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -96,7 +97,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
     private TextView lblPrecio;
     private List<String> ListaTipos = new ArrayList<String>();
     private List<String> ListaEspecies = new ArrayList<String>();
-
+    DownloadImageTask imageTask;
     /**
      * Pre: file != null.
      * Post: Devuelve el hash correspondiente al fichero representado por file.
@@ -263,105 +264,16 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                //Recogemos datos de los campos de id_a_cargar.
-                Anuncio a = new Anuncio();
-                try {
-
-                    a.setTitulo(titulo.getText().toString());
-                    a.setEmail("NO IMPORTA");
-                    a.setDescripcion(descripcion.getText().toString());
-                    a.setEstado("NO IMPORTA");
-                    a.setEspecie(especie.getSelectedItem().toString());
-                    a.setTipoIntercambio(tipo.getSelectedItem().toString());
-                    if (tipo.getSelectedItemPosition() == 1) {
-                        a.setPrecio(Double.parseDouble(precio.getText().toString()));
-                    } else {
-                        //Es de adopcion, da igual el precio.
-                        a.setPrecio(0.0);
-                    }
-
-
-                    if (currentImagePath != null && currentImagePath.length() != 0) {
-                        uploadImage();
-                        a.setRutaImagen(currentURL);
-                    } else if (modo == MODO_ACTUALIZAR) {
-                        a.setRutaImagen(modificando.getRutaImagen());
-                    }
-                    //Guardamos el anuncio.
-                    try {
-                        if (modo == MODO_CREAR) {
-                            //Modo crear.
-
-                            conexiones.createAnuncio(a);
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                    "Anuncio creado correctamente",
-                                    Toast.LENGTH_SHORT).show();
-
-                            //Se va a la seccion de busquedas.
-                            FragmentManager fragmentManager = getFragmentManager();
-                            Fragment fragment = new BusquedaAnunciosFragment();
-                            fragmentManager.beginTransaction().
-                                    replace(R.id.content_frame, fragment).
-                                    addToBackStack(null).commit();
-
-                        } else if (modo == MODO_ACTUALIZAR) {
-                            /* Modo actualizar, tenemos q poner el id del anuncio a
-                            modificar. */
-                            a.setIdAnuncio(modificando.getIdAnuncio());
-                            conexiones.updateAnuncio(a);
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                    "Anuncio actualizado correctamente",
-                                    Toast.LENGTH_SHORT).show();
-                            getFragmentManager().popBackStack();
-                        }
-                    } catch (ServerException ex) {
-                        switch (ex.getCode()) {
-
-                            case 500:
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "Error al contactar con el servidor",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            case 403:
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "Error de permisos",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            case 404:
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "No existe el anuncio indicado.",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            case 405:
-                                //No hay sesion iniciada, vamos al login...
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "Sesión caducada",
-                                        Toast.LENGTH_SHORT).show();
-                                Intent myIntent = new Intent(getActivity(),
-                                        LoginActivity.class);
-                                startActivity(myIntent);
-                                getActivity().finish();
-                                break;
-
-                        }
-
-                    }
-                } catch (Exception ex) {
-
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Debe rellenar todos los campos (excepto la imagen)",
-                            Toast.LENGTH_SHORT).show();
-                } finally {
-
-                }
+new CreateAnuncioTask().execute("");
             }
         });
 
         if (modo == MODO_ACTUALIZAR) {
             if (modificando.getRutaImagen() != null &&
-                    modificando.getRutaImagen().length() > 0)
-                new DownloadImageTask((ImageView) imgPreview)
-                        .execute(modificando.getRutaImagen());
+                    modificando.getRutaImagen().length() > 0) {
+                imageTask = new DownloadImageTask((ImageView) imgPreview);
+                        imageTask.execute(modificando.getRutaImagen());
+            }
         }
         return rootView;
     }
@@ -381,6 +293,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+
 
     /**
      * Pre: cierto.
@@ -660,9 +573,12 @@ public class CrearModificarAnuncioFragment extends Fragment {
             return mIcon11;
         }
 
+
+
         /**
          * Pre: cierto.
-         * Post: metodo llamado tras la ejecución del metodo de descarga en segundo plano.
+         * Post: metodo llamado tras la ejecución del metodo de descarga
+         * en segundo plano.
          * @param result con la imagen obtenida.
          */
         protected void onPostExecute(Bitmap result) {
@@ -679,6 +595,190 @@ public class CrearModificarAnuncioFragment extends Fragment {
                 bmImage.setImageBitmap(b2);
             }
         }
+    }
+
+    /**
+     * Clase que se encarga de creacion y actualizacion de login en background
+     */
+    private class CreateAnuncioTask extends AsyncTask<String, Void, String> {
+        private ProgressDialog dialog;
+
+        public CreateAnuncioTask(){
+            super();
+            dialog = new ProgressDialog(getActivity());
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de creando....
+         */
+        protected void onPreExecute() {
+            dialog.setMessage("Creando anuncio...");
+            dialog.show();
+        }
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Realiza la creacion o actualizacion del anuncio en background
+         */
+        protected String doInBackground(String... urls) {
+        //Recogemos datos de los campos de id_a_cargar.
+            Anuncio a = new Anuncio();
+            try {
+
+                a.setTitulo(titulo.getText().toString());
+                a.setEmail("NO IMPORTA");
+                a.setDescripcion(descripcion.getText().toString());
+                a.setEstado("NO IMPORTA");
+                a.setEspecie(especie.getSelectedItem().toString());
+                a.setTipoIntercambio(tipo.getSelectedItem().toString());
+                if (tipo.getSelectedItemPosition() == 1) {
+                    a.setPrecio(Double.parseDouble(precio.getText().toString()));
+                } else {
+                    //Es de adopcion, da igual el precio.
+                    a.setPrecio(0.0);
+                }
+
+
+                if (currentImagePath != null && currentImagePath.length() != 0) {
+                    uploadImage();
+                    a.setRutaImagen(currentURL);
+                } else if (modo == MODO_ACTUALIZAR) {
+                    a.setRutaImagen(modificando.getRutaImagen());
+                }
+                //Guardamos el anuncio.
+                try {
+                    if (modo == MODO_CREAR) {
+                        //Modo crear.
+
+                        conexiones.createAnuncio(a);
+
+
+                    } else if (modo == MODO_ACTUALIZAR) {
+                            /* Modo actualizar, tenemos q poner el id del anuncio a
+                            modificar. */
+                        a.setIdAnuncio(modificando.getIdAnuncio());
+
+                        conexiones.updateAnuncio(a);
+
+                    }
+                } catch (ServerException ex) {
+                    switch (ex.getCode()) {
+
+                        case 500:
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getActivity(),
+                                            "Error al contactar con el servidor",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                            break;
+                        case 403:
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getActivity(),
+                                            "Error de permisos",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+                        case 404:
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getActivity(),
+                                            "No existe el anuncio indicado",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+                        case 405:
+                            //No hay sesion iniciada, vamos al login...
+                            getActivity().runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getActivity(),
+                                            "Sesion caducada",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            Intent myIntent = new Intent(getActivity(),
+                                    LoginActivity.class);
+                            startActivity(myIntent);
+                            getActivity().finish();
+                            break;
+
+                    }
+
+                }
+                return "";
+            } catch (Exception ex) {
+
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "Debe rellenar todos los campos (excepto la imagen)",
+                        Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            //No hacemos caso del url
+
+
+        }
+        /**
+         * Pre: cierto
+         * Post: Actualiza la UI tras creacion o actualizacion de anuncio.
+         * Si result==null no hace nada, pues ha habido un error.
+         *
+         */
+        @Override
+        protected void onPostExecute(String result) {
+
+            if(result!=null) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+                if (modo == MODO_CREAR) {
+                    //Modo crear.
+
+
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Anuncio creado correctamente",
+                            Toast.LENGTH_SHORT).show();
+
+                    //Se va a la seccion de busquedas.
+                    FragmentManager fragmentManager = getFragmentManager();
+                    Fragment fragment = new BusquedaAnunciosFragment();
+                    fragmentManager.beginTransaction().
+                            replace(R.id.content_frame, fragment).
+                            addToBackStack(null).commit();
+
+                } else if (modo == MODO_ACTUALIZAR) {
+                            /* Modo actualizar, tenemos q poner el id del anuncio a
+                            modificar. */
+
+                    Toast.makeText(getActivity().getApplicationContext(),
+                            "Anuncio actualizado correctamente",
+                            Toast.LENGTH_SHORT).show();
+                    getFragmentManager().popBackStack();
+                }
+
+            }
+        }
+    }
+
+    @Override
+    /**
+     * Pre: cierto
+     * Post: llamado al cerrar la actividad, se encarga de matar el hilo
+     * de carga de imagen.
+     */
+    public void onStop() {
+
+        super.onStop();
+
+
+        if(imageTask != null && imageTask.getStatus() == AsyncTask.Status.RUNNING)
+            imageTask.cancel(true);
+        Log.d("isma","Cancelando task de imagen");
     }
 }
 

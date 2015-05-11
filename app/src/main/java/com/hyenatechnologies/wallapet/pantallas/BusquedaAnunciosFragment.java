@@ -10,7 +10,9 @@ package com.hyenatechnologies.wallapet.pantallas;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -46,6 +48,7 @@ public class BusquedaAnunciosFragment extends Fragment {
     Spinner spinnerTipo;
     AdaptadorAnuncios adaptadorAnuncios;
     ListView listViewAnuncios;
+    View prompt;
 
     @Override
     /**
@@ -58,7 +61,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true); //Indica que salgan los iconos de menu
-        ((PantallaPrincipalActivity) getActivity()).setTitle("Buscar anuncios"); //Titulo
+        ((PantallaPrincipalActivity) getActivity()).setTitle("Buscar anuncios");
         conexiones = new Conexiones(this.getActivity()); //Objeto de conexion
 
         /** Sirve para permitir red en hilo de GUI */
@@ -78,14 +81,8 @@ public class BusquedaAnunciosFragment extends Fragment {
         listViewAnuncios = (ListView) rootView.findViewById(R.id.listaAnuncios);
         List<Anuncio> lista = new ArrayList<>();
 
-        try {
-            //Se obtienen los anuncios sin filtro ninguno para empezar
-            lista = conexiones.getAnuncios("", "", "");
-        } catch (ServerException ex) {
-
-            Toast.makeText(this.getActivity().getApplicationContext(),
-                    "Error obteniendo la lista", Toast.LENGTH_SHORT).show();
-        }
+        //Buscamos anuncios
+        new SearchTask().execute("");
 
         //Aplicamos el adaptador con lal ista obtenida
         adaptadorAnuncios = new AdaptadorAnuncios(this.getActivity(), 0, lista);
@@ -119,7 +116,7 @@ public class BusquedaAnunciosFragment extends Fragment {
                 new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView,
-                                       View selectedItemView, int position, long id) {
+                                       View selectedItemView, int position, long id){
 
                 if (position == 0) {
                     especie = "";
@@ -128,19 +125,8 @@ public class BusquedaAnunciosFragment extends Fragment {
                             [position];
                 }
 
-                List<Anuncio> lista = new ArrayList<>();
-                try {
-                    lista = conexiones.getAnuncios(tipo, especie, palabras);
-
-                } catch (ServerException ex) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Error obteniendo la lista", Toast.LENGTH_SHORT).show();
-                }
-
-                //Refrescamos la lista
-                adaptadorAnuncios.clear();
-                adaptadorAnuncios.addAll(lista);
-                adaptadorAnuncios.notifyDataSetChanged();
+                //Buscamos anuncios
+                new SearchTask().execute("");
 
             }
 
@@ -168,19 +154,9 @@ public class BusquedaAnunciosFragment extends Fragment {
                     tipo=getResources().getStringArray(R.array.array_tipos)
                             [position];
                 }
-                List<Anuncio> lista = new ArrayList<>();
-                try {
-                    lista = conexiones.getAnuncios(tipo, especie, palabras);
 
-                } catch (ServerException ex) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "Error obteniendo la lista", Toast.LENGTH_SHORT).show();
-                }
-
-                //Refrescamos la lista
-                adaptadorAnuncios.clear();
-                adaptadorAnuncios.addAll(lista);
-                adaptadorAnuncios.notifyDataSetChanged();
+                //Buscamos anuncios
+                new SearchTask().execute("");
 
             }
 
@@ -229,7 +205,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
                 //Caso de buscar anuncio
                 LayoutInflater li = LayoutInflater.from(this.getActivity());
-                final View prompt = li.inflate(R.layout.dialog_filtrar_palabras, null);
+               prompt = li.inflate(R.layout.dialog_filtrar_palabras, null);
 
                 AlertDialog.Builder alertDialogBuilder =
                         new AlertDialog.Builder(this.getActivity());
@@ -237,28 +213,17 @@ public class BusquedaAnunciosFragment extends Fragment {
 
                 // Mostramos el mensaje del cuadro de dialogo
                 alertDialogBuilder.setCancelable(false)
-                        .setPositiveButton("BUSCAR", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("BUSCAR",
+                                new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 EditText e = (EditText)
                                         prompt.findViewById(R.id.palabrasClave);
 
                                 //Aqui tenemos que buscar por las palabras clave
                                 palabras = e.getText().toString();
-                                List<Anuncio> lista = new ArrayList<>();
-                                try {
-                                    lista = conexiones.getAnuncios(
-                                            tipo, especie, palabras);
+                                //Buscamos anuncios
+                                    new SearchTask().execute("");
 
-                                } catch (ServerException ex) {
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                                   "Error obteniendo la lista",
-                                                    Toast.LENGTH_SHORT).show();
-                                }
-
-                                adaptadorAnuncios.clear();
-                                adaptadorAnuncios.addAll(lista);
-                                adaptadorAnuncios.notifyDataSetChanged();
                             }
                         })
 
@@ -267,21 +232,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
                                 //Se borra el filtro
                                 palabras = "";
-                                List<Anuncio> lista = new ArrayList<>();
-                                try {
-                                    lista = conexiones.getAnuncios(
-                                            tipo, especie, palabras);
-
-                                } catch (ServerException ex) {
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                            "Error obteniendo la lista",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-
-                                adaptadorAnuncios.clear();
-                                adaptadorAnuncios.addAll(lista);
-                                adaptadorAnuncios.notifyDataSetChanged();
+                                new SearchTask().execute("");
                                 dialog.cancel();
                             }
                         });
@@ -295,4 +246,70 @@ public class BusquedaAnunciosFragment extends Fragment {
         }
     }
 
+    /**
+     * Clase que se encarga de la busqueda de anuncios en segundo plano
+     */
+    private class SearchTask extends AsyncTask<String, Void, List<Anuncio>> {
+
+        private ProgressDialog dialog;
+
+        public SearchTask(){
+            super();
+            dialog = new ProgressDialog(getActivity());
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de buscando....
+         */
+        protected void onPreExecute() {
+            //dialog.setMessage("Buscando...");
+            //dialog.show();
+        }
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Carga la lista de anuncios que cumplen los criterios
+         * "tipo", "especie" y "palabras", y actualiza la UI cuando esta listo.
+         */
+        protected List<Anuncio> doInBackground(String... urls) {
+
+            //No hacemos caso del url
+
+
+                List<Anuncio> lista = new ArrayList<>();
+                try {
+                    lista = conexiones.getAnuncios(
+                            tipo, especie, palabras);
+                    return lista;
+
+                } catch (ServerException ex) {
+                    Toast.makeText(getActivity().
+                                    getApplicationContext(),
+                            "Error obteniendo la lista",
+                            Toast.LENGTH_SHORT).show();
+                    return null;
+                }
+
+
+
+
+        }
+
+        @Override
+        /**
+         * Pre: result!=null
+         * Post: actualiza la UI cuando se han cargado los anuncios.
+         */
+        protected void onPostExecute(List<Anuncio> result) {
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            adaptadorAnuncios.clear();
+            adaptadorAnuncios.addAll(result);
+            adaptadorAnuncios.notifyDataSetChanged();
+
+        }
+    }
 }

@@ -7,9 +7,11 @@
  */
 package com.hyenatechnologies.wallapet.pantallas;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
@@ -84,44 +86,7 @@ public class LoginActivity extends ActionBarActivity {
          */
         btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DatosLogin dl = new DatosLogin();
-                dl.setMail(txtEmail.getText().toString());
-                dl.setPass(txtPass.getText().toString());
-                try {
-                    Cuenta c = conexiones.login(dl);
-                    ValorSesion.setCuenta(c);
-                    Toast.makeText(getApplicationContext(),
-                            "Autentificacion correcta. Bienvenido " +
-                                    c.getNombre() + " " + c.getApellido(),
-                            Toast.LENGTH_SHORT).show();
-
-                    //Si login exitoso, guardamos login para proxima vez
-                    SharedPreferences sharedPref = getSharedPreferences(
-                            "configuracion", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString("usuario", txtEmail.getText().toString());
-                    editor.putString("pass", txtPass.getText().toString());
-                    editor.commit();
-
-                    //Vamos a pantalla principal, que sera la de busqueda
-                    Intent myIntent = new Intent(LoginActivity.this,
-                            PantallaPrincipalActivity.class);
-                    startActivity(myIntent);
-                } catch (ServerException ex) {
-                    switch (ex.getCode()) {
-                        case 500:
-                            Toast.makeText(getApplicationContext(),
-                                    "Error al contactar con el servidor",
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-                        case 403:
-                            Toast.makeText(getApplicationContext(),
-                                    "Usuario o pass incorrectos",
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-
-                    }
-                }
+                new LoginTask().execute("");
             }
         });
     }
@@ -145,5 +110,96 @@ public class LoginActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Clase que se encarga del login
+     */
+    private class LoginTask extends AsyncTask<String, Void, Cuenta> {
+        private ProgressDialog dialog;
+
+        public LoginTask(){
+            super();
+            dialog = new ProgressDialog(LoginActivity.this);
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de logueando....
+         */
+        protected void onPreExecute() {
+            dialog.setMessage("Verificando datos...");
+            dialog.show();
+        }
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Realiza el login en background
+         */
+        protected Cuenta doInBackground(String... urls) {
+
+           //No hacemos caso del url
+            try {
+                DatosLogin dl = new DatosLogin();
+                dl.setMail(txtEmail.getText().toString());
+                dl.setPass(txtPass.getText().toString());
+                return conexiones.login(dl);
+            } catch (ServerException e) {
+                switch (e.getCode()) {
+                    case 500:
+                        LoginActivity.this.runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(LoginActivity.this,
+                                        "Error al contactar con el servidor",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 403:
+                       LoginActivity.this.runOnUiThread(new Runnable() {
+                           public void run() {
+                               Toast.makeText(LoginActivity.this,
+                                       "Usuario o pass incorrectos",
+                                       Toast.LENGTH_SHORT).show();
+                           }
+                       });
+
+                        break;
+
+                }
+                return null;
+            }
+        }
+        /**
+         * Pre: result!=null
+         * Post: Actualiza la UI tras login
+         */
+        @Override
+        protected void onPostExecute(Cuenta result) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            if(result!=null){
+                ValorSesion.setCuenta(result);
+                Toast.makeText(getApplicationContext(),
+                        "Autentificacion correcta. Bienvenido " +
+                                result.getNombre() + " " + result.getApellido(),
+                        Toast.LENGTH_SHORT).show();
+
+                //Si login exitoso, guardamos login para proxima vez
+                SharedPreferences sharedPref = getSharedPreferences(
+                        "configuracion", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("usuario", txtEmail.getText().toString());
+                editor.putString("pass", txtPass.getText().toString());
+                editor.commit();
+
+                //Vamos a pantalla principal, que sera la de busqueda
+                Intent myIntent = new Intent(LoginActivity.this,
+                        PantallaPrincipalActivity.class);
+                startActivity(myIntent);
+            }
+
+        }
     }
 }

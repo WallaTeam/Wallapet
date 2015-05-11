@@ -44,7 +44,7 @@ public class Conexiones {
     public Conexiones(Context c){
         this.context = c;
     }
-    public static final String API_URL = "http://wallapet.com:8080/Wallapet/";
+    public static final String API_URL = "http://192.168.56.1:8080/Wallapet/";
 
     /*
      * Pre: id >= 0
