@@ -10,8 +10,10 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,39 +107,8 @@ public class ProfileFragment extends Fragment {
                 alertDialogBuilder.setCancelable(false)
                         .setPositiveButton("BORRAR CUENTA", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                new DeleteProfileTask().execute("");
 
-                                //Borrar cuenta
-                                try{
-                                    conexiones.borrarUsuario(
-                                            ValorSesion.getCuenta().getEmail());
-
-                                    //Se ha borrado con éxito
-                                    //Nos vamos a pantalla de login
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                            "Cuenta borrada con exito",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent myIntent = new Intent(getActivity(),
-                                            LoginActivity.class);
-                                    startActivity(myIntent);
-                                    getActivity().finish();
-                                }
-                                catch(ServerException ex){
-                                    switch (ex.getCode()) {
-                                        case 500:
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Error al contactar con server",
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 403:
-                                            Toast.makeText(getActivity()
-                                                            .getApplicationContext(),
-                                                    "Error de permisos",
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                    }
-                                }
                             }
                         })
 
@@ -156,6 +127,126 @@ public class ProfileFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    /**
+     * Clase que se encarga del borrado de perfil
+     */
+    private class DeleteProfileTask extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog dialogo;
+
+        public DeleteProfileTask() {
+            super();
+            dialogo = new ProgressDialog(getActivity());
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de borrando...
+         */
+        protected void onPreExecute() {
+            dialogo.setMessage("Borrando perfil...");
+            dialogo.show();
+        }
+
+
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Borra el anuncio en background
+         * */
+        protected String doInBackground(String... urls) {
+            //Borrar cuenta
+            try{
+                conexiones.borrarUsuario(
+                        ValorSesion.getCuenta().getEmail());
+                return "";
+
+
+            }
+            catch(ServerException ex){
+                switch (ex.getCode()) {
+                    case 500:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error al contactar con server",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        break;
+                    case 403:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error de permisos",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 405:
+                        //No hay sesion iniciada, vamos al login...
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                //Cerramos el dialogo en curso
+                                if (dialogo.isShowing()) {
+                                    dialogo.dismiss();
+                                }
+                                //Indicamos mensaje
+                                Toast.makeText(getActivity(),
+                                        "Sesion caducada",
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Lanzamos actividad
+                                Intent myIntent = new Intent(getActivity(),
+                                        LoginActivity.class);
+                                startActivity(myIntent);
+                                getActivity().finish();
+
+                                //Matamos asynktask
+                                cancel(true);
+                            }
+                        });
+
+                        break;
+                }
+                return null;
+            }
+
+
+        }
+
+
+        /**
+         * Pre: cierto
+         * Post: actualiza la UI cuando se ha borrado la cuenta.
+         */ @Override
+
+        protected void onPostExecute(String result) {
+
+            if (dialogo.isShowing()) {
+                dialogo.dismiss();
+            }
+            if(result!=null) {
+                //Se ha borrado con éxito
+                //Nos vamos a pantalla de login
+                Toast.makeText(getActivity().
+                                getApplicationContext(),
+                        "Cuenta borrada con exito",
+                        Toast.LENGTH_SHORT).show();
+                Intent myIntent = new Intent(getActivity(),
+                        LoginActivity.class);
+                startActivity(myIntent);
+                getActivity().finish();
+            }
+
+        }
+
+
     }
 }
 

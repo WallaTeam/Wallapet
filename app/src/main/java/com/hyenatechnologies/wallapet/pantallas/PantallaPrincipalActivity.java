@@ -12,9 +12,11 @@ package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
@@ -70,7 +72,9 @@ public class PantallaPrincipalActivity extends ActionBarActivity{
         NavDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavList = (ListView) findViewById(R.id.lista);
 
-        //Declaramos el drawer_cabecera el caul sera el layout de drawer_cabecera.xmlecera.xml
+        /*Declaramos el drawer_cabecera el caul sera el layout de
+         drawer_cabecera.xmlecera.xml
+         */
         View header = getLayoutInflater().inflate(R.layout.drawer_cabecera, null);
 
         //Establecemos drawer_cabecera
@@ -134,7 +138,7 @@ public class PantallaPrincipalActivity extends ActionBarActivity{
             }
         };
 
-        //Establecemos que mDrawerToggle declarado anteriormente sea el DrawerListener
+        //Establecemos que DrawerToggle declarado anteriormente sea el DrawerListener
         NavDrawerLayout.setDrawerListener(mDrawerToggle);
 
         //Establecemos que el ActionBar muestre el Boton Home
@@ -184,24 +188,13 @@ public class PantallaPrincipalActivity extends ActionBarActivity{
                 //Opción de compartir
                 break;
             case 5:
-                Conexiones c = new Conexiones(this);
-                try{
 
-                    //Se desloguea y envia a pantalla de login
-                    c.logout();
-                    Toast.makeText(getApplicationContext(), "Sesión cerrada",
-                            Toast.LENGTH_SHORT).show();
-                    Intent myIntent = new Intent(PantallaPrincipalActivity.this,
-                            LoginActivity.class);
-                    startActivity(myIntent);
-                    finish();
-                    break;
-                }
-                catch(ServerException ex){
-                    //Error al desloguear, se indica.
-                    Toast.makeText(getApplicationContext(), "Error al hacer logout,"+
-                            " no estas logueado?", Toast.LENGTH_SHORT).show();
-                }
+
+
+                   new LogoutTask().execute("");
+
+
+
                 break;
             default:
 
@@ -290,4 +283,81 @@ public class PantallaPrincipalActivity extends ActionBarActivity{
             super.onBackPressed();
         }
     }
+
+
+/**
+ * Clase que se encarga de hacer logout en segundo plano
+ */
+private class LogoutTask extends AsyncTask<String, Void, String> {
+
+    private ProgressDialog dialogo;
+
+    public LogoutTask() {
+        super();
+        dialogo = new ProgressDialog(PantallaPrincipalActivity.this);
+    }
+
+    /**
+     * Pre: cierto
+     * Post: muestra el dialogo de cerrando sesion.
+     */
+    protected void onPreExecute() {
+        dialogo.setMessage("Cerrando sesion...");
+        dialogo.show();
+    }
+
+
+    @Override
+    /**
+     * Pre: ninguno
+     * Post: En background cierra la sesion
+     * */
+    protected String doInBackground(String... urls) {
+
+        Conexiones c = new Conexiones(PantallaPrincipalActivity.this);
+        try{
+
+            //Se desloguea
+            c.logout();
+            return "";
+
+
+        }
+        catch(ServerException ex){
+            PantallaPrincipalActivity.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(PantallaPrincipalActivity.this.
+                                    getApplicationContext(),
+                            "Error al cerrar sesion.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+            return null;
+
+        }
+    }
+
+    /**
+     * Pre: cierto
+     * Post: actualiza la UI cuando se ha hecho logout
+     */ @Override
+
+    protected void onPostExecute(String result) {
+
+        if (dialogo.isShowing()) {
+            dialogo.dismiss();
+        }
+        if(result!=null) {
+            Toast.makeText(getApplicationContext(), "Sesión cerrada",
+                    Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(PantallaPrincipalActivity.this,
+                    LoginActivity.class);
+            startActivity(myIntent);
+            finish();
+        }
+
+    }
+
+
+}
 }

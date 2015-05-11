@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@drawable/wallafondofinal"
+        android:src="@drawable/wallafondo_sinlogo"
         android:scaleType="centerCrop">
 
     </ImageView>
@@ -74,15 +74,7 @@
                 android:layout_width="wrap_content" android:text="enviar"
                 android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip" />
 
-            <TextView android:id="@+id/link_to_login"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dip"
-                android:layout_marginBottom="40dip"
-                android:text="Si ya tienes cuenta, ¡Accede!"
-                android:gravity="center"
-                android:textSize="20dip"
-                android:textColor="#FFFFFF"/>
+
 
             <TextView android:id="@+id/register_error"
                 android:layout_width="fill_parent"

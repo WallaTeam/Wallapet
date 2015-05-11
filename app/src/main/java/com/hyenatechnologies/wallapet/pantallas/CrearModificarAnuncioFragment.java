@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -161,7 +160,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
         lblPrecio = (TextView) rootView.findViewById(R.id.lblPrecio);
 
 
-        ListaTipos.add("Adopción");
+        ListaTipos.add("Adopcion");
         ListaTipos.add("Venta");
         ArrayAdapter<String> adapter2 =
                 new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,
@@ -186,10 +185,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
         imgPreview = (ImageView) rootView.findViewById(R.id.imgPreview);
         imgPreview.setVisibility(View.GONE);
 
-        //Estas dos lineas siguientes son para permitir el uso de la red.
-        StrictMode.ThreadPolicy policy =
-                new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+
 
         conexiones = new Conexiones(this.getActivity());
 
@@ -219,6 +215,35 @@ public class CrearModificarAnuncioFragment extends Fragment {
             Anuncio a = Anuncio.fromJson(jsonAnuncio);
             modificando = a;
             mostrarAnuncio(a);
+
+            switch(a.getEspecie()){
+
+                case "Mamiferos":
+                    especie.setSelection(0);
+                    break;
+                case "Reptiles":
+                    especie.setSelection(1);
+                    break;
+                case "Anfibios":
+                    especie.setSelection(2);
+                    break;
+                case "Artropodos":
+                    especie.setSelection(3);
+                    break;
+                case "Otros":
+                    especie.setSelection(4);
+                    break;
+                default:
+                    especie.setSelection(4);
+                    break;
+            }
+            switch(a.getTipoIntercambio()){
+                case "Adopcion":
+                    tipo.setSelection(0);
+                    break;
+                default:
+                    tipo.setSelection(1);
+            }
 
         }
 
@@ -317,7 +342,7 @@ new CreateAnuncioTask().execute("");
         } else if (especieAnuncio.compareTo("Otros") == 0) {
             especie.setSelection(5);
         }
-        if (a.getTipoIntercambio().compareTo("Adopción") == 0) {
+        if (a.getTipoIntercambio().compareTo("Adopcion") == 0) {
             tipo.setSelection(0);
         } else {
             tipo.setSelection(1);
@@ -697,15 +722,26 @@ new CreateAnuncioTask().execute("");
                             //No hay sesion iniciada, vamos al login...
                             getActivity().runOnUiThread(new Runnable() {
                                 public void run() {
+                                    //Cerramos el dialogo en curso
+                                    if (dialog.isShowing()) {
+                                        dialog.dismiss();
+                                    }
+                                    //Indicamos mensaje
                                     Toast.makeText(getActivity(),
                                             "Sesion caducada",
                                             Toast.LENGTH_SHORT).show();
+
+                                    //Lanzamos actividad
+                                    Intent myIntent = new Intent(getActivity(),
+                                            LoginActivity.class);
+                                    startActivity(myIntent);
+                                    getActivity().finish();
+
+                                    //Matamos asynktask
+                                    cancel(true);
                                 }
                             });
-                            Intent myIntent = new Intent(getActivity(),
-                                    LoginActivity.class);
-                            startActivity(myIntent);
-                            getActivity().finish();
+
                             break;
 
                     }

@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,10 +81,6 @@ int idAnuncio;
         ((PantallaPrincipalActivity) getActivity()).setTitle("Ver anuncio");
 
 
-        //Estas dos lineas siguientes son para permitir el uso de la red
-        StrictMode.ThreadPolicy policy =
-                new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         conexiones = new Conexiones(this.getActivity());
 
@@ -136,51 +131,7 @@ int idAnuncio;
                                 OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-                                //Se cierra el anuncio
-                                try {
-                                    conexiones.realizarTrato(actual.getIdAnuncio());
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                            "PDFs de contacto enviados",
-                                            Toast.LENGTH_SHORT).show();
-
-                                    //Cerrado con éxito, se vuelve atrás
-                                    getFragmentManager().popBackStack();
-                                } catch (ServerException ex) {
-                                    switch (ex.getCode()) {
-                                        case 500:
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Error al contactar con server "
-                                                            + ex.getCode(),
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 403:
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Error de permisos",
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 404:
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "No existe el anuncio indicado.",
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 405:
-                                            //No hay sesion iniciada, vamos al login
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Sesión caducada",
-                                                    Toast.LENGTH_SHORT).show();
-                                            Intent myIntent = new Intent(
-                                                    getActivity(),
-                                                    LoginActivity.class);
-                                            startActivity(myIntent);
-                                            getActivity().finish();
-                                            break;
-                                    }
-                                }
+                                new BuyAnuncioTask().execute("");
                             }
                         })
 
@@ -207,7 +158,8 @@ int idAnuncio;
             public void onClick(View v) {
 
                 LayoutInflater li = LayoutInflater.from(getActivity());
-                final View prompt = li.inflate(R.layout.dialog_finalizar_anuncio_confirmar,
+                final View prompt = li.inflate(
+                        R.layout.dialog_finalizar_anuncio_confirmar,
                         null);
 
                 AlertDialog.Builder alertDialogBuilder =
@@ -220,50 +172,7 @@ int idAnuncio;
                                 OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
 
-                                //Se cierra el anuncio
-                                try {
-                                    conexiones.cerrarAnuncio(actual.getIdAnuncio());
-                                    Toast.makeText(getActivity().
-                                                    getApplicationContext(),
-                                            "Anuncio cerrado con éxito",
-                                            Toast.LENGTH_SHORT).show();
-
-                                    //Cerrado con éxito, se vuelve atrás
-                                    getFragmentManager().popBackStack();
-                                } catch (ServerException ex) {
-                                    switch (ex.getCode()) {
-                                        case 500:
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Error al contactar con server",
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 403:
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Error de permisos",
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 404:
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "No existe el anuncio indicado.",
-                                                    Toast.LENGTH_SHORT).show();
-                                            break;
-                                        case 405:
-                                            //No hay sesion iniciada, vamos al login
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Sesión caducada",
-                                                    Toast.LENGTH_SHORT).show();
-                                            Intent myIntent = new Intent(
-                                                    getActivity(),
-                                                    LoginActivity.class);
-                                            startActivity(myIntent);
-                                            getActivity().finish();
-                                            break;
-                                    }
-                                }
+                                new CloseAnuncioTask().execute("");
                             }
                         })
 
@@ -390,7 +299,8 @@ int idAnuncio;
     public void borrarAnuncio(final int idAnuncio) {
 
         LayoutInflater li = LayoutInflater.from(getActivity());
-        final View prompt = li.inflate(R.layout.dialog_borrar_anuncio_confirmar, null);
+        final View prompt = li.inflate(R.layout.dialog_borrar_anuncio_confirmar,
+                null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 getActivity());
@@ -398,55 +308,11 @@ int idAnuncio;
 
         // Mostramos el mensaje del cuadro de dialogo
         alertDialogBuilder.setCancelable(false)
-                .setPositiveButton("BORRAR ANUNCIO", new DialogInterface.OnClickListener() {
+                .setPositiveButton("BORRAR ANUNCIO",
+                        new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        //Pulsa boton de borrar anuncio
-                        try {
-
-                            conexiones.deleteAnuncio(idAnuncio);
-
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                    "El anuncio se ha borrado con éxito",
-                                    Toast.LENGTH_SHORT).show();
-                            //Volvemos atras
-                            getFragmentManager().popBackStack();
-                        } catch (ServerException ex) {
-                            switch (ex.getCode()) {
-                                case 404:
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        public void run() {
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "El anuncio indicado no existe",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                                    break;
-                                case 500:
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        public void run() {
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Error al contactar con servidor",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    break;
-                                case 403:
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        public void run() {
-                                            Toast.makeText(getActivity().
-                                                            getApplicationContext(),
-                                                    "Error de permisos",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    break;
-
-                            }
-                        }
+                        new DeleteAnuncioTask().execute("");
                     }
                 })
 
@@ -558,6 +424,33 @@ int idAnuncio;
                             }
                         });
                         break;
+                    case 405:
+
+                        //No hay sesion iniciada, vamos al login...
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+
+                                //Cerramos el dialogo en curso
+                                if (dialogo.isShowing()) {
+                                    dialogo.dismiss();
+                                }
+                                //Indicamos mensaje
+                                Toast.makeText(getActivity(),
+                                        "Sesion caducada",
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Lanzamos actividad
+                                Intent myIntent = new Intent(getActivity(),
+                                        LoginActivity.class);
+                                startActivity(myIntent);
+                                getActivity().finish();
+
+                                //Matamos asynktask
+                                cancel(true);
+                            }
+                        });
+
+                        break;
 
                 }
 
@@ -652,4 +545,380 @@ int idAnuncio;
         }
     }
 
+    /**
+     * Clase que se encarga del borrado del anuncio en segundo plano
+     */
+    private class DeleteAnuncioTask extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog dialogo;
+
+        public DeleteAnuncioTask() {
+            super();
+            dialogo = new ProgressDialog(getActivity());
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de borrando...
+         */
+        protected void onPreExecute() {
+            dialogo.setMessage("Borrando...");
+            dialogo.show();
+        }
+
+
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Borra el anuncio en background
+         * */
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                conexiones.deleteAnuncio(idAnuncio);
+                return "";
+
+            } catch (ServerException ex) {
+                switch (ex.getCode()) {
+                    case 404:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "El anuncio indicado no existe",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        break;
+                    case 500:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error al contactar con servidor",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 403:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error de permisos",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 405:
+                        //No hay sesion iniciada, vamos al login...
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                //Cerramos el dialogo en curso
+                                if (dialogo.isShowing()) {
+                                    dialogo.dismiss();
+                                }
+                                //Indicamos mensaje
+                                Toast.makeText(getActivity(),
+                                        "Sesion caducada",
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Lanzamos actividad
+                                Intent myIntent = new Intent(getActivity(),
+                                        LoginActivity.class);
+                                startActivity(myIntent);
+                                getActivity().finish();
+
+                                //Matamos asynktask
+                                cancel(true);
+                            }
+                        });
+
+                        break;
+
+                }
+                return null;
+
+            }
+
+
+        }
+
+
+        /**
+         * Pre: cierto
+         * Post: actualiza la UI cuando se ha borrado el anuncio
+         */ @Override
+
+        protected void onPostExecute(String result) {
+
+            if (dialogo.isShowing()) {
+                dialogo.dismiss();
+            }
+            if(result!=null) {
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "El anuncio se ha borrado con éxito",
+                        Toast.LENGTH_SHORT).show();
+                //Volvemos atras
+                getFragmentManager().popBackStack();
+            }
+
+        }
+
+
+    }
+
+    /**
+     * Clase que se encarga de cerrar un anuncio en segundo plano
+     */
+    private class CloseAnuncioTask extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog dialogo;
+
+        public CloseAnuncioTask() {
+            super();
+            dialogo = new ProgressDialog(getActivity());
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de cerrando...
+         */
+        protected void onPreExecute() {
+            dialogo.setMessage("Cerrando...");
+            dialogo.show();
+        }
+
+
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Cierra el anuncio en background
+         * */
+        protected String doInBackground(String... urls) {
+
+            try {
+
+                conexiones.cerrarAnuncio(idAnuncio);
+                return "";
+
+            } catch (ServerException ex) {
+                switch (ex.getCode()) {
+                    case 404:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "El anuncio indicado no existe",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        break;
+                    case 500:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error al contactar con servidor",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 403:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error de permisos",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 405:
+                        //No hay sesion iniciada, vamos al login...
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                //Cerramos el dialogo en curso
+                                if (dialogo.isShowing()) {
+                                    dialogo.dismiss();
+                                }
+                                //Indicamos mensaje
+                                Toast.makeText(getActivity(),
+                                        "Sesion caducada",
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Lanzamos actividad
+                                Intent myIntent = new Intent(getActivity(),
+                                        LoginActivity.class);
+                                startActivity(myIntent);
+                                getActivity().finish();
+
+                                //Matamos asynktask
+                                cancel(true);
+                            }
+                        });
+
+                        break;
+
+                }
+                return null;
+
+            }
+
+
+        }
+
+
+        /**
+         * Pre: cierto
+         * Post: actualiza la UI cuando se ha cerrado el anuncio
+         */ @Override
+
+        protected void onPostExecute(String result) {
+
+            if (dialogo.isShowing()) {
+                dialogo.dismiss();
+            }
+            if(result!=null) {
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "El anuncio se ha cerrado con éxito",
+                        Toast.LENGTH_SHORT).show();
+                //Volvemos atras
+                getFragmentManager().popBackStack();
+            }
+
+        }
+
+
+    }
+
+
+    /**
+     * Clase que se encarga de contactar con el vendedor en segundo plano
+     */
+    private class BuyAnuncioTask extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog dialogo;
+
+        public BuyAnuncioTask() {
+            super();
+            dialogo = new ProgressDialog(getActivity());
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de contacto
+         */
+        protected void onPreExecute() {
+            dialogo.setMessage("Contactando...");
+            dialogo.show();
+        }
+
+
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Realiza en background la operacion de contacto.
+         * */
+        protected String doInBackground(String... urls) {
+            //Pulsa boton de borrar anuncio
+            try {
+
+                conexiones.realizarTrato(idAnuncio);
+                return "";
+
+            } catch (ServerException ex) {
+                switch (ex.getCode()) {
+                    case 404:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "El anuncio indicado no existe",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        break;
+                    case 500:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error al contactar con servidor",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 403:
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(getActivity().
+                                                getApplicationContext(),
+                                        "Error de permisos",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        break;
+                    case 405:
+                        //No hay sesion iniciada, vamos al login...
+                        getActivity().runOnUiThread(new Runnable() {
+                            public void run() {
+                                //Cerramos el dialogo en curso
+                                if (dialogo.isShowing()) {
+                                    dialogo.dismiss();
+                                }
+                                //Indicamos mensaje
+                                Toast.makeText(getActivity(),
+                                        "Sesion caducada",
+                                        Toast.LENGTH_SHORT).show();
+
+                                //Lanzamos actividad
+                                Intent myIntent = new Intent(getActivity(),
+                                        LoginActivity.class);
+                                startActivity(myIntent);
+                                getActivity().finish();
+
+                                //Matamos asynktask
+                                cancel(true);
+                            }
+                        });
+
+                        break;
+
+                }
+                return null;
+
+            }
+
+
+        }
+
+
+        /**
+         * Pre: cierto
+         * Post: actualiza la UI cuando se ha contactado con el vendedor
+         * */
+
+        protected void onPostExecute(String result) {
+
+            if (dialogo.isShowing()) {
+                dialogo.dismiss();
+            }
+            if(result!=null) {
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "Se ha puesto en contacto con el vendedor",
+                        Toast.LENGTH_SHORT).show();
+
+                //Volvemos atras
+                getFragmentManager().popBackStack();
+            }
+
+        }
+
+
+    }
 }

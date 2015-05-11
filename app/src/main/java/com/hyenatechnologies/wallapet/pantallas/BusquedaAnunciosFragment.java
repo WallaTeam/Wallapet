@@ -12,9 +12,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,10 +64,7 @@ public class BusquedaAnunciosFragment extends Fragment {
         ((PantallaPrincipalActivity) getActivity()).setTitle("Buscar anuncios");
         conexiones = new Conexiones(this.getActivity()); //Objeto de conexion
 
-        /** Sirve para permitir red en hilo de GUI */
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+
 
 
 
@@ -263,8 +260,8 @@ public class BusquedaAnunciosFragment extends Fragment {
          * Post: muestra el dialogo de buscando....
          */
         protected void onPreExecute() {
-            //dialog.setMessage("Buscando...");
-            //dialog.show();
+            dialog.setMessage("Buscando...");
+            dialog.show();
         }
         @Override
         /**
@@ -284,10 +281,45 @@ public class BusquedaAnunciosFragment extends Fragment {
                     return lista;
 
                 } catch (ServerException ex) {
-                    Toast.makeText(getActivity().
-                                    getApplicationContext(),
-                            "Error obteniendo la lista",
-                            Toast.LENGTH_SHORT).show();
+                 switch(ex.getCode()){
+
+                     case 405:
+                         //No hay sesion iniciada, vamos al login...
+                         getActivity().runOnUiThread(new Runnable() {
+                             public void run() {
+                                 //Cerramos el dialogo en curso
+                                 if (dialog.isShowing()) {
+                                     dialog.dismiss();
+                                 }
+                                 //Indicamos mensaje
+                                 Toast.makeText(getActivity(),
+                                         "Sesion caducada",
+                                         Toast.LENGTH_SHORT).show();
+
+                                 //Lanzamos actividad
+                                 Intent myIntent = new Intent(getActivity(),
+                                         LoginActivity.class);
+                                 startActivity(myIntent);
+                                 getActivity().finish();
+
+                                 //Matamos asynktask
+                                 cancel(true);
+                             }
+                         });
+
+                         break;
+
+                     default:
+                         getActivity().runOnUiThread(new Runnable() {
+                             public void run() {
+                                 Toast.makeText(getActivity(),
+                                         "Error al obtener anuncios",
+                                         Toast.LENGTH_SHORT).show();
+
+                             }
+                         });
+
+                 }
                     return null;
                 }
 

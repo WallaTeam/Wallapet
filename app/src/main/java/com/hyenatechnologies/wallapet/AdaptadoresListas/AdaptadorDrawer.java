@@ -102,4 +102,6 @@ public class AdaptadorDrawer extends BaseAdapter {
         }
         return convertView;
     }
+
+
 }

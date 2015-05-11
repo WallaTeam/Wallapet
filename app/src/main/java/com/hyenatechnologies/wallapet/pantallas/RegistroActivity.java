@@ -8,11 +8,12 @@
 
 package com.hyenatechnologies.wallapet.pantallas;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,10 +51,7 @@ public class RegistroActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        //Estas dos lineas siguientes son para permitir el uso de la red
-        StrictMode.ThreadPolicy policy =
-                new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+
 
         conexiones = new Conexiones(this);
         txtUserName = (EditText) findViewById(R.id.txtUserName);
@@ -73,82 +71,8 @@ public class RegistroActivity extends ActionBarActivity {
          */
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(comprobarCampos()){
 
-                    Cuenta c = new Cuenta();
-                    c.setUsuario(txtUserName.getText().toString());
-                    c.setEmail(txtEmail.getText().toString());
-                    c.setContrasegna(txtPass.getText().toString());
-                    c.setDNI(txtDNI.getText().toString());
-                    c.setNombre(txtNombre.getText().toString());
-                    c.setApellido(txtApellidos.getText().toString());
-                    c.setDireccion(txtDireccion.getText().toString());
-                    if(!txtTelefono.getText().toString().equals("")) {
-                        c.setTelefono(Integer.parseInt(txtTelefono.getText().
-                                toString()));
-                    }
-
-                    try {
-
-                        RespuestaRegistro rr = conexiones.registrar(c);
-                        String codigo = rr.getRespuestaRegistro();
-                        switch(codigo){
-                            case "mail_o_DNI_o_nick_repetido":
-                                Toast.makeText(getApplicationContext(),
-                                        "Mail o DNI en uso",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            case "OK":
-                                Toast.makeText(getApplicationContext(),
-                                        "Registro correcto",
-                                        Toast.LENGTH_SHORT).show();
-
-                                //Si registro exitoso, guardamos login
-                                SharedPreferences sharedPref =
-                                        getSharedPreferences("configuracion",
-                                                Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString("usuario",
-                                        txtEmail.getText().toString());
-                                editor.putString("pass",
-                                        txtPass.getText().toString());
-                                editor.commit();
-
-                                //Se lanza actividad de commit
-                                Intent myIntent = new Intent(RegistroActivity.this,
-                                        LoginActivity.class);
-                                startActivity(myIntent);
-                                finish();
-                                break;
-                            default:
-                                Toast.makeText(getApplicationContext(),
-                                        "Respuesta desconocida del servidor",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-
-                    } catch (ServerException ex) {
-                        switch (ex.getCode()) {
-
-                            case 500:
-                                Toast.makeText(getApplicationContext(),
-                                        "Error al contactar con el servidor",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            default:
-                                Toast.makeText(getApplicationContext(),
-                                        "Error al contactar con el servidor",
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-                    }
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),
-                            "Por favor rellene todos los campos",
-                            Toast.LENGTH_SHORT).show();
-                }
-
+new RegistroTask().execute("");
             }
         });
     }
@@ -191,6 +115,149 @@ public class RegistroActivity extends ActionBarActivity {
         boolean g =txtDireccion.getText().toString().length() > 0;
         boolean h = txtTelefono.getText().toString().length() > 0;
         return a&&b&&c&&d&&e&&f&&g&&h;
+
+    }
+
+    /**
+     * Clase que se encarga de registrar un usuario en segundo plano
+     */
+    private class RegistroTask extends AsyncTask<String, Void, RespuestaRegistro> {
+
+        private ProgressDialog dialogo;
+
+        public RegistroTask() {
+            super();
+            dialogo = new ProgressDialog(RegistroActivity.this);
+        }
+
+        /**
+         * Pre: cierto
+         * Post: muestra el dialogo de registrando.
+         */
+        protected void onPreExecute() {
+            dialogo.setMessage("Registrando...");
+            dialogo.show();
+        }
+
+
+        @Override
+        /**
+         * Pre: ninguno
+         * Post: Registra al nuevo usuario en background
+         * */
+        protected RespuestaRegistro doInBackground(String... urls) {
+
+            if(comprobarCampos()) {
+
+                //Si los campos estan bien, procedemos
+                Cuenta c = new Cuenta();
+                c.setUsuario(txtUserName.getText().toString());
+                c.setEmail(txtEmail.getText().toString());
+                c.setContrasegna(txtPass.getText().toString());
+                c.setDNI(txtDNI.getText().toString());
+                c.setNombre(txtNombre.getText().toString());
+                c.setApellido(txtApellidos.getText().toString());
+                c.setDireccion(txtDireccion.getText().toString());
+                if (!txtTelefono.getText().toString().equals("")) {
+                    c.setTelefono(Integer.parseInt(txtTelefono.getText().
+                            toString()));
+                }
+                try {
+                    RespuestaRegistro rr = conexiones.registrar(c);
+                    return rr;
+                } catch (ServerException ex) {
+                    //Error de conexion
+                    switch (ex.getCode()) {
+
+                        case 500:
+                            RegistroActivity.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Error al contactar con el servidor",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+                        default:
+                            Toast.makeText(getApplicationContext(),
+                                    "Error al contactar con el servidor",
+                                    Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                    return null;
+                }
+            }
+            else{
+
+                //Mostrar toast de rellene todos los campos
+                RegistroActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(RegistroActivity.this.
+                                        getApplicationContext(),
+                                "Por favor, rellene todos los campos",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                return null;
+            }
+
+
+        }
+
+
+        /**
+         * Pre: cierto
+         * Post: actualiza la UI cuando se ha registrado el usuario
+         */ @Override
+
+        protected void onPostExecute(RespuestaRegistro result) {
+
+            if (dialogo.isShowing()) {
+                dialogo.dismiss();
+            }
+            if(result!=null) {
+
+                //Ha habido resultado
+                String codigo = result.getRespuestaRegistro();
+                switch(codigo){
+                    case "mail_o_DNI_o_nick_repetido":
+                        Toast.makeText(getApplicationContext(),
+                                "Mail o DNI en uso",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case "OK":
+                        Toast.makeText(getApplicationContext(),
+                                "Registro correcto",
+                                Toast.LENGTH_SHORT).show();
+
+                        //Si registro exitoso, guardamos login
+                        SharedPreferences sharedPref =
+                                getSharedPreferences("configuracion",
+                                        Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString("usuario",
+                                txtEmail.getText().toString());
+                        editor.putString("pass",
+                                txtPass.getText().toString());
+                        editor.commit();
+
+                        //Se lanza actividad de commit
+                        Intent myIntent = new Intent(RegistroActivity.this,
+                                LoginActivity.class);
+                        startActivity(myIntent);
+                        finish();
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(),
+                                "Respuesta desconocida del servidor",
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+
+        }
+
 
     }
 }
