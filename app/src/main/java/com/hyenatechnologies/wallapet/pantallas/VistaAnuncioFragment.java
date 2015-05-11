@@ -166,7 +166,7 @@ public class VistaAnuncioFragment extends Fragment {
                                         case 500:
                                             Toast.makeText(getActivity().
                                                             getApplicationContext(),
-                                                    "Error al contactar con server",
+                                                    "Error al contactar con server " + ex.getCode(),
                                                     Toast.LENGTH_SHORT).show();
                                             break;
                                         case 403:
