@@ -15,6 +15,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,38 +32,157 @@ import com.hyenatechnologies.wallapet.objetosDeDatos.RespuestaRegistro;
 
 public class RegistroActivity extends ActionBarActivity {
 
-    EditText txtUserName;
-    EditText txtEmail;
-    EditText txtPass;
-    EditText txtDNI;
-    EditText txtNombre;
-    EditText txtApellidos;
-    EditText txtTelefono;
-    EditText txtDireccion;
-    Button btnRegister;
+    private EditText txtUserName;
+    private EditText txtEmail;
+    private EditText txtPass;
+    private EditText txtDNI;
+    private EditText txtNombre;
+    private EditText txtApellidos;
+    private EditText txtTelefono;
+    private EditText txtDireccion;
+    private Button btnRegister;
     Conexiones conexiones;
 
     @Override
     /**
      * Pre: inflater != null && container != null && savedInstanceState != null.
-     * Post: Método por defecto en la creación de vista. Encargado de crear todos
+     * Post: Mï¿½todo por defecto en la creaciï¿½n de vista. Encargado de crear todos
      * los elementos de la pantalla e inicializarlos.
      */
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-
-
         conexiones = new Conexiones(this);
+
         txtUserName = (EditText) findViewById(R.id.txtUserName);
+
+        txtUserName.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.hasText(txtUserName);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         txtEmail = (EditText) findViewById(R.id.txtEmail);
+
+        txtEmail.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.validoEmailAddress(txtEmail,true);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         txtPass = (EditText) findViewById(R.id.txtPass);
+
+        txtPass.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.validoPASS(txtPass,true);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         txtDNI = (EditText) findViewById(R.id.txtDNI);
+
+        txtDNI.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.validoDNI(txtDNI,true);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         txtNombre = (EditText) findViewById(R.id.txtNombre);
+
+        txtNombre.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.hasText(txtNombre);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         txtApellidos = (EditText) findViewById(R.id.txtApellidos);
+
+        txtApellidos.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.hasText(txtApellidos);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         txtDireccion = (EditText) findViewById(R.id.txtDireccion);
+
+        txtDireccion.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.hasText(txtDireccion);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         txtTelefono = (EditText) findViewById(R.id.txtTelefono);
+
+        txtTelefono.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                ValidacionRegistro.validoTelefono(txtTelefono,true);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
+        });
+
         btnRegister = (Button) findViewById(R.id.btnRegister);
 
 
@@ -71,8 +192,20 @@ public class RegistroActivity extends ActionBarActivity {
          */
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-new RegistroTask().execute("");
+            if (comprobarCampos()) {
+                new RegistroTask().execute("");
+            }
+            else{
+                //Mostrar toast de rellene todos los campos
+                RegistroActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(RegistroActivity.this.
+                                        getApplicationContext(),
+                                "Por favor, revise todos los campos",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             }
         });
     }
@@ -105,16 +238,18 @@ new RegistroTask().execute("");
      */
 
     private boolean comprobarCampos(){
+        boolean ret = true;
 
-        boolean a =txtUserName.getText().toString().length() > 0;
-        boolean b =txtEmail.getText().toString().length() > 0;
-        boolean c =txtPass.getText().toString().length() > 0;
-        boolean d =txtDNI.getText().toString().length() > 0;
-        boolean e =txtNombre.getText().toString().length() > 0;
-        boolean f =txtApellidos.getText().toString().length() > 0;
-        boolean g =txtDireccion.getText().toString().length() > 0;
-        boolean h = txtTelefono.getText().toString().length() > 0;
-        return a&&b&&c&&d&&e&&f&&g&&h;
+        if(!ValidacionRegistro.hasText(txtUserName)) ret = false;
+        if(!ValidacionRegistro.validoEmailAddress(txtEmail,true)) ret = false;
+        if(!ValidacionRegistro.validoPASS(txtPass,true)) ret = false;
+        if(!ValidacionRegistro.validoDNI(txtDNI,true)) ret = false;
+        if(!ValidacionRegistro.hasText(txtNombre)) ret = false;
+        if(!ValidacionRegistro.hasText(txtApellidos)) ret = false;
+        if(!ValidacionRegistro.hasText(txtDireccion)) ret = false;
+        if(!ValidacionRegistro.validoTelefono(txtTelefono,true)) ret = false;
+
+        return ret;
 
     }
 
@@ -146,8 +281,6 @@ new RegistroTask().execute("");
          * Post: Registra al nuevo usuario en background
          * */
         protected RespuestaRegistro doInBackground(String... urls) {
-
-            if(comprobarCampos()) {
 
                 //Si los campos estan bien, procedemos
                 Cuenta c = new Cuenta();
@@ -186,21 +319,6 @@ new RegistroTask().execute("");
                     }
                     return null;
                 }
-            }
-            else{
-
-                //Mostrar toast de rellene todos los campos
-                RegistroActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(RegistroActivity.this.
-                                        getApplicationContext(),
-                                "Por favor, rellene todos los campos",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                return null;
-            }
 
 
         }
