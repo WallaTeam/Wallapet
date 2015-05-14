@@ -289,7 +289,16 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-new CreateAnuncioTask().execute("");
+            if (titulo.getText().toString().length()>0 && descripcion.getText().toString().length()>0) {
+                new CreateAnuncioTask().execute("");
+            }
+            else{
+                //Mostrar toast si el título o la descripción están vacíos
+                Toast.makeText(getActivity().getApplicationContext(),
+                        "Ni el título ni la descricion pueden estar vacíos",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
             }
         });
 
