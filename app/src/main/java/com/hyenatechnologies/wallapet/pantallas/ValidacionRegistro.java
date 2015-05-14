@@ -75,6 +75,26 @@ public class ValidacionRegistro {
             return false;
         };
 
+
+        //Caso concreto del DNI, que esté bien generada la letra
+        if(regex.equals(DNI_REGEX)) {
+            String NIF_STRING_ASOCIATION = "TRWAGMYFPDXBNJZSQVHLCKE";
+            String dniIntroducidoString = editText.getText().toString();
+            String dniSinDigito = dniIntroducidoString.substring(0, 8);
+            int dniSinDigitoInteger = Integer.parseInt(dniSinDigito);
+            String valorLetra = String.valueOf(dniSinDigitoInteger) +
+                    NIF_STRING_ASOCIATION.charAt(dniSinDigitoInteger % 23);
+            System.out.println(valorLetra);
+            boolean comparacion=valorLetra.equals(dniIntroducidoString.toUpperCase());
+            System.out.println(comparacion);
+            if (!valorLetra.equals(dniIntroducidoString.toUpperCase())) {
+                editText.setError("Letra del DNI no correcta");
+                return false;
+            };
+
+        };
+
+
         //Sitodo ha ido bien
         return true;
 
