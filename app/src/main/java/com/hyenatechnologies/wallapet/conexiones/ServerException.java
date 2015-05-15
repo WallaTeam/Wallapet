@@ -2,9 +2,9 @@
 * Nombre: Conexiones.java
 * Version: 1.0
 * Autor: Ismael Rodriguez
-* Fecha: 15񪣂015
-* Descripcion: Este fichero implementa la excepci髇 que sirve para indicar
-* error en la petici髇.
+* Fecha: 15/4/2015
+* Descripcion: Este fichero implementa la excepcion que sirve para indicar
+* error en la peticion.
 */
 package com.hyenatechnologies.wallapet.conexiones;
 

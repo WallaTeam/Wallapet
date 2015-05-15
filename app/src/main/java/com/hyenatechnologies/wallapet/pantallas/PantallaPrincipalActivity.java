@@ -106,10 +106,10 @@ public class PantallaPrincipalActivity extends ActionBarActivity{
         NavItms.add(new DrawerItem(titulos[2], NavIcons.getResourceId(2, -1)));
 
         //Compartir
-        NavItms.add(new DrawerItem(titulos[3], NavIcons.getResourceId(4, -1)));
+        NavItms.add(new DrawerItem(titulos[3], NavIcons.getResourceId(3, -1)));
 
         //Cerrar sesión
-        NavItms.add(new DrawerItem(titulos[4], NavIcons.getResourceId(5, -1)));
+        NavItms.add(new DrawerItem(titulos[4], NavIcons.getResourceId(4, -1)));
 
 
         //Declaramos y seteamos adaptador al cual le pasamos el array con los titulos
@@ -184,17 +184,17 @@ public class PantallaPrincipalActivity extends ActionBarActivity{
                 fragment = new BusquedaAnunciosFragment();
                 break;
             case 4:
-
-                //Opción de compartir
+                // Crea un nuevo Intent simple para compartir la app (+ link de descarga).
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        "Descarga la aplicacion de compra/venta y adopcion de animales, " +
+                                "Wallapet en: http://bit.ly/Wallapet");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
                 break;
             case 5:
-
-
-
                    new LogoutTask().execute("");
-
-
-
                 break;
             default:
 

@@ -19,7 +19,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".pantallas.LoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,11 +35,13 @@
         -->
         <activity
             android:name=".pantallas.RegistroActivity"
-            android:label="@string/title_activity_registro" >
+            android:label="@string/title_activity_registro"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".pantallas.PantallaPrincipalActivity"
-            android:label="Principal" >
+            android:label="Principal"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

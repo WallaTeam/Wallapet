@@ -62,6 +62,7 @@ public class VistaAnuncioFragment extends Fragment {
     EditText id_a_cargar;
     Button botonComprar;
     Button botonCerrar;
+    Button botonCompartir;
     ImageView imagen;
     DownloadImageTask imageTask;
 int idAnuncio;
@@ -98,6 +99,7 @@ int idAnuncio;
         anuncioEspecie = (TextView) rootView.findViewById(R.id.anuncioEspecie);
         botonComprar = (Button) rootView.findViewById(R.id.solicitarInformacion);
         botonCerrar = (Button) rootView.findViewById(R.id.cerrarAnuncio);
+        botonCompartir = (Button) rootView.findViewById(R.id.compartirAnuncio);
         lblPrecio = (TextView) rootView.findViewById(R.id.lblPrecio);
 
 
@@ -189,6 +191,22 @@ int idAnuncio;
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
 
+            }
+        });
+
+        /**
+         * Click listener del boton de compartir anuncio. Se mostrara en todo caso.
+         */
+        botonCompartir.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Crea un nuevo Intent simple para compartir el anuncio (app + link de descarga).
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT,
+                        "Ver anuncio sobre \" " + anuncioTitulo.getText().toString() + " \" " +
+                                "en Wallapet.\nDescarga: " + "http://bit.ly/Wallapet");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
             }
         });
         return rootView;

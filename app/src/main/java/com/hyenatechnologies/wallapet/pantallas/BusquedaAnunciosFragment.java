@@ -3,7 +3,7 @@
 * Version: 1.0
 * Autor: Luis Pellicer e Ismael Rodriguez
 * Fecha: 5-5-2015
-* Descripcion: Este fichero implementa la pantalla de búsqueda de anuncios.
+* Descripcion: Este fichero implementa la pantalla de bÃºsqueda de anuncios.
 */
 package com.hyenatechnologies.wallapet.pantallas;
 
@@ -53,7 +53,7 @@ public class BusquedaAnunciosFragment extends Fragment {
     @Override
     /**
      * Pre: inflater != null && container != null && savedInstanceState != null.
-     * Post: Método por defecto en la creación de vista. Encargado de crear todos
+     * Post: MÃ©todo por defecto en la creaciï¿½n de vista. Encargado de crear todos
      * los elementos de la pantalla e inicializarlos.
      */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,7 +107,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
         /**
          * Selected Listener del spinner de Especie, que sirve para recargar la
-         * lista de anuncios cuando se cambia la selección de dicho spinner.
+         * lista de anuncios cuando se cambia la selecciï¿½n de dicho spinner.
          */
         spinnerEspecie.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -137,7 +137,7 @@ public class BusquedaAnunciosFragment extends Fragment {
 
         /**
          * Selected Listener del spinner de Tipo de Anuncio, que sirve para recargar
-         * la lista de anuncios cuando se cambia la selección de dicho spinner.
+         * la lista de anuncios cuando se cambia la selecciï¿½n de dicho spinner.
          */
         spinnerTipo.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {

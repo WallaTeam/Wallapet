@@ -1,7 +1,7 @@
 /**
  * Nombre:  LoginActivity.java
  * Version: 2.0
- * Autor: Raúl Piracés, Ismael Rodriguez, David Vergara.
+ * Autor: Raul Piraces, Ismael Rodriguez, David Vergara.
  * Fecha: 10-4-2015
  * Descripcion:Este fichero implementa la actividad de login.
  */
@@ -39,7 +39,7 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     /**
      * Pre: inflater != null && container != null && savedInstanceState != null.
-     * Post: Método por defecto en la creación de vista. Encargado de crear todos
+     * Post: Metodo por defecto en la creacion de vista. Encargado de crear todos
      * los elementos de la pantalla e inicializarlos.
      */
     protected void onCreate(Bundle savedInstanceState) {

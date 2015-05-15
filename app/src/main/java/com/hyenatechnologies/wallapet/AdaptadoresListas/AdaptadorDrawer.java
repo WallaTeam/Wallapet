@@ -72,7 +72,7 @@ public class AdaptadorDrawer extends BaseAdapter {
      * Pre: parametros no nulos
      * Post: Construye un nuevo objeto View con el Layout correspondiente a la
      * posicion position y lo devuelve. El ultimo parametro es el padre
-     * al que la lista va a ser añadida.
+     * al que la lista va a ser aÃ±adida.
      */
     public View getView(int position, View convertView, ViewGroup parent) {
 
