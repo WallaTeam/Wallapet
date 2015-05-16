@@ -4,7 +4,7 @@
 
 <style name="Widget" />
 
-<style name="Widget.ActionBar" parent="Theme.AppCompat.Light.DarkActionBar" />
+<style name="Widget.ActionBar" parent="Theme.AppCompat.Light" />
 
 <style name="Widget.Light" />
 
