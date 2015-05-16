@@ -296,9 +296,26 @@ public class CrearModificarAnuncioFragment extends Fragment {
                     if((tipo.getSelectedItem().toString()=="Venta" &&
                             precio.getText().toString().length()>0)||
                             tipo.getSelectedItem().toString()=="Adopcion"){
-
-                        //Todo ha ido bien, se crea el anuncio
-                        new CreateAnuncioTask().execute("");
+                        if(titulo.getText().toString().length()<=90) {
+                            if(descripcion.getText().toString().length()<=1000){
+                                //Todo ha ido bien, se crea el anuncio
+                                new CreateAnuncioTask().execute("");
+                            }
+                            else{
+                                //Mostrar toast de que la descripcion es muy larga
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "La descripción debe tener menos de 1000 caracteres",
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        }
+                        else{
+                            //Mostrar toast de que el título es muy largo
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "El título debe tener menos de 90 caracteres",
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
                     }
                     else{
                         //Mostrar toast si el título o la descripción están vacíos
