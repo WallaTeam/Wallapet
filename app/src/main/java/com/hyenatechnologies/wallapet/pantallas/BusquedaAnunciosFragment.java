@@ -8,13 +8,13 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -207,7 +207,7 @@ public class BusquedaAnunciosFragment extends Fragment {
                 AlertDialog.Builder alertDialogBuilder =
                         new AlertDialog.Builder(this.getActivity());
                 alertDialogBuilder.setView(prompt);
-
+                alertDialogBuilder.setInverseBackgroundForced(true);
                 // Mostramos el mensaje del cuadro de dialogo
                 alertDialogBuilder.setCancelable(false)
                         .setPositiveButton("BUSCAR",
@@ -260,6 +260,7 @@ public class BusquedaAnunciosFragment extends Fragment {
          * Post: muestra el dialogo de buscando....
          */
         protected void onPreExecute() {
+            dialog.setCancelable(false);
             dialog.setMessage("Buscando...");
             dialog.show();
         }

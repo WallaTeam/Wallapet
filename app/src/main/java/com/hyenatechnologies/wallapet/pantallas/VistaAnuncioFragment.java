@@ -10,9 +10,6 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +18,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -126,7 +128,7 @@ int idAnuncio;
                 AlertDialog.Builder alertDialogBuilder =
                         new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(prompt);
-
+                alertDialogBuilder.setInverseBackgroundForced(true);
                 // Mostramos el mensaje del cuadro de dialogo
                 alertDialogBuilder.setCancelable(false)
                         .setPositiveButton("CONTACTAR", new DialogInterface.
@@ -167,7 +169,7 @@ int idAnuncio;
                 AlertDialog.Builder alertDialogBuilder =
                         new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(prompt);
-
+                alertDialogBuilder.setInverseBackgroundForced(true);
                 // Mostramos el mensaje del cuadro de dialogo
                 alertDialogBuilder.setCancelable(false)
                         .setPositiveButton("FINALIZAR TRATO", new DialogInterface.
@@ -323,7 +325,7 @@ int idAnuncio;
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 getActivity());
         alertDialogBuilder.setView(prompt);
-
+        alertDialogBuilder.setInverseBackgroundForced(true);
         // Mostramos el mensaje del cuadro de dialogo
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("BORRAR ANUNCIO",
@@ -388,6 +390,7 @@ int idAnuncio;
          * Post: muestra el dialogo de cargando...
          */
         protected void onPreExecute() {
+            dialogo.setCancelable(false);
             dialogo.setMessage("Cargando...");
             dialogo.show();
         }
@@ -551,10 +554,17 @@ int idAnuncio;
         protected void onPostExecute(Bitmap result) {
             Configuration configuration = getActivity().
                     getResources().getConfiguration();
-            int screenWidthDp = configuration.screenWidthDp;
+          //  int screenWidthDp = configuration.screenWidthDp;
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            DisplayMetrics outMetrics = new DisplayMetrics ();
+            display.getMetrics(outMetrics);
+
+            float density  = getResources().getDisplayMetrics().density;
+            float dpWidth  = outMetrics.widthPixels / density;
+
             final float scale = getActivity().getResources().
                     getDisplayMetrics().density;
-            int p = (int) (screenWidthDp * scale + 0.5f);
+            int p = (int) (dpWidth * scale + 0.5f);
 
             if (result != null) {
                 Bitmap b2 = Bitmap.createScaledBitmap(result, p, p, true);
@@ -580,6 +590,7 @@ int idAnuncio;
          * Post: muestra el dialogo de borrando...
          */
         protected void onPreExecute() {
+            dialogo.setCancelable(false);
             dialogo.setMessage("Borrando...");
             dialogo.show();
         }
@@ -705,6 +716,7 @@ int idAnuncio;
          * Post: muestra el dialogo de cerrando...
          */
         protected void onPreExecute() {
+            dialogo.setCancelable(false);
             dialogo.setMessage("Cerrando...");
             dialogo.show();
         }
@@ -831,6 +843,7 @@ int idAnuncio;
          * Post: muestra el dialogo de contacto
          */
         protected void onPreExecute() {
+            dialogo.setCancelable(false);
             dialogo.setMessage("Contactando...");
             dialogo.show();
         }

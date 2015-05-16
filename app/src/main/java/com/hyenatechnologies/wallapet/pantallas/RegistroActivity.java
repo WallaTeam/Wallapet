@@ -270,6 +270,7 @@ public class RegistroActivity extends ActionBarActivity {
          * Post: muestra el dialogo de registrando.
          */
         protected void onPreExecute() {
+            dialogo.setCancelable(false);
             dialogo.setMessage("Registrando...");
             dialogo.show();
         }

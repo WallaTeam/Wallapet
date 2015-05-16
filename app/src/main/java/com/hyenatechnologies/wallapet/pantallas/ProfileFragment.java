@@ -9,12 +9,12 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +102,7 @@ public class ProfileFragment extends Fragment {
                 AlertDialog.Builder alertDialogBuilder =
                         new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setView(prompt);
-
+                alertDialogBuilder.setInverseBackgroundForced(true);
                 // Mostramos el mensaje del cuadro de dialogo
                 alertDialogBuilder.setCancelable(false)
                         .setPositiveButton("BORRAR CUENTA", new DialogInterface.OnClickListener() {
@@ -146,6 +146,7 @@ public class ProfileFragment extends Fragment {
          * Post: muestra el dialogo de borrando...
          */
         protected void onPreExecute() {
+            dialogo.setCancelable(false);
             dialogo.setMessage("Borrando perfil...");
             dialogo.show();
         }

@@ -187,7 +187,7 @@
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/cerrarAnuncio"
-        android:text="Finalizar trato anuncio"
+        android:text="DAR ANUNCIO POR FINALIZADO"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

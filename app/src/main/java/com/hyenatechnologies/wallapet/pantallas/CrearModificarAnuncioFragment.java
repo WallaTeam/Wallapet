@@ -11,8 +11,6 @@
 package com.hyenatechnologies.wallapet.pantallas;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -24,7 +22,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -640,10 +642,15 @@ public class CrearModificarAnuncioFragment extends Fragment {
         protected void onPostExecute(Bitmap result) {
             Configuration configuration = getActivity().getResources().
                     getConfiguration();
-            int screenWidthDp = configuration.screenWidthDp;
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            DisplayMetrics outMetrics = new DisplayMetrics ();
+            display.getMetrics(outMetrics);
+
+            float density  = getResources().getDisplayMetrics().density;
+            float dpWidth  = outMetrics.widthPixels / density;
             final float scale = getActivity().getResources().
                     getDisplayMetrics().density;
-            int p = (int) (screenWidthDp * scale + 0.5f);
+            int p = (int) (dpWidth * scale + 0.5f);
 
             if (result != null) {
                 Bitmap b2 = Bitmap.createScaledBitmap(result, p, p, true);
@@ -669,6 +676,7 @@ public class CrearModificarAnuncioFragment extends Fragment {
          * Post: muestra el dialogo de creando....
          */
         protected void onPreExecute() {
+            dialog.setCancelable(false);
             dialog.setMessage("Creando anuncio...");
             dialog.show();
         }

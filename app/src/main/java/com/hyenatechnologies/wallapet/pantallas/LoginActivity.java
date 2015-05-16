@@ -124,6 +124,7 @@ public class LoginActivity extends ActionBarActivity {
          * Post: muestra el dialogo de logueando....
          */
         protected void onPreExecute() {
+            dialog.setCancelable(false);
             dialog.setMessage("Verificando datos...");
             dialog.show();
         }
