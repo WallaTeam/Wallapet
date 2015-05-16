@@ -23,6 +23,7 @@ public class ValidacionRegistro {
     private static final String PHONE_MENS = "Telefono invalido";
     private static final String DNI_MENS = "DNI invalido";
     private static final String PASS_MENS = "Contraseña debil";
+    private static final String EXCEDIDO_MENS = "Introduzca menos de 90 caracteres";
 
     /**
      * Pre: Cierto
@@ -113,6 +114,12 @@ public class ValidacionRegistro {
         //Longitud a 0 indica que no hay texto
         if(text.length()==0){
             editText.setError(REQUERIDO_MENS);
+            return false;
+        }
+
+        //No se pueden introducir más de 90 caracteres
+        if(text.length()>90){
+            editText.setError(EXCEDIDO_MENS);
             return false;
         }
 
