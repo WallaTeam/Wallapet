@@ -298,8 +298,21 @@ public class CrearModificarAnuncioFragment extends Fragment {
                             tipo.getSelectedItem().toString()=="Adopcion"){
                         if(titulo.getText().toString().length()<=90) {
                             if(descripcion.getText().toString().length()<=1000){
-                                //Todo ha ido bien, se crea el anuncio
-                                new CreateAnuncioTask().execute("");
+                                if(tipo.getSelectedItem().toString()=="Venta" &&
+                                        precio.getText().toString().charAt(0)!='.'||
+                                        tipo.getSelectedItem().toString()=="Adopcion"){
+
+                                    //Todo ha ido bien, se crea el anuncio
+                                    new CreateAnuncioTask().execute("");
+                                }
+                                else{
+                                    //Mostrar toast de que se ha de introducir una cantidad
+                                    Toast.makeText(getActivity().getApplicationContext(),
+                                            "Se ha de introducir un precio de venta numérico",
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+
                             }
                             else{
                                 //Mostrar toast de que la descripcion es muy larga
