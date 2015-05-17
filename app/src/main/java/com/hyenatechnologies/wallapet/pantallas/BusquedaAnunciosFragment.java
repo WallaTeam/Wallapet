@@ -218,6 +218,8 @@ public class BusquedaAnunciosFragment extends Fragment {
 
                                 //Aqui tenemos que buscar por las palabras clave
                                 palabras = e.getText().toString();
+                                String []palabrasSeparadas=palabras.split(" ");
+                                palabras= palabrasSeparadas[0];
                                 //Buscamos anuncios
                                     new SearchTask().execute("");
 
