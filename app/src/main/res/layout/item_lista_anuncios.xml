@@ -35,14 +35,6 @@
         android:layout_toRightOf="@+id/thumbnail"
         android:textSize="@dimen/rating" />
 
-    <TextView
-        android:id="@+id/lista_tipo"
-        android:layout_below="@id/lista_especie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-       android:layout_toRightOf="@id/thumbnail"
-        android:text="Adopcion"
-        android:textSize="@dimen/genre" />
 
 
     <!-- Release Year -->
