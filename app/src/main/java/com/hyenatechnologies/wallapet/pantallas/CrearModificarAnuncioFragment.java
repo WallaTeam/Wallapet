@@ -291,67 +291,11 @@ public class CrearModificarAnuncioFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-            if (titulo.getText().toString().length()>0 ) {
-                if(descripcion.getText().toString().length()>0){
-                    if((tipo.getSelectedItem().toString()=="Venta" &&
-                            precio.getText().toString().length()>0)||
-                            tipo.getSelectedItem().toString()=="Adopcion"){
-                        if(titulo.getText().toString().length()<=90) {
-                            if(descripcion.getText().toString().length()<=1000){
-                                if(tipo.getSelectedItem().toString()=="Venta" &&
-                                        precio.getText().toString().charAt(0)!='.'||
-                                        tipo.getSelectedItem().toString()=="Adopcion"){
-
-                                    //Todo ha ido bien, se crea el anuncio
-                                    new CreateAnuncioTask().execute("");
-                                }
-                                else{
-                                    //Mostrar toast de que se ha de introducir una cantidad
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                            "Se ha de introducir un precio de venta numérico",
-                                            Toast.LENGTH_SHORT)
-                                            .show();
-                                }
-
-                            }
-                            else{
-                                //Mostrar toast de que la descripcion es muy larga
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                        "La descripción debe tener menos de 1000 caracteres",
-                                        Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-                        }
-                        else{
-                            //Mostrar toast de que el título es muy largo
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                    "El título debe tener menos de 90 caracteres",
-                                    Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                    else{
-                        //Mostrar toast si el título o la descripción están vacíos
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "El precio no puede estar vacío",
-                                Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                }
-                else{
-                    //Mostrar toast si el título o la descripción están vacíos
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "La descripción no puede estar vacía",
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
+            if (camposCorrectos()){
+                    //Todo ha ido bien, se crea el anuncio
+                    new CreateAnuncioTask().execute("");
             }
             else{
-                //Mostrar toast si el título o la descripción están vacíos
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "El título no puede estar vacío",
-                        Toast.LENGTH_SHORT)
-                        .show();
             }
             }
         });
@@ -365,6 +309,151 @@ public class CrearModificarAnuncioFragment extends Fragment {
         }
         return rootView;
     }
+
+    /**
+     * Pre: Cierto.
+     * Post: Devuelve cierto si los campos del anuncio son correctos
+     *       Falso en otro caso.
+     */
+    public boolean camposCorrectos(){
+        if(longitudTituloNoNula() && longitudDescripciónNoNula() &&
+                precioNoVacio() && longitudTituloMenorNoventa() &&
+                longitudDescripciónMenorMil() && noPuntoEnPrecio()){
+            return  true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Pre: Cierto
+     * Post: Comprueba que la longitud del titulo sea mayor que 0.
+     *       Si lo es, devuelve true.
+     *       En caso contrario devuelve false y muestra un mensaje de error.
+     */
+    public boolean longitudTituloNoNula(){
+        if (titulo.getText().toString().length()>0 ){
+            return true;
+        }
+        else{
+            //Mostrar toast si el título o la descripción están vacíos
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "El título no puede estar vacío",
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+
+    }
+
+    /**
+     * Pre: Cierto
+     * Post: Comprueba que la longitud del titulo sea menor o igual a 90
+     *       Si lo es, devuelve true.
+     *       En caso contrario devuelve false y muestra un mensaje de error.
+     */
+    public boolean longitudTituloMenorNoventa(){
+        if(titulo.getText().toString().length()<=90){
+            return true;
+        }
+        else{
+            //Mostrar toast de que el título es muy largo
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "El título debe tener menos de 90 caracteres",
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+
+    }
+
+    /**
+     * Pre: Cierto
+     * Post: Comprueba que la longitud de la descripción sea mayor que 0.
+     *       Si lo es, devuelve true.
+     *       En caso contrario devuelve false y muestra un mensaje de error.
+     */
+    public boolean longitudDescripciónNoNula(){
+        if(descripcion.getText().toString().length()>0){
+            return true;
+        }
+        else{
+            //Mostrar toast si la descripción está vacía
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "La descripción no puede estar vacía",
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+    }
+
+    /**
+     * Pre: Cierto
+     * Post: Comprueba que la longitud de la descripción sea menor o igual que 1000.
+     *       Si lo es, devuelve true.
+     *       En caso contrario devuelve false y muestra un mensaje de error.
+     */
+    public boolean longitudDescripciónMenorMil(){
+        if(descripcion.getText().toString().length()<=1000){
+            return true;
+        }
+        else{
+            //Mostrar toast de que la descripcion es muy larga
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "La descripción debe tener menos de 1000 caracteres",
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+
+    }
+
+    /**
+     * Pre: Cierto
+     * Post: Comprueba que si se trata de una venta el precio no sea vacío.
+     *       Si no lo es, devuelve true.
+     *       En caso contrario devuelve false y muestra un mensaje de error.
+     */
+    public boolean precioNoVacio(){
+        if((tipo.getSelectedItem().toString()=="Venta" &&
+                precio.getText().toString().length()>0)||
+                tipo.getSelectedItem().toString()=="Adopcion"){
+            return true;
+        }
+        else{
+            //Mostrar toast si el precio está vacío
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "El precio no puede estar vacío",
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+    }
+
+    /**
+     * Pre: Cierto
+     * Post: Comprueba que si se trata de una venta el precio no contenga sólo un punto.
+     *       Si no contiene solo un punto, devuelve true.
+     *       En caso contrario devuelve false y muestra un mensaje de error.
+     */
+    public boolean noPuntoEnPrecio(){
+        if(tipo.getSelectedItem().toString()=="Venta" &&
+                precio.getText().toString().charAt(0)!='.'||
+                tipo.getSelectedItem().toString()=="Adopcion"){
+            return true;
+        }
+        else{
+            //Mostrar toast de que se ha de introducir una cantidad
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "Se ha de introducir un precio de venta numérico",
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+
+    }
+
 
     /**
      * Pre: cierto.
