@@ -3,13 +3,7 @@ WallaPet is an Android app for making simple deal between sellers/buyers of Anim
 Copyright (C) 2015 Hyena Technologies.
 
 # Official site
-You can check our official site in http://wallapet.com.
-Also you can view our repository pages in http://piraces.github.io/Wallapet.
-
-# Official Wiki for Wallapet
-The project wiki has been moved from github to our server (externally) using "MediaWiki".
-The wiki is available in: [wiki.wallapet.com](http://wiki.wallapet.com/).
-Check it out!
+You can check our official site in http://piraces.github.io/Wallapet.
 
 # Technologies
 The following technologies are being used in the development of Wallapet:
